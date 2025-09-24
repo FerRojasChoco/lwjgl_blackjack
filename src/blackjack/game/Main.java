@@ -30,20 +30,25 @@ public class Main implements IAppLogic{
     @Override
     public void init(Window window, Scene scene, Render render) {
         
-        /*      A
-         *      /\
-         *     /  \
-         *  B /____\ C
-         */
         float[] positions = new float[]{
-            0.0f, 0.5f, 0.0f,   //A
-            -0.5f, -0.5f, 0.0f,  //B
-            0.5f, -0.5f, 0.0f   //C
+                -0.5f, 0.5f, -1.0f,
+                -0.5f, -0.5f, -1.0f,
+                0.5f, -0.5f, -1.0f,
+                0.5f, 0.5f, -1.0f,
+        };
+        float[] colors = new float[]{
+                0.5f, 0.0f, 0.0f,
+                0.0f, 0.5f, 0.0f,
+                0.0f, 0.0f, 0.5f,
+                0.0f, 0.5f, 0.5f,
+        };
+        int[] indices = new int[]{
+                0, 1, 3, 3, 1, 2,
         };
 
-        Mesh mesh = new Mesh(positions, 3);
+        Mesh mesh = new Mesh(positions, colors, indices);
         
-        scene.addMesh("triangle", mesh);
+        scene.addMesh("quad", mesh);
     }
 
     @Override

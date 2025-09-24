@@ -27,7 +27,7 @@ public class Engine {
         this.appLogic = appLogic;
 
         render = new Render();
-        scene = new Scene();
+        scene = new Scene(window.getWidth(), window.getHeight());
 
         appLogic.init(window, scene, render);
 
@@ -43,7 +43,7 @@ public class Engine {
     }
 
     private void resize(){
-
+        scene.resize(window.getWidth(), window.getHeight());
     }
 
     //game loop is defined in this function

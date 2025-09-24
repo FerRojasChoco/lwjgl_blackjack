@@ -11,6 +11,8 @@ public class SceneRender {
 
     private ShaderProgram shaderProgram;
 
+    private UniformsMap uniformsMap;
+
     public SceneRender(){
 
         //create two shader module data instances (one for each shader module) and with them create a shader program
@@ -21,6 +23,7 @@ public class SceneRender {
 
         shaderProgram = new ShaderProgram(shaderModuleDataList);
 
+        createUniforms();
     }
 
 
@@ -30,14 +33,29 @@ public class SceneRender {
 
         shaderProgram.bind();
 
+        //set uniforms before drawing elements
+        uniformsMap.setUniform("projectionMatrix", scene.getProjection().getProjMatrix());
+
+
         scene.getMeshMap().values().forEach(mesh -> {
             glBindVertexArray(mesh.getVaoId());
-            glDrawArrays(GL_TRIANGLES, 0, mesh.getNumVertices());
+
+            //parameters of this method are: mode, count, type, indices
+            glDrawElements(GL_TRIANGLES, mesh.getNumVertices(), GL_UNSIGNED_INT, 0);
         });
+
 
         glBindVertexArray(0);
 
         shaderProgram.unbind();
+
+    }
+
+
+    public void createUniforms(){
+
+        uniformsMap = new UniformsMap(shaderProgram.getProgramId());
+        uniformsMap.createUniform("projectionMatrix");
 
     }
 

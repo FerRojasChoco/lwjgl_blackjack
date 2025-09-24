@@ -176,8 +176,8 @@ public class Window {
         public int fps;     //target frames per second
 
         //desired windows size
-        public int height;  
-        public int width;
+        public int height = 600;  
+        public int width = 900;
 
         public int ups = Engine.TARGET_UPS; //target numbers of updates per second (inti to default)
 
