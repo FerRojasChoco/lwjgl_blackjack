@@ -21,7 +21,6 @@ public class UniformsMap {
 
     }
 
-    //uniform creation is independent on the data type associated to it that is the reason of why there are many functions but receive different types of values
 
     public void createUniform(String uniformName){
 
@@ -34,19 +33,31 @@ public class UniformsMap {
         uniforms.put(uniformName, uniformLocation);
     }
 
+//uniform creation is independent on the data type associated to it that is the reason of why there are many functions but receive different types of values
+
     public void setUniform(String uniformName, Matrix4f value){
 
         try (MemoryStack stack = MemoryStack.stackPush()) {
 
-            Integer location = uniforms.get(uniformName);
-
-            if (location == null){
-                throw new RuntimeException("COULD NOT FIND UNIFORM [" + uniformName + "]");
-            }
-
-            glUniformMatrix4fv(location.intValue(), false, value.get(stack.mallocFloat(16)));
+            glUniformMatrix4fv(getUniformLocation(uniformName), false, value.get(stack.mallocFloat(16)));
 
         }
+
+    }
+
+    public void setUniform(String uniformName, int value){
+        glUniform1i(getUniformLocation(uniformName), value);
+    }
+
+    private int getUniformLocation(String uniformName){
+
+        Integer location = uniforms.get(uniformName);
+
+        if (location == null){
+            throw new RuntimeException("COULD NOT FIND UNIFORM [" + uniformName + "]");
+        }
+
+        return location.intValue();
 
     }
 

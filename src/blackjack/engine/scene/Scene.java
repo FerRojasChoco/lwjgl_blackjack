@@ -4,20 +4,21 @@ package blackjack.engine.scene;
 //currently it just tores the meshes (sets of vertices) of the models we want to dray
 
 import blackjack.engine.graph.Model;
+import blackjack.engine.graph.TextureCache;
 
 import java.util.*;
 
 public class Scene {
 
     private Map<String, Model> modelMap;
-    
     private Projection projection;
+    private TextureCache textureCache;
 
     public Scene(int width, int height){
         
         modelMap = new HashMap<>();
-        
         projection = new Projection(width, height);
+        textureCache = new TextureCache();
     }
 
     public void addEntity(Entity entity){
@@ -56,5 +57,8 @@ public class Scene {
         return projection;
     }
 
+    public TextureCache getTextureCache() {
+        return textureCache;
+    }
 
 }

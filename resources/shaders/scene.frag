@@ -1,9 +1,15 @@
 #version 330 core
 //glsl version
 
-in vec3 outColor;
+in vec2 outTextCoord;
+
 out vec4 fragColor;
 
-void main(){
-    fragColor = vec4(outColor, 1.0);   //set a fixed color for each fragment
+//use the text coords in order to set the pixel colors by sampling a texture
+//thru this sampler2d uniform
+uniform sampler2D txtSampler;
+
+void main()
+{
+    fragColor = texture(txtSampler, outTextCoord);
 }
