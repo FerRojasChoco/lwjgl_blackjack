@@ -9,9 +9,10 @@ layout (location=1) in vec3 color;
 out vec3 outColor;
 
 uniform mat4 projectionMatrix;
+uniform mat4 modelMatrix;
 
 void main()
 {
-    gl_Position = projectionMatrix * vec4(position, 1.0);        //return received pos in an output variable, if wondering about why vec4, check documentation of lwjgl book
+    gl_Position = projectionMatrix * modelMatrix * vec4(position, 1.0);        //return received pos in an output variable, if wondering about why vec4, check documentation of lwjgl book
     outColor = color;
 }
