@@ -1,6 +1,7 @@
 package blackjack.game;
 
 import blackjack.engine.*;
+import blackjack.engine.graph.Mesh;
 import blackjack.engine.graph.Render;
 import blackjack.engine.scene.Scene;
 
@@ -24,25 +25,35 @@ public class Main implements IAppLogic{
     @Override
     public void cleanup() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cleanup'");
     }
 
     @Override
     public void init(Window window, Scene scene, Render render) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'init'");
+        
+        /*      A
+         *      /\
+         *     /  \
+         *  B /____\ C
+         */
+        float[] positions = new float[]{
+            0.0f, 0.5f, 0.0f,   //A
+            -0.5f, -0.5f, 0.0f,  //B
+            0.5f, -0.5f, 0.0f   //C
+        };
+
+        Mesh mesh = new Mesh(positions, 3);
+        
+        scene.addMesh("triangle", mesh);
     }
 
     @Override
     public void input(Window window, Scene scene, long diffTimeMillis) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'input'");
     }
 
     @Override
     public void update(Window window, Scene scene, long diffTimeMillis) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 
 }
