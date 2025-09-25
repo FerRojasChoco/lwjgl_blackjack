@@ -65,6 +65,10 @@ public class Window {
         //create window and set some callbacks for when window is resized or to detect window closure (esc)
         windowHandle = glfwCreateWindow(width, height, title, NULL, NULL);
 
+        //check if this should be here, it works for my laptop hehe 
+        GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        glfwSetWindowPos(windowHandle, (vidMode.width()- width) / 2 , (vidMode.height() - height) / 2 );  
+
         if (windowHandle == NULL){
             throw new RuntimeException("Failed to create the GLFW window");
         }

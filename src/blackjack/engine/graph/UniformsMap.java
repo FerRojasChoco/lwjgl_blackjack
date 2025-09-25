@@ -1,6 +1,7 @@
 package blackjack.engine.graph;
 
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
 import org.lwjgl.system.MemoryStack;
 
 import java.util.*;
@@ -44,9 +45,14 @@ public class UniformsMap {
         }
 
     }
+    
 
     public void setUniform(String uniformName, int value){
         glUniform1i(getUniformLocation(uniformName), value);
+    }
+
+    public void setUniform(String uniformName, Vector4f value){
+        glUniform4f(getUniformLocation(uniformName), value.x, value.y, value.z, value.w);
     }
 
     private int getUniformLocation(String uniformName){

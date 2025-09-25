@@ -2,12 +2,18 @@ package blackjack.engine.graph;
 
 import java.util.*;
 
+import org.joml.Vector4f;
+
+import blackjack.engine.Consts;
+
 public class Material {
 
+    private Vector4f diffusecolor;
     private List<Mesh> meshList;
     private String texturePath;
 
     public Material(){
+        diffusecolor = Consts.DEFAULT_COLOR;
         meshList = new ArrayList<>();
     }
 
@@ -27,6 +33,14 @@ public class Material {
 
     public void setTexturePath(String texturePath) {
         this.texturePath = texturePath;
+    }
+
+    public Vector4f getDiffusecolor() {
+        return diffusecolor;
+    }
+
+    public void setDiffusecolor(Vector4f diffusecolor) {
+        this.diffusecolor = diffusecolor;
     }
     
 }
