@@ -19,10 +19,13 @@ public class Window {
     private Callable<Void> resizeFunc;
     private int width;
 
+    private MouseInput mouseInput;
+
 
     public Window(String title, WindowOptions opts, Callable<Void> resizeFunc){
         
         this.resizeFunc = resizeFunc;
+        
 
         if(!glfwInit()){
             throw new IllegalStateException("Unable to init GLFW");
@@ -98,6 +101,9 @@ public class Window {
 
         width = arrWidth[0];
         height = arrHeight[0];
+        
+        mouseInput = new MouseInput(windowHandle);
+
     }
 
     //key callback 
@@ -156,6 +162,10 @@ public class Window {
         return windowHandle;
     }
 
+    public MouseInput getMouseInput() {
+        return mouseInput;
+    }
+
     public boolean isKeyPressed(int keyCode){
         return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS;
     }
@@ -176,10 +186,10 @@ public class Window {
         public int fps;     //target frames per second
 
         //desired windows size
-        public int height = 600;  
-        public int width = 900;
+        public int height = Consts.HEIGHT;  
+        public int width = Consts.WIDTH;
 
-        public int ups = Engine.TARGET_UPS; //target numbers of updates per second (inti to default)
+        public int ups = Consts.TARGET_UPS; //target numbers of updates per second (inti to default)
 
     }
 }

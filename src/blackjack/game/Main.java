@@ -1,12 +1,14 @@
 package blackjack.game;
+//CHECK NOTE IN THE MOUSE INPUT SECTION ~~~!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import org.joml.Vector2f;
+// import org.joml.Vector3f;
+// import org.joml.Vector4f;
 
 import blackjack.engine.*;
 import blackjack.engine.graph.Material;
@@ -14,6 +16,7 @@ import blackjack.engine.graph.Mesh;
 import blackjack.engine.graph.Model;
 import blackjack.engine.graph.Render;
 import blackjack.engine.graph.Texture;
+import blackjack.engine.scene.Camera;
 import blackjack.engine.scene.Entity;
 import blackjack.engine.scene.Scene;
 
@@ -21,8 +24,9 @@ import blackjack.engine.scene.Scene;
 //this class also implements app logic but is empty for now
 public class Main implements IAppLogic{
 
+
     private Entity cubeEntity;
-    private Vector4f displInc = new Vector4f();
+    // private Vector4f displInc = new Vector4f();
     private float rotation;
 
     public static void main(String[] args){
@@ -160,43 +164,40 @@ public class Main implements IAppLogic{
     @Override
     public void input(Window window, Scene scene, long diffTimeMillis) {
 
-        displInc.zero();
-
-        if (window.isKeyPressed(GLFW.GLFW_KEY_UP)){
-            displInc.y += 1;
-        }
-        else if (window.isKeyPressed(GLFW.GLFW_KEY_DOWN)){
-            displInc.y -= 1;
-        }
-
-        if (window.isKeyPressed(GLFW.GLFW_KEY_LEFT)){
-            displInc.x -= 1;
-        }
-        else if (window.isKeyPressed(GLFW.GLFW_KEY_RIGHT)){
-            displInc.x += 1;
+        float move = diffTimeMillis * Consts.MOVEMENT_SPEED;
+        
+        Camera camera = scene.getCamera();
+        
+        if (window.isKeyPressed(GLFW.GLFW_KEY_W)) {
+            camera.moveForward(move);
+        } 
+        else if (window.isKeyPressed(GLFW.GLFW_KEY_S)) {
+            camera.moveBackwards(move);
         }
 
-        if (window.isKeyPressed(GLFW.GLFW_KEY_A)){
-            displInc.z -= 1;
-        }
-        else if (window.isKeyPressed(GLFW.GLFW_KEY_Q)){
-            displInc.z += 1;
-        }
-
-        if (window.isKeyPressed(GLFW.GLFW_KEY_Z)){
-            displInc.w -= 1;
-        }
-        else if (window.isKeyPressed(GLFW.GLFW_KEY_X)){
-            displInc.w += 1;
+        if (window.isKeyPressed(GLFW.GLFW_KEY_A)) {
+            camera.moveLeft(move);
+        } 
+        else if (window.isKeyPressed(GLFW.GLFW_KEY_D)) {
+            camera.moveRight(move);
         }
 
-        displInc.mul(diffTimeMillis / 1000.0f);
+        if (window.isKeyPressed(GLFW.GLFW_KEY_UP)) {
+            camera.moveUp(move);
+        } 
+        else if (window.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
+            camera.moveDown(move);
+        }
 
-        Vector3f entityPos = cubeEntity.getPosition();
-
-        cubeEntity.setPosition(displInc.x + entityPos.x, displInc.y + entityPos.y, displInc.z + entityPos.z);
-        cubeEntity.setScale(cubeEntity.getScale() + displInc.w);
-        cubeEntity.updateModelMatrix();
+        MouseInput mouseInput = window.getMouseInput();
+        //note: add a - sign to displVec x and y if inverted camera axis is needed
+        //for now you have to right click and drag to move the camera, this should be changed to move the camera
+        //alongside the cursor
+        if (mouseInput.isRightButtonPressed()) {
+            Vector2f displVec = mouseInput.getDisplVec();
+            camera.addRotation((float) Math.toRadians(displVec.x * Consts.MOUSE_SENS),
+                    (float) Math.toRadians(displVec.y * Consts.MOUSE_SENS));
+        }
     }
 
     @Override

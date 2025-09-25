@@ -2,15 +2,16 @@ package blackjack.engine.graph;
 
 import java.util.*;
 
+import blackjack.engine.Consts;
+
 public class TextureCache {
 
-    public static final String DEFAULT_TEXTURE = "resources/models/default/stonewall.png";
 
     private Map<String, Texture> textureMap;
 
     public TextureCache(){
         textureMap = new HashMap<>();
-        textureMap.put(DEFAULT_TEXTURE, new Texture(DEFAULT_TEXTURE));
+        textureMap.put(Consts.DEFAULT_TEXTURE, new Texture(Consts.DEFAULT_TEXTURE));
     }
 
     //free resources
@@ -31,7 +32,7 @@ public class TextureCache {
         }
 
         if (texture == null){
-            texture = textureMap.get(DEFAULT_TEXTURE);
+            texture = textureMap.get(Consts.DEFAULT_TEXTURE);
         }
 
         return texture;

@@ -5,7 +5,6 @@ import blackjack.engine.scene.Scene;
 
 public class Engine {
 
-    public static final int TARGET_UPS = 60;
     private final IAppLogic appLogic;
     private final Window window;
     private Render render;
@@ -71,7 +70,10 @@ public class Engine {
 
             //if max elapsed time for render, process user input
             if (targetFps <= 0 || deltaFps >= 1){
+                
+                window.getMouseInput().input();
                 appLogic.input(window, scene, now - initialTime);
+
             }
 
             //if timeU period is consumed, update game
