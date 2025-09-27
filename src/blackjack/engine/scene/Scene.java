@@ -1,5 +1,7 @@
 package blackjack.engine.scene;
 
+import blackjack.engine.IGuiInstance;
+
 //this class hold 3D scene elements (models, etc)
 //currently it just tores the meshes (sets of vertices) of the models we want to dray
 
@@ -14,6 +16,7 @@ public class Scene {
     private Projection projection;
     private TextureCache textureCache;
     private Camera camera;
+    private IGuiInstance guiInstance;
 
     public Scene(int width, int height){
         
@@ -50,7 +53,7 @@ public class Scene {
         modelMap.values().forEach(Model::cleanup);
     }
 
-    //getters
+    //getters and setters
     public Map<String, Model> getModelMap() {
         return modelMap;
     }
@@ -65,5 +68,13 @@ public class Scene {
 
     public Camera getCamera() {
         return camera;
+    }
+
+    public IGuiInstance getGuiInstance() {
+        return guiInstance;
+    }
+
+    public void setGuiInstance(IGuiInstance guiInstance) {
+        this.guiInstance = guiInstance;
     }
 }

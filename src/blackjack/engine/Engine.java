@@ -25,8 +25,17 @@ public class Engine {
 
         this.appLogic = appLogic;
 
-        render = new Render();
+        render = new Render(window);
         scene = new Scene(window.getWidth(), window.getHeight());
+
+        /* this is a fix, this if was originally not in the guide
+         * appLogic is Main class instance, which implements IGuiInstance
+         * this registers the Main class with the Scene
+         * the GuiRender later uses this referenc to actually call the drawGui() method and render the interface
+         */
+        if (appLogic instanceof IGuiInstance){
+            scene.setGuiInstance((IGuiInstance) appLogic);
+        }
 
         appLogic.init(window, scene, render);
 
@@ -42,7 +51,10 @@ public class Engine {
     }
 
     private void resize(){
-        scene.resize(window.getWidth(), window.getHeight());
+        int width = window.getWidth();
+        int height = window.getHeight();
+        scene.resize(width, height);
+        render.resize(width, height);
     }
 
     //game loop is defined in this function
@@ -59,6 +71,8 @@ public class Engine {
 
         long updateTime = initialTime;
 
+        IGuiInstance iGuiInstance = scene.getGuiInstance();
+
         while (running && !window.windowShouldClose()){
             
             window.pollEvents();    //start by polling events on the window
@@ -72,7 +86,8 @@ public class Engine {
             if (targetFps <= 0 || deltaFps >= 1){
                 
                 window.getMouseInput().input();
-                appLogic.input(window, scene, now - initialTime);
+                boolean inputConsumed = iGuiInstance != null && iGuiInstance.handleGuiInput(scene, window); 
+                appLogic.input(window, scene, now - initialTime, inputConsumed);
 
             }
 

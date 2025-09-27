@@ -13,10 +13,13 @@ import blackjack.engine.scene.Camera;
 import blackjack.engine.scene.Entity;
 import blackjack.engine.scene.ModelLoader;
 import blackjack.engine.scene.Scene;
+import imgui.ImGui;
+import imgui.ImGuiIO;
+import imgui.flag.ImGuiCond;
 
 //create the Engine instance and start it up in the main method
 //this class also implements app logic but is empty for now
-public class Main implements IAppLogic{
+public class Main implements IAppLogic, IGuiInstance{
 
 
     private Entity cubeEntity;
@@ -58,7 +61,11 @@ public class Main implements IAppLogic{
     }
 
     @Override
-    public void input(Window window, Scene scene, long diffTimeMillis) {
+    public void input(Window window, Scene scene, long diffTimeMillis, boolean inputConsumed) {
+        
+        if (inputConsumed){
+            return;
+        }
 
         float move = diffTimeMillis * Consts.MOVEMENT_SPEED;
         
@@ -108,6 +115,29 @@ public class Main implements IAppLogic{
         cubeEntity.setRotation(1, 1, 1, (float) Math.toRadians(rotation));
         cubeEntity.updateModelMatrix();
 
+    }
+
+    @Override
+    public void drawGui(){
+        ImGui.newFrame();
+        ImGui.setNextWindowPos(0, 0, ImGuiCond.Always);
+        ImGui.showDemoWindow();
+        ImGui.endFrame();
+        ImGui.render();
+    }
+
+    @Override
+    public boolean handleGuiInput(Scene scene, Window window){
+
+        ImGuiIO imGuiIO = ImGui.getIO();
+        MouseInput mouseInput = window.getMouseInput();
+        Vector2f mousePos = mouseInput.getCurrentPos();
+
+        imGuiIO.addMousePosEvent(mousePos.x, mousePos.y);
+        imGuiIO.addMouseButtonEvent(0, mouseInput.isLeftButtonPressed());
+        imGuiIO.addMouseButtonEvent(1, mouseInput.isRightButtonPressed());
+
+        return imGuiIO.getWantCaptureMouse() || imGuiIO.getWantCaptureKeyboard();
     }
 
 }
