@@ -1,5 +1,6 @@
 package blackjack.game;
 //CHECK NOTE IN THE MOUSE INPUT SECTION ~~~!!!!!!!!!!!!!!!!!!!!!!!!!!
+//also separate the initialization of objects (entities with models) in another file so it wont bloat this file
 
 import org.lwjgl.glfw.GLFW;
 
@@ -23,6 +24,7 @@ public class Main implements IAppLogic, IGuiInstance{
 
 
     private Entity cubeEntity;
+    private Entity chairEntity;
     // private Vector4f displInc = new Vector4f();
     private float rotation;
 
@@ -53,11 +55,25 @@ public class Main implements IAppLogic, IGuiInstance{
             scene.getTextureCache()
         );
 
+        Model chairModel = ModelLoader.loadModel(
+            "chair-model",
+            "resources/models/wooden_chair/Wooden_Chair.obj",
+            scene.getTextureCache()
+        );
+
         scene.addModel(cubeModel);
+        scene.addModel(chairModel); 
 
         cubeEntity = new Entity("cube-entity", cubeModel.getId());
         cubeEntity.setPosition(0, 0, -2);
+        
+        chairEntity = new Entity("chair-entity", chairModel.getId());
+        chairEntity.setPosition(2, 0, -3);        
+
         scene.addEntity(cubeEntity);
+        scene.addEntity(chairEntity);
+
+
     }
 
     @Override
@@ -96,7 +112,8 @@ public class Main implements IAppLogic, IGuiInstance{
         //note: add a - sign to displVec x and y if inverted camera axis is needed
         //for now you have to right click and drag to move the camera, this should be changed to move the camera
         //alongside the cursor
-        if (mouseInput.isRightButtonPressed()) {
+        // if (mouseInput.isRightButtonPressed()) {
+        if (window.isKeyPressed(GLFW.GLFW_KEY_LEFT_SHIFT)){
             Vector2f displVec = mouseInput.getDisplVec();
             camera.addRotation((float) Math.toRadians(displVec.x * Consts.MOUSE_SENS),
                     (float) Math.toRadians(displVec.y * Consts.MOUSE_SENS));
@@ -106,13 +123,13 @@ public class Main implements IAppLogic, IGuiInstance{
     @Override
     public void update(Window window, Scene scene, long diffTimeMillis) {
 
-        rotation += 1.5;
+        // rotation += 1.5;
 
-        if (rotation > 360){
-            rotation = 0;
-        }
+        // if (rotation > 360){
+        //     rotation = 0;
+        // }
 
-        cubeEntity.setRotation(1, 1, 1, (float) Math.toRadians(rotation));
+        // cubeEntity.setRotation(1, 1, 1, (float) Math.toRadians(rotation));
         cubeEntity.updateModelMatrix();
 
     }

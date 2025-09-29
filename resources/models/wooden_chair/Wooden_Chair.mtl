@@ -1,0 +1,16 @@
+# Blender MTL File: 'Wooden_Chair.blend'
+# Material Count: 1
+
+newmtl Wooden_Chair
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.100000 0.100000 0.100000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Bump -bm 5.000000 Normal.png
+map_Kd Diffuse.png
+map_Ks Specular.png
+map_Ns Specular.png
