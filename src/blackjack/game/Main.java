@@ -8,11 +8,9 @@ import org.lwjgl.glfw.GLFW;
 import org.joml.Vector2f;
 
 import blackjack.engine.*;
-import blackjack.engine.graph.Model;
 import blackjack.engine.graph.Render;
 import blackjack.engine.scene.Camera;
-import blackjack.engine.scene.Entity;
-import blackjack.engine.scene.ModelLoader;
+import blackjack.engine.scene.EntityLoader;
 import blackjack.engine.scene.Scene;
 import imgui.ImGui;
 import imgui.ImGuiIO;
@@ -23,10 +21,6 @@ import imgui.flag.ImGuiCond;
 public class Main implements IAppLogic, IGuiInstance{
 
 
-    private Entity cubeEntity;
-    private Entity chairEntity;
-    // private Vector4f displInc = new Vector4f();
-    private float rotation;
 
     public static void main(String[] args){
 
@@ -35,9 +29,6 @@ public class Main implements IAppLogic, IGuiInstance{
         Engine gameEngine = new Engine("Blackjack LWJGL", new Window.WindowOptions(), main);
 
         gameEngine.start();
-
-
-    
 
     }
 
@@ -49,30 +40,8 @@ public class Main implements IAppLogic, IGuiInstance{
     @Override
     public void init(Window window, Scene scene, Render render) {
 
-        Model cubeModel = ModelLoader.loadModel(
-            "cube-model",
-            "resources/models/cube/cube.obj",
-            scene.getTextureCache()
-        );
-
-        Model chairModel = ModelLoader.loadModel(
-            "chair-model",
-            "resources/models/wooden_chair/Wooden_Chair.obj",
-            scene.getTextureCache()
-        );
-
-        scene.addModel(cubeModel);
-        scene.addModel(chairModel); 
-
-        cubeEntity = new Entity("cube-entity", cubeModel.getId());
-        cubeEntity.setPosition(0, 0, -2);
-        
-        chairEntity = new Entity("chair-entity", chairModel.getId());
-        chairEntity.setPosition(2, 0, -3);        
-
-        scene.addEntity(cubeEntity);
-        scene.addEntity(chairEntity);
-
+        EntityLoader entityLoader = new EntityLoader();
+        entityLoader.loadEntities(scene);
 
     }
 
@@ -130,7 +99,7 @@ public class Main implements IAppLogic, IGuiInstance{
         // }
 
         // cubeEntity.setRotation(1, 1, 1, (float) Math.toRadians(rotation));
-        cubeEntity.updateModelMatrix();
+        // cubeEntity.updateModelMatrix();
 
     }
 
