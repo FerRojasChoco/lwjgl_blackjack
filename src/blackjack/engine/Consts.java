@@ -18,6 +18,11 @@ public class Consts {
     /*~~~ TEXTURE RELATED ~~~*/
     public static final String DEFAULT_TEXTURE = "resources/models/default/stonewall.png";
     public static final Vector4f DEFAULT_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
+    
+    /*~~~ LIGHT RELATED ~~~*/
+    public static final int MAX_POINT_LIGHTS = 5;
+    public static final int MAX_SPOT_LIGHTS = 5;
+    
     /*~~~ MOUSE RELATED ~~~ */
     public static final float MOUSE_SENS = 0.1f;
     public static final float MOVEMENT_SPEED = 0.005f;

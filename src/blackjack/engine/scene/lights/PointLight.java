@@ -43,16 +43,16 @@ public class PointLight {
         this.attenuation = attenuation;
     }
 
-    public void setColor(Vector3f color) {
-        this.color = color;
+    public void setColor(float r, float g, float b) {
+        color.set(r, g, b);
     }
 
     public void setIntensity(float intensity) {
         this.intensity = intensity;
     }
 
-    public void setPosition(Vector3f position) {
-        this.position = position;
+    public void setPosition(float x, float y, float z) {
+        position.set(x, y, z);
     }
 
     /* Attenuation model

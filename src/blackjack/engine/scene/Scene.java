@@ -5,8 +5,11 @@ import blackjack.engine.IGuiInstance;
 //this class hold 3D scene elements (models, etc)
 //currently it just tores the meshes (sets of vertices) of the models we want to dray
 
+//hold a reference for SceneLights to render lights
+
 import blackjack.engine.graph.Model;
 import blackjack.engine.graph.TextureCache;
+import blackjack.engine.scene.lights.SceneLights;
 
 import java.util.*;
 
@@ -17,6 +20,8 @@ public class Scene {
     private TextureCache textureCache;
     private Camera camera;
     private IGuiInstance guiInstance;
+    
+    private SceneLights sceneLights;
 
     public Scene(int width, int height){
         
@@ -76,5 +81,13 @@ public class Scene {
 
     public void setGuiInstance(IGuiInstance guiInstance) {
         this.guiInstance = guiInstance;
+    }
+
+    public SceneLights getSceneLights() {
+        return sceneLights;
+    }
+
+    public void setSceneLights(SceneLights sceneLights) {
+        this.sceneLights = sceneLights;
     }
 }

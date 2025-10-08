@@ -111,11 +111,33 @@ public class ModelLoader {
             
             AIColor4D color = AIColor4D.create();
 
-            int result = aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_DIFFUSE, aiTextureType_NONE, 0, color);
+            //~~ light work haha ~~//
+            //ambient
+            int result = aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_AMBIENT, aiTextureType_NONE, 0, color);
+            if(result == aiReturn_SUCCESS)
+                material.setAmbientColor(new Vector4f(color.r(), color.g(), color.b(), color.a()));
 
-            if (result == aiReturn_SUCCESS){
+            //diffuse
+            result = aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_DIFFUSE, aiTextureType_NONE, 0, color);
+            if(result == aiReturn_SUCCESS)
                 material.setDiffusecolor(new Vector4f(color.r(), color.g(), color.b(), color.a()));
-            }
+            
+            //specular
+            result = aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_SPECULAR, aiTextureType_NONE, 0, color);
+            if(result == aiReturn_SUCCESS)
+                material.setSpecularColor(new Vector4f(color.r(), color.g(), color.b(), color.a()));
+            
+            //reflectance
+            float reflectance = 0.0f;
+            float[] shininessFacotr = new float[]{0.0f};
+            int[] pMax = new int[]{1};
+
+            result = aiGetMaterialFloatArray(aiMaterial, AI_MATKEY_SHININESS_STRENGTH, aiTextureType_NONE, 0, shininessFacotr, pMax);
+            
+            if (result == aiReturn_SUCCESS)
+                reflectance = shininessFacotr[0];
+            
+            material.setReflectance(reflectance);
 
             AIString aiTexturePath = AIString.calloc(stack);
 
@@ -142,6 +164,7 @@ public class ModelLoader {
     private static Mesh processMesh(AIMesh aiMesh){
 
         float[] vertices = processVertices(aiMesh);
+        float[] normals = processNormals(aiMesh);
         float[] textCoords = processTextCoords(aiMesh);
         int[] indices = processIndices(aiMesh);
 
@@ -151,7 +174,7 @@ public class ModelLoader {
             textCoords = new float[numElements];
         }
 
-        return new Mesh(vertices, textCoords, indices);
+        return new Mesh(vertices, normals, textCoords, indices);
     }
 
     /*the process verts, textCoords and indices just invoke the 
@@ -174,6 +197,21 @@ public class ModelLoader {
         }
 
         return indices.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    private static float[] processNormals(AIMesh aiMesh){
+
+        AIVector3D.Buffer buffer = aiMesh.mNormals();
+        float[] data = new float[buffer.remaining() * 3];
+        int pos = 0;
+
+        while (buffer.remaining() > 0){
+            AIVector3D normal = buffer.get();
+            data[pos++] = normal.x();
+            data[pos++] = normal.y();
+            data[pos++] = normal.z();
+        }
+        return data;
     }
 
     private static float[] processTextCoords(AIMesh aiMesh){

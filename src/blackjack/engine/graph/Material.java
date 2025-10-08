@@ -9,11 +9,20 @@ import blackjack.engine.Consts;
 public class Material {
 
     private Vector4f diffusecolor;
+    private Vector4f ambientColor;
+    private Vector4f specularColor;
+
     private List<Mesh> meshList;
     private String texturePath;
 
+    private float reflectance;
+    
+
+
     public Material(){
         diffusecolor = Consts.DEFAULT_COLOR;
+        ambientColor = Consts.DEFAULT_COLOR;
+        specularColor = Consts.DEFAULT_COLOR;
         meshList = new ArrayList<>();
     }
 
@@ -39,8 +48,32 @@ public class Material {
         return diffusecolor;
     }
 
+    public Vector4f getAmbientColor() {
+        return ambientColor;
+    }
+
+    public float getReflectance() {
+        return reflectance;
+    }
+
+    public Vector4f getSpecularColor() {
+        return specularColor;
+    }
+
     public void setDiffusecolor(Vector4f diffusecolor) {
         this.diffusecolor = diffusecolor;
+    }
+    
+    public void setAmbientColor(Vector4f ambientColor) {
+        this.ambientColor = ambientColor;
+    }
+
+    public void setReflectance(float reflectance) {
+        this.reflectance = reflectance;
+    }
+
+    public void setSpecularColor(Vector4f specularColor) {
+        this.specularColor = specularColor;
     }
     
 }

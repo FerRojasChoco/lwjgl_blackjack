@@ -6,21 +6,22 @@ import org.lwjgl.glfw.GLFW;
 
 
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 import blackjack.engine.*;
 import blackjack.engine.graph.Render;
 import blackjack.engine.scene.Camera;
 import blackjack.engine.scene.EntityLoader;
 import blackjack.engine.scene.Scene;
-import imgui.ImGui;
-import imgui.ImGuiIO;
-import imgui.flag.ImGuiCond;
+import blackjack.engine.scene.lights.PointLight;
+import blackjack.engine.scene.lights.SceneLights;
+import blackjack.engine.scene.lights.SpotLight;
 
 //create the Engine instance and start it up in the main method
 //this class also implements app logic but is empty for now
-public class Main implements IAppLogic, IGuiInstance{
+public class Main implements IAppLogic {
 
-
+    private LightControls lightControls;
 
     public static void main(String[] args){
 
@@ -40,9 +41,26 @@ public class Main implements IAppLogic, IGuiInstance{
     @Override
     public void init(Window window, Scene scene, Render render) {
 
+        //Load entities (with models and textures)
         EntityLoader entityLoader = new EntityLoader();
         entityLoader.loadEntities(scene);
 
+        //Light control 
+        SceneLights sceneLights = new SceneLights();
+        
+        sceneLights.getAmbientLight().setIntensity(0.3f);
+        
+        scene.setSceneLights(sceneLights);
+        
+        sceneLights.getPointLights().add(new PointLight(new Vector3f(1, 1, 1),
+                new Vector3f(0, 0, -1.4f), 1.0f));
+        
+        Vector3f coneDir = new Vector3f(0, 0, -1);
+        sceneLights.getSpotLights().add(new SpotLight(new PointLight(new Vector3f(1, 1, 1),
+                new Vector3f(0, 0, -1.4f), 0.0f), coneDir, 140.0f));
+        
+        lightControls = new LightControls(scene);
+        scene.setGuiInstance(lightControls);
     }
 
     @Override
@@ -101,29 +119,6 @@ public class Main implements IAppLogic, IGuiInstance{
         // cubeEntity.setRotation(1, 1, 1, (float) Math.toRadians(rotation));
         // cubeEntity.updateModelMatrix();
 
-    }
-
-    @Override
-    public void drawGui(){
-        ImGui.newFrame();
-        ImGui.setNextWindowPos(0, 0, ImGuiCond.Always);
-        ImGui.showDemoWindow();
-        ImGui.endFrame();
-        ImGui.render();
-    }
-
-    @Override
-    public boolean handleGuiInput(Scene scene, Window window){
-
-        ImGuiIO imGuiIO = ImGui.getIO();
-        MouseInput mouseInput = window.getMouseInput();
-        Vector2f mousePos = mouseInput.getCurrentPos();
-
-        imGuiIO.addMousePosEvent(mousePos.x, mousePos.y);
-        imGuiIO.addMouseButtonEvent(0, mouseInput.isLeftButtonPressed());
-        imGuiIO.addMouseButtonEvent(1, mouseInput.isRightButtonPressed());
-
-        return imGuiIO.getWantCaptureMouse() || imGuiIO.getWantCaptureKeyboard();
     }
 
 }
