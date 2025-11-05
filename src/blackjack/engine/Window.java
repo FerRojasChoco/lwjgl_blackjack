@@ -73,13 +73,13 @@ public class Window {
             throw new RuntimeException("Failed to create the GLFW window");
         }
 
-        glfwSetFramebufferSizeCallback(windowHandle, (_, w, h) -> resized(w, h));
+        glfwSetFramebufferSizeCallback(windowHandle, (unused, w, h) -> resized(w, h));
 
         glfwSetErrorCallback((int errorCode, long msgPtr) ->
                 Logger.error("Error code [{}], msg [{}]", errorCode, MemoryUtil.memUTF8(msgPtr))
         );
 
-        glfwSetKeyCallback(windowHandle, (_, key, _, action, _) -> {
+        glfwSetKeyCallback(windowHandle, (unused, key, unused1, action, unused2) -> {
             keyCallBack(key, action);
         });
 
