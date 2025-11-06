@@ -1,6 +1,8 @@
 package blackjack.engine.graph;
 
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL20;
+
 import blackjack.engine.Window;
 import blackjack.engine.scene.Scene;
 
@@ -16,8 +18,9 @@ public class Render {
     public Render(Window window){
         GL.createCapabilities();
 
+        glEnable(GL20.GL_MULTISAMPLE);
         glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
+        //glEnable(GL_CULL_FACE);
 
         glCullFace(GL_BACK);
 
