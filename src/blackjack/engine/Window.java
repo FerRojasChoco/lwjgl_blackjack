@@ -84,7 +84,7 @@ public class Window {
                 Logger.error("Error code [{}], msg [{}]", errorCode, MemoryUtil.memUTF8(msgPtr))
         );
 
-        glfwSetKeyCallback(windowHandle, (_, key, _, action, _) -> {
+        glfwSetKeyCallback(windowHandle, (ignore0, key, ignore1, action, _) -> {
             keyCallBack(key, action);
         });
 

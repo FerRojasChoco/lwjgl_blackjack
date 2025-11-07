@@ -21,14 +21,14 @@ public class MouseInput {
         rightButtonPressed = false;
         inWindow = false;
 
-        glfwSetCursorPosCallback(windowHandle, (_, xpos, ypos) -> {
+        glfwSetCursorPosCallback(windowHandle, (ignore0, xpos, ypos) -> {
             currentPos.x = (float) xpos;
             currentPos.y = (float) ypos;
         });
 
-        glfwSetCursorEnterCallback(windowHandle, (_, entered) -> inWindow = entered);
+        glfwSetCursorEnterCallback(windowHandle, (ignore1, entered) -> inWindow = entered);
         
-        glfwSetMouseButtonCallback(windowHandle, (_, button, action, _) -> {
+        glfwSetMouseButtonCallback(windowHandle, (ignore2, button, action, ignore3) -> {
             leftButtonPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
             rightButtonPressed = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS;
         });
