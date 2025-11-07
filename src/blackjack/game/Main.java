@@ -94,7 +94,8 @@ public class Main implements IAppLogic {
         else if (window.isKeyPressed(GLFW.GLFW_KEY_D)) {
             camera.moveRight(move);
         }
-
+        
+        // Final game should not able the player to move in these directions
         if (window.isKeyPressed(GLFW.GLFW_KEY_UP)) {
             camera.moveUp(move);
         } 

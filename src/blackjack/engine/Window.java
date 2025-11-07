@@ -196,8 +196,12 @@ public class Window {
         public int fps;     //target frames per second
 
         //desired windows size
-        public int height = Consts.HEIGHT;  
-        public int width = Consts.WIDTH;
+        // public int height = Consts.HEIGHT;  
+        // public int width = Consts.WIDTH;
+
+        //default window size
+        public int height = 0;
+        public int width = 0;
 
         public int ups = Consts.TARGET_UPS; //target numbers of updates per second (inti to default)
 

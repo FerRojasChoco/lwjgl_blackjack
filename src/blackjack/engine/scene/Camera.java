@@ -31,7 +31,12 @@ public class Camera {
     }
     
     public void moveBackwards(float inc) {
-        viewMatrix.positiveZ(direction).negate().mul(inc);
+        viewMatrix.positiveZ(direction).negate();
+
+        direction.y = 0;
+        direction.normalize();
+        direction.mul(inc);
+    
         position.sub(direction);
         recalculate();
     }
@@ -43,19 +48,36 @@ public class Camera {
     }
 
     public void moveForward(float inc) {
-        viewMatrix.positiveZ(direction).negate().mul(inc);
+        // viewMatrix.positiveZ(direction).negate().mul(inc);
+        viewMatrix.positiveZ(direction).negate();
+        
+        //fixed "flying" player by assigning 0 to the vertical component
+        direction.y = 0;
+        direction.normalize();
+        direction.mul(inc);
+
         position.add(direction);
         recalculate();
     }
 
     public void moveLeft(float inc) {
-        viewMatrix.positiveX(right).mul(inc);
+        viewMatrix.positiveX(right);
+
+        right.y = 0;
+        right.normalize();
+        right.mul(inc);
+
         position.sub(right);
         recalculate();
     }
 
     public void moveRight(float inc) {
-        viewMatrix.positiveX(right).mul(inc);
+        viewMatrix.positiveX(right);
+
+        right.y = 0;
+        right.normalize();
+        right.mul(inc);
+        
         position.add(right);
         recalculate();
     }
