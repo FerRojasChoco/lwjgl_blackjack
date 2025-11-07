@@ -25,6 +25,7 @@ import blackjack.engine.scene.lights.SpotLight;
 
 //create the Engine instance and start it up in the main method
 //this class also implements app logic but is empty for now
+@SuppressWarnings("unused")
 public class Main implements IAppLogic {
 
     private LightControls lightControls;

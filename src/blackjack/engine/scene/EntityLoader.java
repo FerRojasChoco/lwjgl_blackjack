@@ -71,7 +71,7 @@ public class EntityLoader {
         int wdwWidth = window.getWidth();
         int wdwHeight = window.getHeight();
 
-        float x = (2 * mousePos.x) / wdwHeight - 1.0f;
+        float x = (2 * mousePos.x) / wdwWidth - 1.0f;
         float y = 1.0f - (2 * mousePos.y) / wdwHeight;
         float z = -1.0f;
 
