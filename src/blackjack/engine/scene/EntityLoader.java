@@ -55,8 +55,9 @@ public class EntityLoader {
         chairEntity.setPosition(0.0f, -1.5f, -2.0f);
         
         casinoEntity = new Entity("casino-entity", casinoModel.getId(), false);
-        casinoEntity.setPosition(0.0f, -1.5f, -2.0f);
-
+        // casinoEntity.setPosition(400.0f, 100.0f, 0.0f);
+        casinoEntity.setPosition(30.0f, 7.0f, 0.0f);
+        casinoEntity.setScale(0.2f);
         scene.addEntity(cubeEntity);
         scene.addEntity(chairEntity);
         scene.addEntity(casinoEntity);
