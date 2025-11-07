@@ -6,6 +6,7 @@ public class Entity {
 
     private final String id;
     private final String modelID;
+    private final boolean isSelectable;
     
     private Matrix4f modelMatrix;
     
@@ -14,9 +15,10 @@ public class Entity {
     private float scale;
 
 
-    public Entity(String id, String modelID){
+    public Entity(String id, String modelID, boolean isSelectable){
         this.id = id;
         this.modelID = modelID;
+        this.isSelectable = isSelectable;
         
         modelMatrix = new Matrix4f();
         position = new Vector3f();
@@ -34,6 +36,10 @@ public class Entity {
     
     public String getModelID() {
         return modelID;
+    }
+
+    public boolean isSelectable() {
+        return isSelectable;
     }
 
     public Matrix4f getModelMatrix() {

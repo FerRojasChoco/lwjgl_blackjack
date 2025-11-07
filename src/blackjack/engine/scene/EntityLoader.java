@@ -18,6 +18,7 @@ public class EntityLoader {
 
     private Entity cubeEntity;
     private Entity chairEntity;
+    private Entity casinoEntity;
 
 
     public void loadEntities(Scene scene){
@@ -35,22 +36,34 @@ public class EntityLoader {
             scene.getTextureCache()
         );
 
+        Model casinoModel = ModelLoader.loadModel(
+            "casino-model",
+            "resources/models/casino/gameready_casino_scene.obj",
+            scene.getTextureCache()
+        );
+
         //render the model in the scene
 
         scene.addModel(cubeModel);
-        scene.addModel(chairModel); 
+        scene.addModel(chairModel);
+        scene.addModel(casinoModel); 
         
-        cubeEntity = new Entity("cube-entity", cubeModel.getId());
+        cubeEntity = new Entity("cube-entity", cubeModel.getId(), true);
         cubeEntity.setPosition(0.0f, -2.0f, -2.0f);
         
-        chairEntity = new Entity("chair-entity", chairModel.getId());
-        chairEntity.setPosition(0.0f, -1.5f, -2.0f);        
+        chairEntity = new Entity("chair-entity", chairModel.getId(), true);
+        chairEntity.setPosition(0.0f, -1.5f, -2.0f);
+        
+        casinoEntity = new Entity("casino-entity", casinoModel.getId(), false);
+        casinoEntity.setPosition(0.0f, -1.5f, -2.0f);
 
         scene.addEntity(cubeEntity);
         scene.addEntity(chairEntity);
+        scene.addEntity(casinoEntity);
 
         cubeEntity.updateModelMatrix();
         chairEntity.updateModelMatrix();
+        casinoEntity.updateModelMatrix();
 
     }
 
@@ -88,6 +101,9 @@ public class EntityLoader {
 
             for (Entity entity : entities){
 
+                if (!entity.isSelectable()){
+                    continue;
+                }
                 modelMatrix.translate(entity.getPosition()).scale(entity.getScale());
                 
                 for (Material material : model.getMaterialList()){
@@ -120,6 +136,10 @@ public class EntityLoader {
 
     public Entity getCubeEntity() {
         return cubeEntity;
+    }
+
+    public Entity getCasinoEntity() {
+        return casinoEntity;
     }
 
 }
