@@ -16,56 +16,54 @@ import blackjack.engine.graph.Model;
 
 public class EntityLoader {
 
-    // private Entity cubeEntity;
-    // private Entity chairEntity;
-    private Entity casinoEntity;
+    private Entity cubeEntity;
+    private Entity chairEntity;
+    private Entity tableEntity;
 
 
     public void loadEntities(Scene scene){
 
-        //define models to be rendered
-        // Model cubeModel = ModelLoader.loadModel(
-        //     "cube-model",
-        //     "resources/models/cube/cube.obj",
-        //     scene.getTextureCache()
-        // );
+        // define models to be rendered
+        Model cubeModel = ModelLoader.loadModel(
+            "cube-model",
+            "resources/models/cube/cube.obj",
+            scene.getTextureCache()
+        );
 
-        // Model chairModel = ModelLoader.loadModel(
-        //     "chair-model",
-        //     "resources/models/wooden_chair/Wooden_Chair.obj",
-        //     scene.getTextureCache()
-        // );
+        Model chairModel = ModelLoader.loadModel(
+            "chair-model",
+            "resources/models/wooden_chair/Wooden_Chair.obj",
+            scene.getTextureCache()
+        );
 
-        Model casinoModel = ModelLoader.loadModel(
-            "casino-model",
-            "resources/models/casino/gameready_casino_scene.obj",
+        Model tableModel = ModelLoader.loadModel(
+            "table-model",
+            "resources/models/table/blackjack_table.obj",
             scene.getTextureCache()
         );
 
         //render the model in the scene
 
-        // scene.addModel(cubeModel);
-        // scene.addModel(chairModel);
-        scene.addModel(casinoModel); 
+        scene.addModel(cubeModel);
+        scene.addModel(chairModel);
+        scene.addModel(tableModel); 
         
-        // cubeEntity = new Entity("cube-entity", cubeModel.getId(), true);
-        // cubeEntity.setPosition(0.0f, 0.0f, -2.0f);
+        cubeEntity = new Entity("cube-entity", cubeModel.getId(), true);
+        cubeEntity.setPosition(0.0f, 0.0f, -2.0f);
         
-        // chairEntity = new Entity("chair-entity", chairModel.getId(), true);
-        // chairEntity.setPosition(0.0f, 0.0f, -2.0f);
+        chairEntity = new Entity("chair-entity", chairModel.getId(), true);
+        chairEntity.setPosition(0.0f, 0.0f, -2.0f);
         
-        casinoEntity = new Entity("casino-entity", casinoModel.getId(), false);
-        // casinoEntity.setPosition(300.0f, 70.0f, 0);
-        casinoEntity.setPosition(6.0f, 2.0f, 0.0f);
-        casinoEntity.setScale(0.1f);
-        
-        // scene.addEntity(cubeEntity);
-        // scene.addEntity(chairEntity);
-        scene.addEntity(casinoEntity);
+        tableEntity = new Entity("table-entity", tableModel.getId(), false);
 
-        // cubeEntity.updateModelMatrix();
-        // chairEntity.updateModelMatrix();
-        casinoEntity.updateModelMatrix();
+        
+        scene.addEntity(cubeEntity);
+        scene.addEntity(chairEntity);
+        scene.addEntity(tableEntity);
+
+        cubeEntity.updateModelMatrix();
+        chairEntity.updateModelMatrix();
+        tableEntity.updateModelMatrix();
 
     }
 
@@ -131,17 +129,17 @@ public class EntityLoader {
         }
         scene.setSelectedEntity(selectedEntity);
     }
-    //getters for entities in case some class needs them for updating
-    // public Entity getChairEntity() {
-    //     return chairEntity;
-    // }
+    // getters for entities in case some class needs them for updating
+    public Entity getChairEntity() {
+        return chairEntity;
+    }
 
-    // public Entity getCubeEntity() {
-    //     return cubeEntity;
-    // }
+    public Entity getCubeEntity() {
+        return cubeEntity;
+    }
 
-    public Entity getCasinoEntity() {
-        return casinoEntity;
+    public Entity getTableEntity() {
+        return tableEntity;
     }
 
 }

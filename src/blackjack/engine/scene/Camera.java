@@ -77,7 +77,7 @@ public class Camera {
         right.y = 0;
         right.normalize();
         right.mul(inc);
-        
+
         position.add(right);
         recalculate();
     }
@@ -94,9 +94,9 @@ public class Camera {
                     .rotateX(rotation.x)
                     .rotateY(rotation.y)
                     .translate(-position.x, -position.y, -position.z);
+
         invViewMatrix.set(viewMatrix).invert();
     }
-
 
     //getters and setters
     public Vector3f getPosition() {

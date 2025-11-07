@@ -42,8 +42,8 @@ public class Window {
         }
         
         //set OpenGL version
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
         //either core or compatible profeile depending on window options
         if (opts.compatibleProfile){
