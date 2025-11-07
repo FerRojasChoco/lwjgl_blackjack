@@ -1,5 +1,7 @@
 package blackjack.engine.scene;
 
+import org.joml.Vector3f;
+
 /*this class is used to load 3D models with Assimp (open asset import library)   */
 
 import org.joml.Vector4f;
@@ -29,7 +31,8 @@ public class ModelLoader {
             modelId, modelPath, textureCache,
             aiProcess_JoinIdenticalVertices | aiProcess_Triangulate |
             aiProcess_FixInfacingNormals | aiProcess_CalcTangentSpace |
-            aiProcess_LimitBoneWeights | aiProcess_PreTransformVertices
+            aiProcess_LimitBoneWeights | aiProcess_GenBoundingBoxes |
+            aiProcess_PreTransformVertices
         );
 
     }
@@ -174,7 +177,11 @@ public class ModelLoader {
             textCoords = new float[numElements];
         }
 
-        return new Mesh(vertices, normals, textCoords, indices);
+        AIAABB aabb = aiMesh.mAABB();
+        Vector3f aabbMin = new Vector3f(aabb.mMin().x(), aabb.mMin().y(), aabb.mMin().z());
+        Vector3f aabbMax = new Vector3f(aabb.mMax().x(), aabb.mMax().y(), aabb.mMax().z());
+
+        return new Mesh(vertices, normals, textCoords, indices, aabbMin, aabbMax);
     }
 
     /*the process verts, textCoords and indices just invoke the 

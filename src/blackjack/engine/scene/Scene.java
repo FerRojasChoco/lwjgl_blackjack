@@ -20,8 +20,8 @@ public class Scene {
     private TextureCache textureCache;
     private Camera camera;
     private IGuiInstance guiInstance;
-    
     private SceneLights sceneLights;
+    private Entity selectedEntity;
 
     public Scene(int width, int height){
         
@@ -87,7 +87,15 @@ public class Scene {
         return sceneLights;
     }
 
+    public Entity getSelectedEntity() {
+        return selectedEntity;
+    }
+
     public void setSceneLights(SceneLights sceneLights) {
         this.sceneLights = sceneLights;
+    }
+
+    public void setSelectedEntity(Entity selectedEntity) {
+        this.selectedEntity = selectedEntity;
     }
 }

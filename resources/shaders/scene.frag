@@ -61,6 +61,8 @@ struct DirLight
 uniform sampler2D txtSampler;
 uniform Material material;
 
+uniform int selected;
+
 uniform AmbientLight ambientLight;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
@@ -155,4 +157,8 @@ void main()
     }
 
     fragColor = ambient + diffuseSpecularComp;
+
+    if (selected > 0){
+        fragColor = vec4(fragColor.x, fragColor.y, 1, 1);
+    }
 }

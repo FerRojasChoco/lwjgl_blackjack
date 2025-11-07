@@ -52,6 +52,7 @@ public class SceneRender {
         
         Collection<Model> models = scene.getModelMap().values();
         TextureCache textureCache = scene.getTextureCache();
+        Entity selectedEntity = scene.getSelectedEntity();
 
         for(Model model : models){
 
@@ -73,7 +74,10 @@ public class SceneRender {
                     glBindVertexArray(mesh.getVaoId());
 
                     for(Entity entity : entities){
-                       
+                        
+                        uniformsMap.setUniform("selected",
+                                selectedEntity != null && selectedEntity.getId().equals(entity.getId()) ? 1 : 0);
+                                
                         uniformsMap.setUniform("modelMatrix", entity.getModelMatrix());
                        
                         glDrawElements(GL_TRIANGLES, mesh.getNumVertices(), GL_UNSIGNED_INT, 0);
@@ -110,6 +114,8 @@ public class SceneRender {
 
         uniformsMap.createUniform("ambientLight.factor");
         uniformsMap.createUniform("ambientLight.color");
+
+        uniformsMap.createUniform("selected");
 
         for (int i = 0; i < Consts.MAX_POINT_LIGHTS; i++){
             String name = "pointLights[" + i + "]";

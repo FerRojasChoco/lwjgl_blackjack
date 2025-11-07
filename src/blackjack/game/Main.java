@@ -4,13 +4,19 @@ package blackjack.game;
 
 import org.lwjgl.glfw.GLFW;
 
+import java.util.Collection;
+import java.util.List;
 
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import blackjack.engine.*;
+import blackjack.engine.graph.Model;
 import blackjack.engine.graph.Render;
 import blackjack.engine.scene.Camera;
+import blackjack.engine.scene.Entity;
 import blackjack.engine.scene.EntityLoader;
 import blackjack.engine.scene.Scene;
 import blackjack.engine.scene.lights.PointLight;
@@ -22,6 +28,7 @@ import blackjack.engine.scene.lights.SpotLight;
 public class Main implements IAppLogic {
 
     private LightControls lightControls;
+    private EntityLoader entityLoader = new EntityLoader();
 
     public static void main(String[] args){
 
@@ -35,14 +42,14 @@ public class Main implements IAppLogic {
 
     @Override
     public void cleanup() {
-        //TODO
+        //haha
     }
 
     @Override
     public void init(Window window, Scene scene, Render render) {
 
         //Load entities (with models and textures)
-        EntityLoader entityLoader = new EntityLoader();
+        //EntityLoader entityLoader = new EntityLoader();
         entityLoader.loadEntities(scene);
 
         //Light control 
@@ -99,11 +106,15 @@ public class Main implements IAppLogic {
         //note: add a - sign to displVec x and y if inverted camera axis is needed
         //for now you have to right click and drag to move the camera, this should be changed to move the camera
         //alongside the cursor
-        // if (mouseInput.isRightButtonPressed()) {
-        if (window.isKeyPressed(GLFW.GLFW_KEY_LEFT_SHIFT)){
+        if (mouseInput.isRightButtonPressed()) {
+        // if (window.isKeyPressed(GLFW.GLFW_KEY_LEFT_SHIFT)){
             Vector2f displVec = mouseInput.getDisplVec();
             camera.addRotation((float) Math.toRadians(displVec.x * Consts.MOUSE_SENS),
                     (float) Math.toRadians(displVec.y * Consts.MOUSE_SENS));
+        }
+
+        if (mouseInput.isLeftButtonPressed()){
+            entityLoader.selectEntity(window, scene, mouseInput.getCurrentPos());
         }
     }
 
@@ -120,5 +131,4 @@ public class Main implements IAppLogic {
         // cubeEntity.updateModelMatrix();
 
     }
-
 }

@@ -2,6 +2,7 @@
 
 package blackjack.engine.graph;
 
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
 // import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -24,8 +25,14 @@ public class Mesh {
     private int vaoId;
     private List<Integer> vboIdList;
 
-    public Mesh(float[] positions, float[] normals,float[] textCoords, int[] indices){
+    private Vector3f aabbMin;
+    private Vector3f aabbMax;
+
+    public Mesh(float[] positions, float[] normals,float[] textCoords, int[] indices, Vector3f aabbMin, Vector3f aabbMax){
         
+        this.aabbMin = aabbMin;
+        this.aabbMax = aabbMax;
+
         numVertices = indices.length;
         vboIdList = new ArrayList<>();
 
@@ -107,6 +114,14 @@ public class Mesh {
 
     public final int getVaoId() {
         return vaoId;
+    }
+
+    public Vector3f getAabbMax() {
+        return aabbMax;
+    }
+    
+    public Vector3f getAabbMin() {
+        return aabbMin;
     }
 
 }

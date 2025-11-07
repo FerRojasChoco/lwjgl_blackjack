@@ -12,6 +12,7 @@ public class Camera {
     private Vector2f rotation;
 
     private Matrix4f viewMatrix;
+    private Matrix4f invViewMatrix;
 
     public Camera(){
         direction = new Vector3f();
@@ -20,6 +21,7 @@ public class Camera {
         up = new Vector3f();
         rotation = new Vector2f();
         viewMatrix = new Matrix4f();
+        invViewMatrix = new Matrix4f();
     }
 
     //"camera" movement methods
@@ -70,6 +72,7 @@ public class Camera {
                     .rotateX(rotation.x)
                     .rotateY(rotation.y)
                     .translate(-position.x, -position.y, -position.z);
+        invViewMatrix.set(viewMatrix).invert();
     }
 
 
@@ -82,6 +85,9 @@ public class Camera {
         return viewMatrix;
     }
 
+    public Matrix4f getInvViewMatrix() {
+        return invViewMatrix;
+    }
 
     public void setPosition(float x, float y, float z) {
         position.set(x, y, z);
