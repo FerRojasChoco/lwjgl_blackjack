@@ -100,11 +100,13 @@ public class Main implements IAppLogic {
         //for now you have to right click and drag to move the camera, this should be changed to move the camera
         //alongside the cursor
         // if (mouseInput.isRightButtonPressed()) {
-        if (window.isKeyPressed(GLFW.GLFW_KEY_LEFT_SHIFT)){
+
+        //ATTENTION: YOU CAN USE ACTIVATE THE SHIFT BY ELIMINATING THE COMMENTED LINES FOR DEBUGGING. FINAL PRODUCT WILL NOT USE SHIFT
+        //if (window.isKeyPressed(GLFW.GLFW_KEY_LEFT_SHIFT)){
             Vector2f displVec = mouseInput.getDisplVec();
             camera.addRotation((float) Math.toRadians(displVec.x * Consts.MOUSE_SENS),
                     (float) Math.toRadians(displVec.y * Consts.MOUSE_SENS));
-        }
+        //}
     }
 
     @Override

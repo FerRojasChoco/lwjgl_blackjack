@@ -65,6 +65,14 @@ public class Window {
         //create window and set some callbacks for when window is resized or to detect window closure (esc)
         windowHandle = glfwCreateWindow(width, height, title, NULL, NULL);
 
+        //for mouse lockdown in the middle of the screen
+        glfwSetInputMode(windowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+        //this is a piece of code for later when doing ESCAPE to toggle off the mouse lockdown, for now using another key
+        //glfwSetInputMode(windowHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+        
+
         //check if this should be here, it works for my laptop hehe 
         GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowPos(windowHandle, (vidMode.width()- width) / 2 , (vidMode.height() - height) / 2 );  
@@ -117,6 +125,13 @@ public class Window {
         if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE){
             glfwSetWindowShouldClose(windowHandle, true);
         }
+
+        if (key == GLFW_KEY_L) {
+            glfwSetInputMode(windowHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        } else if (key == GLFW_KEY_K) {
+            glfwSetInputMode(windowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
 
     }
     
