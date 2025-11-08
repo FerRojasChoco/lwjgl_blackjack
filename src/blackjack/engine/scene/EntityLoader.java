@@ -19,11 +19,12 @@ public class EntityLoader {
     private Entity cubeEntity;
     private Entity chairEntity;
     private Entity tableEntity;
+    private Entity[] chipsEntities;
 
 
     public void loadEntities(Scene scene){
 
-        // define models to be rendered
+        // Define models to be rendered
         Model cubeModel = ModelLoader.loadModel(
             "cube-model",
             "resources/models/cube/cube.obj",
@@ -42,12 +43,13 @@ public class EntityLoader {
             scene.getTextureCache()
         );
 
-        //render the model in the scene
-
+        // Add model to the scene
         scene.addModel(cubeModel);
         scene.addModel(chairModel);
         scene.addModel(tableModel); 
+        //scene.addModel(chips1Model);
         
+        // Match entities with their models and assign a position
         cubeEntity = new Entity("cube-entity", cubeModel.getId(), true);
         cubeEntity.setPosition(0.0f, 0.0f, -2.0f);
         
@@ -55,16 +57,46 @@ public class EntityLoader {
         chairEntity.setPosition(0.0f, 0.0f, -2.0f);
         
         tableEntity = new Entity("table-entity", tableModel.getId(), false);
+        tableEntity.setPosition(0.0f, 0.0f, -5.0f);
 
-        
+        // Add entity to the scene
         scene.addEntity(cubeEntity);
         scene.addEntity(chairEntity);
         scene.addEntity(tableEntity);
+        //scene.addEntity(chips1Entity);
 
+        // Update Matrix
         cubeEntity.updateModelMatrix();
         chairEntity.updateModelMatrix();
         tableEntity.updateModelMatrix();
+        //chips1Entity.updateModelMatrix();
 
+        // Dynamically add the chips
+        String[] chipValues = {"1", "5", "10", "20", "50", "100", "500", "1000", "5000"};
+        chipsEntities = new Entity[chipValues.length];
+
+        for(int i = 0; i < chipValues.length; i++) {
+            
+            String modelId =  "chip" + chipValues[i] + "Model";
+            String modelPath = "resources\\models\\blackjack chips\\poker_chip_" + chipValues[i] + "\\poker_chip_" + chipValues[i] + ".obj";
+            Model chipModel = ModelLoader.loadModel(
+                modelId,
+                modelPath,
+                scene.getTextureCache()
+            );
+
+            scene.addModel(chipModel);
+
+            // Match entities with their models and assign a position
+            String entityId = "chip" + chipValues[i] + "-entity";
+            Entity chipEntity = new Entity(entityId, chipModel.getId(), true);
+            float offsetX = (i - chipValues.length / 2f) * 0.05f;
+            chipEntity.setPosition(offsetX, 0.45f, -4.5f);
+
+            scene.addEntity(chipEntity);
+            chipEntity.updateModelMatrix();
+
+        }
     }
 
     public void selectEntity(Window window, Scene scene, Vector2f mousePos){
