@@ -19,6 +19,7 @@ import blackjack.engine.scene.Camera;
 import blackjack.engine.scene.Entity;
 import blackjack.engine.scene.EntityLoader;
 import blackjack.engine.scene.Scene;
+import blackjack.engine.scene.lights.DirLight;
 import blackjack.engine.scene.lights.PointLight;
 import blackjack.engine.scene.lights.SceneLights;
 import blackjack.engine.scene.lights.SpotLight;
@@ -27,7 +28,7 @@ import blackjack.engine.scene.lights.SpotLight;
 //this class also implements app logic but is empty for now
 @SuppressWarnings("unused")
 public class Main implements IAppLogic {
-
+    private float lightAngle = -35;
     private LightControls lightControls;
     private EntityLoader entityLoader = new EntityLoader();
 
@@ -55,9 +56,10 @@ public class Main implements IAppLogic {
 
         //Light control 
         SceneLights sceneLights = new SceneLights();
-        
         sceneLights.getAmbientLight().setIntensity(0.3f);
-        
+        DirLight dirLight = sceneLights.getDirLight();
+        dirLight.setPosition(1, 1, 0);
+        dirLight.setIntensity(1.0f);
         scene.setSceneLights(sceneLights);
         
         sceneLights.getPointLights().add(new PointLight(new Vector3f(1, 1, 1),
@@ -105,11 +107,8 @@ public class Main implements IAppLogic {
         }
 
         MouseInput mouseInput = window.getMouseInput();
-        //note: add a - sign to displVec x and y if inverted camera axis is needed
-        //for now you have to right click and drag to move the camera, this should be changed to move the camera
-        //alongside the cursor
+
         if (mouseInput.isRightButtonPressed()) {
-        // if (window.isKeyPressed(GLFW.GLFW_KEY_LEFT_SHIFT)){
             Vector2f displVec = mouseInput.getDisplVec();
             camera.addRotation((float) Math.toRadians(displVec.x * Consts.MOUSE_SENS),
                     (float) Math.toRadians(displVec.y * Consts.MOUSE_SENS));
@@ -118,6 +117,24 @@ public class Main implements IAppLogic {
         if (mouseInput.isLeftButtonPressed()){
             entityLoader.selectEntity(window, scene, mouseInput.getCurrentPos());
         }
+        
+        //ARROWS LEFT AND RIGHT FOR LIGHT CONTROL
+        if (window.isKeyPressed(GLFW.GLFW_KEY_LEFT)) {
+            lightAngle -= 2.5f;
+            if (lightAngle < -90) {
+                lightAngle = -90;
+            }
+        } else if (window.isKeyPressed(GLFW.GLFW_KEY_RIGHT)) {
+            lightAngle += 2.5f;
+            if (lightAngle > 90) {
+                lightAngle = 90;
+            }
+        }
+        SceneLights sceneLights = scene.getSceneLights();
+        DirLight dirLight = sceneLights.getDirLight();
+        double angRad = Math.toRadians(lightAngle);
+        dirLight.getDirection().x = (float) Math.sin(angRad);
+        dirLight.getDirection().y = (float) Math.cos(angRad);
     }
 
     @Override

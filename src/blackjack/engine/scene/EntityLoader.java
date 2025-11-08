@@ -20,7 +20,6 @@ public class EntityLoader {
     private Entity chairEntity;
     private Entity tableEntity;
 
-
     public void loadEntities(Scene scene){
 
         // define models to be rendered
@@ -56,10 +55,10 @@ public class EntityLoader {
         
         tableEntity = new Entity("table-entity", tableModel.getId(), false);
 
-        
         scene.addEntity(cubeEntity);
         scene.addEntity(chairEntity);
         scene.addEntity(tableEntity);
+
 
         cubeEntity.updateModelMatrix();
         chairEntity.updateModelMatrix();

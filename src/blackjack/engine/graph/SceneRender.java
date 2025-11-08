@@ -60,6 +60,10 @@ public class SceneRender {
 
             for(Material material : model.getMaterialList()) {
 
+                String normalMapPath = material.getNormalMapPath();
+                boolean hasNormalMapPath = normalMapPath != null;
+
+                uniformsMap.setUniform("material.hasNormalMap", hasNormalMapPath ? 1 : 0);
                 uniformsMap.setUniform("material.ambient", material.getAmbientColor());
                 uniformsMap.setUniform("material.diffuse", material.getDiffusecolor());
                 uniformsMap.setUniform("material.specular", material.getSpecularColor());
@@ -68,6 +72,12 @@ public class SceneRender {
                 Texture texture = textureCache.getTexture(material.getTexturePath());
                 glActiveTexture(GL_TEXTURE0);
                 texture.bind();
+
+                if (hasNormalMapPath) {
+                    Texture normalMapTexture = textureCache.getTexture(normalMapPath);
+                    glActiveTexture(GL_TEXTURE1);
+                    normalMapTexture.bind();
+                }
 
                 for (Mesh mesh : material.getMeshList()) {
 
@@ -105,12 +115,14 @@ public class SceneRender {
         uniformsMap.createUniform("projectionMatrix");
         uniformsMap.createUniform("modelMatrix");
         uniformsMap.createUniform("txtSampler");
+        uniformsMap.createUniform("normalSampler");
         uniformsMap.createUniform("viewMatrix");
 
         uniformsMap.createUniform("material.ambient");
         uniformsMap.createUniform("material.diffuse");
         uniformsMap.createUniform("material.specular");
         uniformsMap.createUniform("material.reflectance");
+        uniformsMap.createUniform("material.hasNormalMap");
 
         uniformsMap.createUniform("ambientLight.factor");
         uniformsMap.createUniform("ambientLight.color");

@@ -11,6 +11,15 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.*;
 
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL15.glBindBuffer;
+import static org.lwjgl.opengl.GL15.glBufferData;
+import static org.lwjgl.opengl.GL15.glGenBuffers;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.*;
 
 /*
@@ -28,7 +37,7 @@ public class Mesh {
     private Vector3f aabbMin;
     private Vector3f aabbMax;
 
-    public Mesh(float[] positions, float[] normals,float[] textCoords, int[] indices, Vector3f aabbMin, Vector3f aabbMax){
+    public Mesh(float[] positions, float[] normals, float[] tangents, float[] bitangents, float[] textCoords, int[] indices, Vector3f aabbMin, Vector3f aabbMax){
         
         this.aabbMin = aabbMin;
         this.aabbMax = aabbMax;
@@ -64,7 +73,27 @@ public class Mesh {
 
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
+       
+        // Tangents VBO
+        vboId = glGenBuffers();
+        vboIdList.add(vboId);
+        FloatBuffer tangentsBuffer = MemoryUtil.memCallocFloat(tangents.length);
+        tangentsBuffer.put(0, tangents);
+        glBindBuffer(GL_ARRAY_BUFFER, vboId);
+        glBufferData(GL_ARRAY_BUFFER, tangentsBuffer, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
 
+        // Bitangents VBO
+        vboId = glGenBuffers();
+        vboIdList.add(vboId);
+        FloatBuffer bitangentsBuffer = MemoryUtil.memCallocFloat(bitangents.length);
+        bitangentsBuffer.put(0, bitangents);
+        glBindBuffer(GL_ARRAY_BUFFER, vboId);
+        glBufferData(GL_ARRAY_BUFFER, bitangentsBuffer, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 3, GL_FLOAT, false, 0, 0);
+       
         //Texture coordinates VBO
         vboId = glGenBuffers();
         vboIdList.add(vboId);
@@ -75,8 +104,8 @@ public class Mesh {
         glBindBuffer(GL_ARRAY_BUFFER, vboId);
         glBufferData(GL_ARRAY_BUFFER, textCoordsBuffer, GL_STATIC_DRAW);
 
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, false, 0, 0);
+        glEnableVertexAttribArray(4);
+        glVertexAttribPointer(4, 2, GL_FLOAT, false, 0, 0);
 
         //Index VBO
         vboId = glGenBuffers();
@@ -95,6 +124,8 @@ public class Mesh {
         //free mem resources
         MemoryUtil.memFree(positionsBuffer);
         MemoryUtil.memFree(normalsBuffer);
+        MemoryUtil.memFree(tangentsBuffer);
+        MemoryUtil.memFree(bitangentsBuffer);
         MemoryUtil.memFree(textCoordsBuffer);
         MemoryUtil.memFree(indicesBuffer);
     }
