@@ -27,6 +27,12 @@ public class Consts {
     /*~~~ LIGHT RELATED ~~~*/
     public static final int MAX_POINT_LIGHTS = 5;
     public static final int MAX_SPOT_LIGHTS = 5;
+
+    /*~~~ SHADOW RELATED ~~~*/
+    public static final int SHADOW_MAP_CASCADE_COUNT = 3;
+    public static final int SHADOW_MAP_WIDTH = 4096;
+    public static final int SHADOW_MAP_HEIGHT = SHADOW_MAP_WIDTH;
+
     
     /*~~~ MOUSE RELATED ~~~ */
     public static final float MOUSE_SENS = 0.05f;

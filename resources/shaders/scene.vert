@@ -18,6 +18,8 @@ out vec3 outNormal;
 out vec3 outTangent;
 out vec3 outBitangent;
 out vec2 outTextCoord;
+out vec3 outViewPosition;
+out vec4 outWorldPosition;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
@@ -65,4 +67,6 @@ void main()
     outTangent    = normalize(modelViewMatrix * initTangent).xyz;
     outBitangent  = normalize(modelViewMatrix * initBitangent).xyz;
     outTextCoord  = texCoord;
+    outViewPosition = mvPosition.xyz;
+    outWorldPosition = modelMatrix * initPos;
 }

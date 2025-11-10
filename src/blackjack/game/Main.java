@@ -149,7 +149,7 @@ public class Main implements IAppLogic {
         soundManager.addSoundSource("CREAK", playerSoundSource);
 
         //audio 2
-        buffer = new SoundBuffer("resources/sounds/woo_scary.ogg");
+        buffer = new SoundBuffer("resources/sounds/6.ogg");
         soundManager.addSoundBuffer(buffer);
 
         SoundSource source = new SoundSource(true, true);

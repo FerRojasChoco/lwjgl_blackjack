@@ -10,6 +10,7 @@ import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 public class Render {
 
     private SceneRender sceneRender;
+    private ShadowRender shadowRender;
     private SkyBoxRender skyBoxRender;
     private GuiRender guiRender;
 
@@ -18,22 +19,29 @@ public class Render {
         glEnable(GL_MULTISAMPLE);
         glEnable(GL_DEPTH_TEST);
 
+        //support for transparencies
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         sceneRender = new SceneRender();
         guiRender = new GuiRender(window);
         skyBoxRender = new SkyBoxRender();
+        shadowRender = new ShadowRender();
     }
 
     public void cleanup() {
         sceneRender.cleanup();
         guiRender.cleanup();
+        skyBoxRender.cleanup();
+        shadowRender.cleanup();
     }
 
     public void render(Window window, Scene scene) {
+        shadowRender.render(scene);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glViewport(0, 0, window.getWidth(), window.getHeight());
-
         skyBoxRender.render(scene);
-        sceneRender.render(scene);
+        sceneRender.render(scene, shadowRender);
         guiRender.render(scene);
     }
 
