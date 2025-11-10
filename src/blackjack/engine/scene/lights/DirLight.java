@@ -10,10 +10,12 @@ import org.joml.Vector3f;
 public class DirLight {
 
     private Vector3f color;
+
     private Vector3f direction;
+    
     private float intensity;
 
-    public DirLight(Vector3f color, Vector3f direction, float intensity){
+    public DirLight(Vector3f color, Vector3f direction, float intensity) {
         this.color = color;
         this.direction = direction;
         this.intensity = intensity;
@@ -36,7 +38,7 @@ public class DirLight {
         this.color = color;
     }
 
-    public void setColor(float r, float g, float b){
+    public void setColor(float r, float g, float b) {
         color.set(r, g, b);
     }
 
@@ -48,8 +50,7 @@ public class DirLight {
         this.intensity = intensity;
     }
 
-    public void setPosition(float x, float y, float z){
+    public void setPosition(float x, float y, float z) {
         direction.set(x, y, z);
     }
-
 }

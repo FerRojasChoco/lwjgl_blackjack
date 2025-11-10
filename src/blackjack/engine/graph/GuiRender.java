@@ -4,21 +4,17 @@ import imgui.*;
 import imgui.flag.ImGuiKey;
 import imgui.type.ImInt;
 import org.joml.Vector2f;
-import org.lwjgl.glfw.GLFWKeyCallback;
-
 import blackjack.engine.*;
 import blackjack.engine.scene.Scene;
 
 import java.nio.ByteBuffer;
 import java.util.*;
 
-import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
-import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
-import static org.lwjgl.opengl.GL32.*;
+import org.lwjgl.glfw.GLFWKeyCallback;
 
-import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetCharCallback;
+import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.glfw.GLFW.*;
+
 
 public class GuiRender {
 
@@ -29,36 +25,28 @@ public class GuiRender {
     private Texture texture;
     private UniformsMap uniformsMap;
 
-    public GuiRender(Window window){
-
+    public GuiRender(Window window) {
         List<ShaderProgram.ShaderModuleData> shaderModuleDataList = new ArrayList<>();
-
         shaderModuleDataList.add(new ShaderProgram.ShaderModuleData("resources/shaders/gui.vert", GL_VERTEX_SHADER));
         shaderModuleDataList.add(new ShaderProgram.ShaderModuleData("resources/shaders/gui.frag", GL_FRAGMENT_SHADER));
-
         shaderProgram = new ShaderProgram(shaderModuleDataList);
-
         createUniforms();
         createUIResources(window);
         setupKeyCallBack(window);
-
     }
 
-    public void render(Scene scene){
-
+    public void render(Scene scene) {
         IGuiInstance guiInstance = scene.getGuiInstance();
-        
-        if (guiInstance == null){
+        if (guiInstance == null) {
             return;
         }
-
         guiInstance.drawGui();
 
         shaderProgram.bind();
 
         glEnable(GL_BLEND);
         glBlendEquation(GL_FUNC_ADD);
-        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_CONSTANT_ALPHA);
+        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
 
@@ -74,14 +62,12 @@ public class GuiRender {
 
         ImDrawData drawData = ImGui.getDrawData();
         int numLists = drawData.getCmdListsCount();
-
-        for (int i = 0; i < numLists; i++){
+        for (int i = 0; i < numLists; i++) {
             glBufferData(GL_ARRAY_BUFFER, drawData.getCmdListVtxBufferData(i), GL_STREAM_DRAW);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, drawData.getCmdListIdxBufferData(i), GL_STREAM_DRAW);
 
             int numCmds = drawData.getCmdListCmdBufferSize(i);
-
-            for (int j = 0; j < numCmds; j++){
+            for (int j = 0; j < numCmds; j++) {
                 final int elemCount = drawData.getCmdListCmdBufferElemCount(i, j);
                 final int idxBufferOffset = drawData.getCmdListCmdBufferIdxOffset(i, j);
                 final int indices = idxBufferOffset * ImDrawData.sizeOfImDrawIdx();
@@ -94,16 +80,19 @@ public class GuiRender {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glDisable(GL_BLEND);
-
     }
 
-    public void resize(int width, int height){
-        ImGuiIO imGuiIO = ImGui.getIO();
-        imGuiIO.setDisplaySize(width, height);
+
+    //free resources
+    public void cleanup() {
+        shaderProgram.cleanup();
+        texture.cleanup();
+        if (prevKeyCallBack != null) {
+            prevKeyCallBack.free();
+        }
     }
-
-    private void createUIResources(Window window){
-
+    
+    private void createUIResources(Window window) {
         ImGui.createContext();
         
         ImGuiIO imGuiIO = ImGui.getIO();
@@ -117,21 +106,16 @@ public class GuiRender {
         texture = new Texture(width.get(), height.get(), buf);
 
         guiMesh = new GuiMesh();
-
     }
 
-    private void createUniforms(){
-
+    private void createUniforms() {
         uniformsMap = new UniformsMap(shaderProgram.getProgramId());
-
         uniformsMap.createUniform("scale");
-
         scale = new Vector2f();
-
     }
 
     private void setupKeyCallBack(Window window) {
-        prevKeyCallBack = glfwSetKeyCallback(window.getWindowHandle(), (ignore0, key, ignore1, action, ignore2) -> {
+        prevKeyCallBack = glfwSetKeyCallback(window.getWindowHandle(), (handle, key, scancode, action, mods) -> {
             window.keyCallBack(key, action);
             ImGuiIO io = ImGui.getIO();
             if (!io.getWantCaptureKeyboard()) {
@@ -145,13 +129,18 @@ public class GuiRender {
         }
         );
 
-        glfwSetCharCallback(window.getWindowHandle(), (ignore3, c) -> {
+        glfwSetCharCallback(window.getWindowHandle(), (handle, c) -> {
             ImGuiIO io = ImGui.getIO();
             if (!io.getWantCaptureKeyboard()) {
                 return;
             }
             io.addInputCharacter(c);
         });
+    }
+    
+    public void resize(int width, int height) {
+        ImGuiIO imGuiIO = ImGui.getIO();
+        imGuiIO.setDisplaySize(width, height);
     }
 
     private static int getImKey(int key) {
@@ -264,17 +253,4 @@ public class GuiRender {
             default -> ImGuiKey.None;
         };
     }
-
-
-
-    //free resources
-    public void cleanup(){
-        shaderProgram.cleanup();
-        texture.cleanup();
-
-        if (prevKeyCallBack != null){
-            prevKeyCallBack.free();
-        }
-    }
-
 }

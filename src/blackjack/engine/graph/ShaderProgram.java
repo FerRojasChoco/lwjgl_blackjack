@@ -25,11 +25,9 @@ public class ShaderProgram {
     private final int programId;
 
     public ShaderProgram(List<ShaderModuleData> shaderModuleDataList) {
-
         programId = glCreateProgram();
-
         if (programId == 0) {
-            throw new RuntimeException("UNABLE TO CREATE A SHADER");
+            throw new RuntimeException("Could not create Shader");
         }
 
         List<Integer> shaderModules = new ArrayList<>();
@@ -93,6 +91,5 @@ public class ShaderProgram {
     }
 
     public record ShaderModuleData(String shaderFile, int shaderType) {
-        
     }
 }

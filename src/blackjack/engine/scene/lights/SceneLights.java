@@ -1,8 +1,9 @@
 package blackjack.engine.scene.lights;
 
+import org.joml.Vector3f;
+
 import java.util.*;
 
-import org.joml.Vector3f;
 /*
  * this class stores references to all the types of lights
  * we only really need one ambient light instance and one directional light
@@ -14,12 +15,11 @@ public class SceneLights {
     private List<PointLight> pointLights;
     private List<SpotLight> spotLights;
 
-    public SceneLights(){
+    public SceneLights() {
         ambientLight = new AmbientLight();
-        dirLight = new DirLight(new Vector3f(1, 1, 1), new Vector3f(0, 1, 0), 1.0f);
-        
         pointLights = new ArrayList<>();
         spotLights = new ArrayList<>();
+        dirLight = new DirLight(new Vector3f(1, 1, 1), new Vector3f(0, 1, 0), 1.0f);
     }
 
     //getters & setters
@@ -42,5 +42,4 @@ public class SceneLights {
     public void setSpotLights(List<SpotLight> spotLights) {
         this.spotLights = spotLights;
     }
-
 }

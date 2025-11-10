@@ -16,6 +16,9 @@ import blackjack.engine.graph.Model;
 
 public class EntityLoader {
 
+    private AnimationData animationData;
+    private Entity terrainEntity;
+    private Entity bobEntity;
     private Entity cubeEntity;
     private Entity chairEntity;
     private Entity tableEntity;
@@ -23,30 +26,56 @@ public class EntityLoader {
     public void loadEntities(Scene scene){
 
         // define models to be rendered
+        Model terrainModel = ModelLoader.loadModel(
+            "terrain-model", 
+            "resources/models/terrain/terrain.obj",
+            scene.getTextureCache(),
+            false
+        );
+
+        Model bobModel = ModelLoader.loadModel(
+            "bob-model",
+            "resources/models/bob/boblamp.md5mesh",
+            scene.getTextureCache(),
+            true
+        );
+
         Model cubeModel = ModelLoader.loadModel(
             "cube-model",
             "resources/models/cube/cube.obj",
-            scene.getTextureCache()
+            scene.getTextureCache(),
+            false
         );
 
         Model chairModel = ModelLoader.loadModel(
             "chair-model",
             "resources/models/wooden_chair/Wooden_Chair.obj",
-            scene.getTextureCache()
+            scene.getTextureCache(),
+            false
         );
 
         Model tableModel = ModelLoader.loadModel(
             "table-model",
             "resources/models/table/blackjack_table.obj",
-            scene.getTextureCache()
+            scene.getTextureCache(),
+            false
         );
 
-        //render the model in the scene
-
+        scene.addModel(terrainModel); 
+        scene.addModel(bobModel);
         scene.addModel(cubeModel);
         scene.addModel(chairModel);
-        scene.addModel(tableModel); 
-        
+        scene.addModel(tableModel);
+
+        //define entity properties
+        terrainEntity = new Entity("terrain-entity", terrainModel.getId(), false);
+        terrainEntity.setScale(100.0f);
+
+        bobEntity = new Entity("bob-entity", bobModel.getId(), false);
+        bobEntity.setScale(0.05f);
+        animationData = new AnimationData(bobModel.getAnimationList().get(0));
+        bobEntity.setAnimationData(animationData);
+                
         cubeEntity = new Entity("cube-entity", cubeModel.getId(), true);
         cubeEntity.setPosition(0.0f, 0.0f, -2.0f);
         
@@ -55,14 +84,18 @@ public class EntityLoader {
         
         tableEntity = new Entity("table-entity", tableModel.getId(), false);
 
-        scene.addEntity(cubeEntity);
-        scene.addEntity(chairEntity);
-        scene.addEntity(tableEntity);
 
-
+        terrainEntity.updateModelMatrix();
+        bobEntity.updateModelMatrix();
         cubeEntity.updateModelMatrix();
         chairEntity.updateModelMatrix();
         tableEntity.updateModelMatrix();
+
+        scene.addEntity(terrainEntity);
+        scene.addEntity(bobEntity);
+        scene.addEntity(cubeEntity);
+        scene.addEntity(chairEntity);
+        scene.addEntity(tableEntity);
 
     }
 
@@ -128,6 +161,7 @@ public class EntityLoader {
         }
         scene.setSelectedEntity(selectedEntity);
     }
+    
     // getters for entities in case some class needs them for updating
     public Entity getChairEntity() {
         return chairEntity;
@@ -139,6 +173,14 @@ public class EntityLoader {
 
     public Entity getTableEntity() {
         return tableEntity;
+    }
+
+    public Entity getBobEntity(){
+        return bobEntity;
+    }
+    
+    public AnimationData getAnimationData() {
+        return animationData;
     }
 
 }

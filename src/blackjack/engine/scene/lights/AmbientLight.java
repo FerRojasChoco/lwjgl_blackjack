@@ -6,14 +6,15 @@ import org.joml.Vector3f;
 public class AmbientLight {
 
     private Vector3f color;
+
     private float intensity;
 
-    public AmbientLight(float intensity, Vector3f color){
+    public AmbientLight(float intensity, Vector3f color) {
         this.intensity = intensity;
         this.color = color;
     }
 
-    public AmbientLight(){
+    public AmbientLight() {
         this(1.0f, new Vector3f(1.0f, 1.0f, 1.0f));
     }
 
@@ -30,7 +31,7 @@ public class AmbientLight {
         this.color = color;
     }
 
-    public void setColor(float r, float g, float b){
+    public void setColor(float r, float g, float b) {
         color.set(r, g, b);
     }
 

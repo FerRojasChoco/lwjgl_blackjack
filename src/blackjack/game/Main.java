@@ -1,153 +1,161 @@
 package blackjack.game;
-//CHECK NOTE IN THE MOUSE INPUT SECTION ~~~!!!!!!!!!!!!!!!!!!!!!!!!!!
-//also separate the initialization of objects (entities with models) in another file so it wont bloat this file
 
-import org.lwjgl.glfw.GLFW;
-
-import java.util.Collection;
-import java.util.List;
-
-import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
-
+import org.lwjgl.openal.AL11;
 import blackjack.engine.*;
-import blackjack.engine.graph.Model;
-import blackjack.engine.graph.Render;
-import blackjack.engine.scene.Camera;
-import blackjack.engine.scene.Entity;
-import blackjack.engine.scene.EntityLoader;
-import blackjack.engine.scene.Scene;
-import blackjack.engine.scene.lights.DirLight;
-import blackjack.engine.scene.lights.PointLight;
-import blackjack.engine.scene.lights.SceneLights;
-import blackjack.engine.scene.lights.SpotLight;
+import blackjack.engine.graph.*;
+import blackjack.engine.scene.*;
+import blackjack.engine.scene.lights.*;
+import blackjack.engine.sound.SoundBuffer;
+import blackjack.engine.sound.SoundListener;
+import blackjack.engine.sound.SoundManager;
+import blackjack.engine.sound.SoundSource;
 
-//create the Engine instance and start it up in the main method
-//this class also implements app logic but is empty for now
-@SuppressWarnings("unused")
+import static org.lwjgl.glfw.GLFW.*;
+
 public class Main implements IAppLogic {
-    private float lightAngle = -35;
+    private float lightAngle;
+
     private LightControls lightControls;
     private EntityLoader entityLoader = new EntityLoader();
 
-    public static void main(String[] args){
+    private SoundSource playerSoundSource;
+    private SoundManager soundManager;
 
+    public static void main(String[] args) {
         Main main = new Main();
-        
-        Engine gameEngine = new Engine("Blackjack LWJGL", new Window.WindowOptions(), main);
-
+        Window.WindowOptions opts = new Window.WindowOptions();
+        opts.antiAliasing = true;
+        Engine gameEngine = new Engine("Blackjack LWJGL", opts, main);
         gameEngine.start();
-
     }
 
     @Override
     public void cleanup() {
-        //haha
+        soundManager.cleanup();
     }
 
     @Override
     public void init(Window window, Scene scene, Render render) {
 
         //Load entities (with models and textures)
-        //EntityLoader entityLoader = new EntityLoader();
         entityLoader.loadEntities(scene);
 
         //Light control 
         SceneLights sceneLights = new SceneLights();
-        sceneLights.getAmbientLight().setIntensity(0.3f);
-        DirLight dirLight = sceneLights.getDirLight();
-        dirLight.setPosition(1, 1, 0);
-        dirLight.setIntensity(1.0f);
+        sceneLights.getAmbientLight().setIntensity(0.5f);
+        sceneLights.getAmbientLight().setColor(0.3f, 0.3f, 0.3f);
+
+        sceneLights.getDirLight().setPosition(0, 1, 0);
+        sceneLights.getDirLight().setIntensity(1.0f);
+        
+        sceneLights.getPointLights().add(new PointLight());
+
+        sceneLights.getSpotLights().add(new SpotLight());
+        
         scene.setSceneLights(sceneLights);
-        
-        sceneLights.getPointLights().add(new PointLight(new Vector3f(1, 1, 1),
-                new Vector3f(0, 0, -1.4f), 1.0f));
-        
-        Vector3f coneDir = new Vector3f(0, 0, -1);
-        sceneLights.getSpotLights().add(new SpotLight(new PointLight(new Vector3f(1, 1, 1),
-                new Vector3f(0, 0, -1.4f), 0.0f), coneDir, 140.0f));
+
+        SkyBox skyBox = new SkyBox("resources/models/skybox/skybox.obj", scene.getTextureCache());
+        skyBox.getSkyBoxEntity().setScale(100);
+        skyBox.getSkyBoxEntity().updateModelMatrix();
+        scene.setSkyBox(skyBox);
+
+        scene.setFog(new Fog(true, new Vector3f(0.5f, 0.5f, 0.5f), 0.02f));
+
+        Camera camera = scene.getCamera();
+        camera.setPosition(-1.5f, 3.0f, 4.5f);
+        camera.addRotation((float) Math.toRadians(15.0f), (float) Math.toRadians(390.f));
+
+        lightAngle = 45;
+        initSounds(entityLoader.getBobEntity().getPosition(), camera);
         
         lightControls = new LightControls(scene);
         scene.setGuiInstance(lightControls);
     }
+    
 
     @Override
     public void input(Window window, Scene scene, long diffTimeMillis, boolean inputConsumed) {
-        
-        if (inputConsumed){
+        if (inputConsumed) {
             return;
         }
-
         float move = diffTimeMillis * Consts.MOVEMENT_SPEED;
-        
         Camera camera = scene.getCamera();
-        
-        if (window.isKeyPressed(GLFW.GLFW_KEY_W)) {
+        if (window.isKeyPressed(GLFW_KEY_W)) {
             camera.moveForward(move);
-        } 
-        else if (window.isKeyPressed(GLFW.GLFW_KEY_S)) {
+        } else if (window.isKeyPressed(GLFW_KEY_S)) {
             camera.moveBackwards(move);
         }
-
-        if (window.isKeyPressed(GLFW.GLFW_KEY_A)) {
+        if (window.isKeyPressed(GLFW_KEY_A)) {
             camera.moveLeft(move);
-        } 
-        else if (window.isKeyPressed(GLFW.GLFW_KEY_D)) {
+        } else if (window.isKeyPressed(GLFW_KEY_D)) {
             camera.moveRight(move);
         }
-        
-        // Final game should not able the player to move in these directions
-        if (window.isKeyPressed(GLFW.GLFW_KEY_UP)) {
-            camera.moveUp(move);
-        } 
-        else if (window.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
-            camera.moveDown(move);
-        }
-
-        MouseInput mouseInput = window.getMouseInput();
-
-        if (mouseInput.isRightButtonPressed()) {
-            Vector2f displVec = mouseInput.getDisplVec();
-            camera.addRotation((float) Math.toRadians(displVec.x * Consts.MOUSE_SENS),
-                    (float) Math.toRadians(displVec.y * Consts.MOUSE_SENS));
-        }
-
-        if (mouseInput.isLeftButtonPressed()){
-            entityLoader.selectEntity(window, scene, mouseInput.getCurrentPos());
-        }
-        
         //ARROWS LEFT AND RIGHT FOR LIGHT CONTROL
-        if (window.isKeyPressed(GLFW.GLFW_KEY_LEFT)) {
+        if (window.isKeyPressed(GLFW_KEY_LEFT)) {
             lightAngle -= 2.5f;
             if (lightAngle < -90) {
                 lightAngle = -90;
             }
-        } else if (window.isKeyPressed(GLFW.GLFW_KEY_RIGHT)) {
+        } else if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
             lightAngle += 2.5f;
             if (lightAngle > 90) {
                 lightAngle = 90;
             }
         }
+
+        MouseInput mouseInput = window.getMouseInput();
+        if (mouseInput.isRightButtonPressed()) {
+            Vector2f displVec = mouseInput.getDisplVec();
+            camera.addRotation(
+                (float) Math.toRadians(displVec.x * Consts.MOUSE_SENS),
+                (float) Math.toRadians(displVec.y * Consts.MOUSE_SENS));
+        }
+        if (mouseInput.isLeftButtonPressed()){
+            entityLoader.selectEntity(window, scene, mouseInput.getCurrentPos());
+        }
+        
         SceneLights sceneLights = scene.getSceneLights();
         DirLight dirLight = sceneLights.getDirLight();
         double angRad = Math.toRadians(lightAngle);
         dirLight.getDirection().x = (float) Math.sin(angRad);
         dirLight.getDirection().y = (float) Math.cos(angRad);
+
+        soundManager.updateListenerPosition(camera);
     }
 
     @Override
     public void update(Window window, Scene scene, long diffTimeMillis) {
+        entityLoader.getAnimationData().nextFrame();
+        if (entityLoader.getAnimationData().getCurrentFrameIdx() == 45){
+            playerSoundSource.play();
+        }
+    }
 
-        // rotation += 1.5;
+    private void initSounds(Vector3f position, Camera camera){
+        soundManager = new SoundManager();
+        soundManager.setAttenuationModel(AL11.AL_EXPONENT_DISTANCE);
+        soundManager.setListener(new SoundListener(camera.getPosition()));
 
-        // if (rotation > 360){
-        //     rotation = 0;
-        // }
+        //audio 1
+        SoundBuffer buffer = new SoundBuffer("resources/sounds/creak1.ogg");
+        soundManager.addSoundBuffer(buffer);
 
-        // cubeEntity.setRotation(1, 1, 1, (float) Math.toRadians(rotation));
-        // cubeEntity.updateModelMatrix();
+        playerSoundSource = new SoundSource(false, false);
+        playerSoundSource.setPosition(position);
+        playerSoundSource.setBuffer(buffer.getBufferId());
 
+        soundManager.addSoundSource("CREAK", playerSoundSource);
+
+        //audio 2
+        buffer = new SoundBuffer("resources/sounds/woo_scary.ogg");
+        soundManager.addSoundBuffer(buffer);
+
+        SoundSource source = new SoundSource(true, true);
+        source.setBuffer(buffer.getBufferId());
+
+        soundManager.addSoundSource("MUSIC", source);
+        source.play();
     }
 }

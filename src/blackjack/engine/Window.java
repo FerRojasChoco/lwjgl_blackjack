@@ -16,19 +16,14 @@ public class Window {
 
     private final long windowHandle;
     private int height;
-    private Callable<Void> resizeFunc;
     private int width;
-
+    private Callable<Void> resizeFunc;
     private MouseInput mouseInput;
 
-
     public Window(String title, WindowOptions opts, Callable<Void> resizeFunc){
-        
         this.resizeFunc = resizeFunc;
-        
-
-        if(!glfwInit()){
-            throw new IllegalStateException("Unable to init GLFW");
+        if (!glfwInit()) {
+            throw new IllegalStateException("Unable to initialize GLFW");
         }
 
         //window not visible yet, and IS resizable
@@ -37,8 +32,8 @@ public class Window {
         glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
         
         //anti-aliasing
-        if(opts.antiAliasing){
-            glfwWindowHint(GLFW_SAMPLES, 4);
+        if (opts.antiAliasing){
+            glfwWindowHint(GLFW_SAMPLES, GL_TRUE);
         }
         
         //set OpenGL version
@@ -46,21 +41,19 @@ public class Window {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
         //either core or compatible profeile depending on window options
-        if (opts.compatibleProfile){
+        if (opts.compatibleProfile) {
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-        } 
-        else {
+        } else {
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         }
 
         //set the size of the window if widht and height are given
         //if not, set screen size for the window
-        if (opts.width > 0 && opts.height > 0){
+        if (opts.width > 0 && opts.height > 0) {
             this.width = opts.width;
             this.height = opts.height;
-        } 
-        else {
+        } else {
             glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
             GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
             width = vidMode.width();
@@ -69,22 +62,18 @@ public class Window {
 
         //create window and set some callbacks for when window is resized or to detect window closure (esc)
         windowHandle = glfwCreateWindow(width, height, title, NULL, NULL);
-
-        //check if this should be here, it works for my laptop hehe 
-        GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowPos(windowHandle, (vidMode.width()- width) / 2 , (vidMode.height() - height) / 2 );  
-
-        if (windowHandle == NULL){
+        if (windowHandle == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
 
-        glfwSetFramebufferSizeCallback(windowHandle, (_, w, h) -> resized(w, h));
+
+        glfwSetFramebufferSizeCallback(windowHandle, (window, w, h) -> resized(w, h));
 
         glfwSetErrorCallback((int errorCode, long msgPtr) ->
                 Logger.error("Error code [{}], msg [{}]", errorCode, MemoryUtil.memUTF8(msgPtr))
         );
 
-        glfwSetKeyCallback(windowHandle, (ignore0, key, ignore1, action, _) -> {
+        glfwSetKeyCallback(windowHandle, (window, key, scancode, action, mods) -> {
             keyCallBack(key, action);
         });
 
@@ -92,10 +81,9 @@ public class Window {
         
         //swap interval 0 if we want to set a target fps and disable v-sync
         //otherwise, enable v-sync
-        if (opts.fps > 0){
+        if (opts.fps > 0) {
             glfwSwapInterval(0);
-        }
-        else{
+        } else {
             glfwSwapInterval(1);
         }
 
@@ -104,7 +92,7 @@ public class Window {
 
         int[] arrWidth = new int[1];
         int[] arrHeight = new int[1];
-        
+
         //get the portion of the window used to render()
         glfwGetFramebufferSize(windowHandle, arrWidth, arrHeight);
 
@@ -115,47 +103,22 @@ public class Window {
 
     }
 
-    //key callback 
-    public void keyCallBack(int key, int action){
-
-        //close the window if escp is pressed
-        if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE){
-            glfwSetWindowShouldClose(windowHandle, true);
+    
+    public void keyCallBack(int key, int action) {
+        if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE){          //close the window if escp is pressed
+            glfwSetWindowShouldClose(windowHandle, true); // We will detect this in the rendering loop
         }
-
     }
     
-    //resize callback
-    protected void resized(int width, int height){
-
-        this.width = width;
-        this.height = height;
-
-        try {
-            resizeFunc.call();
-        } catch (Exception e) {
-            Logger.error("Error calling resize callback", e);
-        }
-
-    }
-    
-    //cleaning up resources
+    //free resources
     public void cleanup(){
-
         glfwFreeCallbacks(windowHandle);
         glfwDestroyWindow(windowHandle);
-        
         glfwTerminate();
-
         GLFWErrorCallback callback = glfwSetErrorCallback(null);
-        if (callback != null){
+        if (callback != null) {
             callback.free();
         }
-
-    }
-
-    public void update(){
-        glfwSwapBuffers(windowHandle);
     }
 
     //getters and setter
@@ -175,35 +138,38 @@ public class Window {
         return mouseInput;
     }
 
-    public boolean isKeyPressed(int keyCode){
+    public boolean isKeyPressed(int keyCode) {
         return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS;
     }
 
-    public void pollEvents(){
+    public void pollEvents() {
         glfwPollEvents();
     }
 
-    public boolean windowShouldClose(){
+    protected void resized(int width, int height) {
+        this.width = width;
+        this.height = height;
+        try {
+            resizeFunc.call();
+        } catch (Exception excp) {
+            Logger.error("Error calling resize callback", excp);
+        }
+    }
+
+    public void update() {
+        glfwSwapBuffers(windowHandle);
+    }
+
+    public boolean windowShouldClose() {
         return glfwWindowShouldClose(windowHandle);
     }
 
-
     public static class WindowOptions {
-
-        public boolean compatibleProfile;   //controls wheter we want to use old functions from previous versions
-        public boolean antiAliasing;        
-
-        public int fps;     //target frames per second
-
-        //desired windows size
-        // public int height = Consts.HEIGHT;  
-        // public int width = Consts.WIDTH;
-
-        //default window size
-        public int height = 0;
-        public int width = 0;
-
-        public int ups = Consts.TARGET_UPS; //target numbers of updates per second (inti to default)
-
+        public boolean antiAliasing;
+        public boolean compatibleProfile;
+        public int fps;
+        public int height;
+        public int ups = Consts.TARGET_UPS;
+        public int width;
     }
 }

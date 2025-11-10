@@ -1,5 +1,5 @@
 package blackjack.engine;
-//check this class thoroughly later
+
 import org.joml.Vector2f;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -21,14 +21,12 @@ public class MouseInput {
         rightButtonPressed = false;
         inWindow = false;
 
-        glfwSetCursorPosCallback(windowHandle, (ignore0, xpos, ypos) -> {
+        glfwSetCursorPosCallback(windowHandle, (handle, xpos, ypos) -> {
             currentPos.x = (float) xpos;
             currentPos.y = (float) ypos;
         });
-
-        glfwSetCursorEnterCallback(windowHandle, (ignore1, entered) -> inWindow = entered);
-        
-        glfwSetMouseButtonCallback(windowHandle, (ignore2, button, action, ignore3) -> {
+        glfwSetCursorEnterCallback(windowHandle, (handle, entered) -> inWindow = entered);
+        glfwSetMouseButtonCallback(windowHandle, (handle, button, action, mode) -> {
             leftButtonPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
             rightButtonPressed = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS;
         });

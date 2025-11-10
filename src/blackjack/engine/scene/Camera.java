@@ -7,36 +7,32 @@ public class Camera {
     private Vector3f direction;
     private Vector3f position;
     private Vector3f right;
-    private Vector3f up;
-
     private Vector2f rotation;
-
+    private Vector3f up;
     private Matrix4f viewMatrix;
     private Matrix4f invViewMatrix;
 
-    public Camera(){
+    public Camera() {
         direction = new Vector3f();
-        position = new Vector3f();
         right = new Vector3f();
         up = new Vector3f();
-        rotation = new Vector2f();
+        position = new Vector3f();
         viewMatrix = new Matrix4f();
+        rotation = new Vector2f();
         invViewMatrix = new Matrix4f();
     }
 
     //"camera" movement methods
-    public void addRotation(float x, float y){
+    public void addRotation(float x, float y) {
         rotation.add(x, y);
         recalculate();
     }
     
     public void moveBackwards(float inc) {
         viewMatrix.positiveZ(direction).negate();
-
         direction.y = 0;
         direction.normalize();
         direction.mul(inc);
-    
         position.sub(direction);
         recalculate();
     }
@@ -48,36 +44,29 @@ public class Camera {
     }
 
     public void moveForward(float inc) {
-        // viewMatrix.positiveZ(direction).negate().mul(inc);
         viewMatrix.positiveZ(direction).negate();
-        
         //fixed "flying" player by assigning 0 to the vertical component
         direction.y = 0;
         direction.normalize();
         direction.mul(inc);
-
         position.add(direction);
         recalculate();
     }
 
     public void moveLeft(float inc) {
         viewMatrix.positiveX(right);
-
         right.y = 0;
         right.normalize();
         right.mul(inc);
-
         position.sub(right);
         recalculate();
     }
 
     public void moveRight(float inc) {
         viewMatrix.positiveX(right);
-
         right.y = 0;
         right.normalize();
         right.mul(inc);
-
         position.add(right);
         recalculate();
     }
@@ -88,13 +77,11 @@ public class Camera {
         recalculate();
     }
 
-
-    private void recalculate(){
+    private void recalculate() {
         viewMatrix.identity()
                     .rotateX(rotation.x)
                     .rotateY(rotation.y)
                     .translate(-position.x, -position.y, -position.z);
-
         invViewMatrix.set(viewMatrix).invert();
     }
 
@@ -120,5 +107,4 @@ public class Camera {
         rotation.set(x, y);
         recalculate();
     }
-
 }

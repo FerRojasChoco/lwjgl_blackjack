@@ -58,7 +58,6 @@ public class Texture {
                 GL_RGBA, GL_UNSIGNED_BYTE, buf);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
-    
     //getter
 
     public String getTexturePath() {

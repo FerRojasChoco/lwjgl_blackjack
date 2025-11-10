@@ -3,33 +3,28 @@ package blackjack.engine.graph;
 import java.util.*;
 
 import org.joml.Vector4f;
-
 import blackjack.engine.Consts;
 
 public class Material {
 
-    private Vector4f diffusecolor;
+    private Vector4f diffuseColor;
     private Vector4f ambientColor;
-    private Vector4f specularColor;
-
     private List<Mesh> meshList;
-
     private String texturePath;
     private String normalMapPath;
 
     private float reflectance;
-    
+    private Vector4f specularColor;
 
-
-    public Material(){
-        diffusecolor = Consts.DEFAULT_COLOR;
+    public Material() {
+        meshList = new ArrayList<>();
+        diffuseColor = Consts.DEFAULT_COLOR;
         ambientColor = Consts.DEFAULT_COLOR;
         specularColor = Consts.DEFAULT_COLOR;
-        meshList = new ArrayList<>();
     }
 
     //free resources
-    public void cleanup(){
+    public void cleanup() {
         meshList.forEach(Mesh::cleanup);
     }
 
@@ -42,12 +37,12 @@ public class Material {
         return texturePath;
     }
 
-    public void setTexturePath(String texturePath) {
-        this.texturePath = texturePath;
+    public String getNormalMapPath() {
+        return normalMapPath;
     }
 
-    public Vector4f getDiffusecolor() {
-        return diffusecolor;
+    public Vector4f getDiffuseColor() {
+        return diffuseColor;
     }
 
     public Vector4f getAmbientColor() {
@@ -62,14 +57,6 @@ public class Material {
         return specularColor;
     }
 
-    public String getNormalMapPath() {
-        return normalMapPath;
-    }
-
-    public void setDiffusecolor(Vector4f diffusecolor) {
-        this.diffusecolor = diffusecolor;
-    }
-    
     public void setAmbientColor(Vector4f ambientColor) {
         this.ambientColor = ambientColor;
     }
@@ -81,9 +68,16 @@ public class Material {
     public void setSpecularColor(Vector4f specularColor) {
         this.specularColor = specularColor;
     }
+    
+    public void setTexturePath(String texturePath) {
+        this.texturePath = texturePath;
+    }
 
     public void setNormalMapPath(String normalMapPath) {
         this.normalMapPath = normalMapPath;
     }
-    
+
+    public void setDiffuseColor(Vector4f diffuseColor) {
+        this.diffuseColor = diffuseColor;
+    }
 }

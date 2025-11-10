@@ -16,7 +16,7 @@ import blackjack.engine.*;
 import blackjack.engine.scene.Scene;
 import blackjack.engine.scene.lights.*;
 
-public class LightControls implements IGuiInstance{
+public class LightControls implements IGuiInstance {
 
     private float[] ambientColor;
     private float[] ambientFactor;
@@ -81,7 +81,6 @@ public class LightControls implements IGuiInstance{
         dirLightZ = new float[]{pos.z};
         dirLightIntensity = new float[]{dirLight.getIntensity()};
     }
-
 
     @Override
     public void drawGui() {
@@ -172,5 +171,4 @@ public class LightControls implements IGuiInstance{
         }
         return consumed;
     }
-
 }

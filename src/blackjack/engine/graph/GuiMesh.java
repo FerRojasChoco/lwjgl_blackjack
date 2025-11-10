@@ -13,21 +13,16 @@ public class GuiMesh {
     private int verticesVBO;
 
     public GuiMesh() {
-
         vaoId = glGenVertexArrays();
         glBindVertexArray(vaoId);
 
-        //Single VBO
+        // Single VBO
         verticesVBO = glGenBuffers();
-
         glBindBuffer(GL_ARRAY_BUFFER, verticesVBO);
-        
         glEnableVertexAttribArray(0);   
         glVertexAttribPointer(0, 2, GL_FLOAT, false, ImDrawData.sizeOfImDrawVert(), 0);
-        
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 2, GL_FLOAT, false, ImDrawData.sizeOfImDrawVert(), 8);
-
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, true, ImDrawData.sizeOfImDrawVert(), 16);
 
@@ -37,15 +32,12 @@ public class GuiMesh {
         glBindVertexArray(0);
     }
 
-
     //free resources
-    public void cleanup(){
+    public void cleanup() {
         glDeleteBuffers(indicesVBO);
         glDeleteBuffers(verticesVBO);
-
         glDeleteVertexArrays(vaoId);
     }
-
 
     //getters
     public int getIndicesVBO() {
@@ -59,5 +51,4 @@ public class GuiMesh {
     public int getVerticesVBO() {
         return verticesVBO;
     }
-
 }

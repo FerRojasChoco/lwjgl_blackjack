@@ -1,8 +1,8 @@
 #version 330 core
 
-layout (location = 0) in vec2 inPos;
-layout (location = 1) in vec2 inTextCoords;
-layout (location = 2) in vec4 inColor;
+layout (location=0) in vec2 inPos;
+layout (location=1) in vec2 inTextCoords;
+layout (location=2) in vec4 inColor;
 
 out vec2 frgTextCoords;
 out vec4 frgColor;

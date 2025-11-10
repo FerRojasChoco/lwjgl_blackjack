@@ -13,9 +13,12 @@ public class PointLight {
     private Vector3f color;
     private float intensity;
     private Vector3f position;
-
-    public PointLight(Vector3f color, Vector3f position, float intensity){
-        
+    
+    public PointLight(){
+        this(new Vector3f(1.0f, 1.0f, 1.0f), new Vector3f(0.0f, 0.0f, 0.0f), 1.0f);
+    }
+    
+    public PointLight(Vector3f color, Vector3f position, float intensity) {
         attenuation = new Attenuation(0, 0, 1);
         this.color = color;
         this.position = position;
@@ -23,7 +26,7 @@ public class PointLight {
     }
 
     // getters & setters
-    public Attenuation getAttenuation(){
+    public Attenuation getAttenuation() {
         return attenuation;
     }
 
@@ -39,8 +42,12 @@ public class PointLight {
         return position;
     }
 
-    public void setAttenuation(Attenuation attenuation){
+    public void setAttenuation(Attenuation attenuation) {
         this.attenuation = attenuation;
+    }
+    
+    public void setColor(Vector3f color) {
+        this.color = color;
     }
 
     public void setColor(float r, float g, float b) {
@@ -60,13 +67,13 @@ public class PointLight {
         this is needed for simulating light attenuation, which consists
         on multiplying the attenuation factor by the final color
     */ 
-    public static class Attenuation{
+    public static class Attenuation {
 
         private float constant;
         private float exponent;
         private float linear;
 
-        public Attenuation(float constant, float linear, float exponent){
+        public Attenuation(float constant, float linear, float exponent) {
             this.constant = constant;
             this.linear = linear;
             this.exponent = exponent;
@@ -97,5 +104,4 @@ public class PointLight {
             this.linear = linear;
         }
     }
-
 }

@@ -1,5 +1,6 @@
 package blackjack.engine.graph;
 
+import org.joml.Matrix4f;
 import blackjack.engine.scene.Entity;
 
 import java.util.*;
@@ -15,19 +16,20 @@ public class Model {
     private final String id;
     private List<Entity> entitiesList;
     private List<Material> materialList;
+    private List<Animation> animationList;
 
-    public Model(String id, List<Material> materialList){
-
+    public Model(String id, List<Material> materialList, List<Animation> animationList) {
+        entitiesList = new ArrayList<>();        
         this.id = id;
-        entitiesList = new ArrayList<>();
         this.materialList = materialList;
+        this.animationList = animationList;
+        
     }
 
     //free resources
-    public void cleanup(){
+    public void cleanup() {
         materialList.forEach(Material::cleanup);
     }
-
 
     //getters
     public List<Entity> getEntitiesList() {
@@ -41,6 +43,16 @@ public class Model {
     public List<Material> getMaterialList() {
         return materialList;
     }
-    
 
+    public List<Animation> getAnimationList() {
+        return animationList;
+    }
+    
+    public record AnimatedFrame(Matrix4f[] boneMatrices){
+
+    }
+
+    public record Animation(String name, double duration, List<AnimatedFrame> frames){
+        
+    }
 }
