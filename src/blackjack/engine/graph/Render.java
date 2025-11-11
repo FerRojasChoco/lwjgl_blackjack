@@ -5,14 +5,17 @@ import blackjack.engine.Window;
 import blackjack.engine.scene.Scene;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
+import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL30.*;
 
 public class Render {
-
+    
+    private GBuffer gBuffer;
+    private GuiRender guiRender;
+    private LightsRender lightsRender;
     private SceneRender sceneRender;
     private ShadowRender shadowRender;
     private SkyBoxRender skyBoxRender;
-    private GuiRender guiRender;
 
     public Render(Window window) {
         GL.createCapabilities();
@@ -27,21 +30,43 @@ public class Render {
         guiRender = new GuiRender(window);
         skyBoxRender = new SkyBoxRender();
         shadowRender = new ShadowRender();
+        lightsRender = new LightsRender();
+        gBuffer = new GBuffer(window);
     }
 
+    //free resources
     public void cleanup() {
         sceneRender.cleanup();
         guiRender.cleanup();
         skyBoxRender.cleanup();
         shadowRender.cleanup();
+        lightsRender.cleanup();
+        gBuffer.cleanup();
+    }
+
+    private void lightRenderFinish() {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    private void lightRenderStart(Window window) {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glViewport(0, 0, window.getWidth(), window.getHeight());
+
+        glEnable(GL_BLEND);
+        glBlendEquation(GL_FUNC_ADD);
+        glBlendFunc(GL_ONE, GL_ONE);
+
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer.getGBufferId());
     }
 
     public void render(Window window, Scene scene) {
         shadowRender.render(scene);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glViewport(0, 0, window.getWidth(), window.getHeight());
+        sceneRender.render(scene, gBuffer);
+        lightRenderStart(window);
+        lightsRender.render(scene, shadowRender, gBuffer);
         skyBoxRender.render(scene);
-        sceneRender.render(scene, shadowRender);
+        lightRenderFinish();
         guiRender.render(scene);
     }
 

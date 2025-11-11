@@ -22,7 +22,7 @@ public class ModelLoader {
     private ModelLoader() {
         // Utility class
     }
-
+    
     public static Model loadModel(String modelId, String modelPath, TextureCache textureCache, boolean animation) {
         return loadModel(
             modelId, modelPath, textureCache, aiProcess_GenSmoothNormals |

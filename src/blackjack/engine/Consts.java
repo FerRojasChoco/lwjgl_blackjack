@@ -32,6 +32,7 @@ public class Consts {
     public static final int SHADOW_MAP_CASCADE_COUNT = 3;
     public static final int SHADOW_MAP_WIDTH = 4096;
     public static final int SHADOW_MAP_HEIGHT = SHADOW_MAP_WIDTH;
+    public static final int TOTAL_TEXTURES = 4;
 
     
     /*~~~ MOUSE RELATED ~~~ */
