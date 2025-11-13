@@ -31,6 +31,11 @@ public class Window {
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
         
+        //borderless
+        if (opts.borderless) {
+            glfwWindowHint(GLFW_DECORATED, GL_FALSE);
+        }
+        
         //anti-aliasing
         if (opts.antiAliasing){
             glfwWindowHint(GLFW_SAMPLES, GL_TRUE);
@@ -66,6 +71,10 @@ public class Window {
             throw new RuntimeException("Failed to create the GLFW window");
         }
 
+        // borderless handle
+        if (opts.borderless) {
+            glfwSetWindowPos(windowHandle, 0, 0);
+        }
 
         glfwSetFramebufferSizeCallback(windowHandle, (window, w, h) -> resized(w, h));
 
@@ -107,6 +116,12 @@ public class Window {
     public void keyCallBack(int key, int action) {
         if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE){          //close the window if escp is pressed
             glfwSetWindowShouldClose(windowHandle, true); // We will detect this in the rendering loop
+        }
+        
+        if (key == GLFW_KEY_L) {
+            glfwSetInputMode(windowHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        } else if (key == GLFW_KEY_K) {
+            glfwSetInputMode(windowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
     }
     
@@ -167,6 +182,7 @@ public class Window {
     public static class WindowOptions {
         public boolean antiAliasing;
         public boolean compatibleProfile;
+        public boolean borderless;
         public int fps;
         public int height;
         public int ups = Consts.TARGET_UPS;
