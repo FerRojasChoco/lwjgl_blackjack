@@ -64,7 +64,7 @@ public class Main implements IAppLogic {
         scene.setFog(new Fog(true, new Vector3f(0.5f, 0.5f, 0.5f), 0.02f));
 
         Camera camera = scene.getCamera();
-        camera.setPosition(-1.5f, 3.0f, 4.5f);
+        camera.setPosition(-1.5f, 2.0f, 4.5f);
         camera.addRotation((float) Math.toRadians(15.0f), (float) Math.toRadians(390.f));
 
         lightAngle = 45;
