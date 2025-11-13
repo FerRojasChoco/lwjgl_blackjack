@@ -23,6 +23,7 @@ public class EntityLoader {
     private Entity chairEntity;
     private Entity tableEntity;
     private Entity[] chipsEntities;
+    private Entity cardsEntity;
 
     public void loadEntities(Scene scene){
 
@@ -62,11 +63,19 @@ public class EntityLoader {
             false
         );
 
+        Model cardModel = ModelLoader.loadModel(
+            "card-model",
+            "resources\\models\\cards\\clubs_2.obj", 
+            scene.getTextureCache(),
+            false
+        );
+
         scene.addModel(terrainModel); 
         scene.addModel(bobModel);
         scene.addModel(cubeModel);
         scene.addModel(chairModel);
         scene.addModel(tableModel);
+        scene.addModel(cardModel);
 
         //define entity properties
         terrainEntity = new Entity("terrain-entity", terrainModel.getId(), false);
@@ -85,18 +94,23 @@ public class EntityLoader {
         
         tableEntity = new Entity("table-entity", tableModel.getId(), false);
 
+        cardsEntity = new Entity("card-entity", cardModel.getId(), false);
+        cardsEntity.setPosition(0.0f, 0.9f, 1.35f);
+        cardsEntity.setScale(0.09f);
 
         terrainEntity.updateModelMatrix();
         bobEntity.updateModelMatrix();
         cubeEntity.updateModelMatrix();
         chairEntity.updateModelMatrix();
         tableEntity.updateModelMatrix();
+        cardsEntity.updateModelMatrix();
 
         scene.addEntity(terrainEntity);
         scene.addEntity(bobEntity);
         scene.addEntity(cubeEntity);
         scene.addEntity(chairEntity);
         scene.addEntity(tableEntity);
+        scene.addEntity(cardsEntity);
 
 // Dynamically add the chips
         String[] chipValues = {"1", "5", "10", "20", "50", "100", "500", "1000", "5000"};
