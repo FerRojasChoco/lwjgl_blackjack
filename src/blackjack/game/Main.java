@@ -15,10 +15,11 @@ import blackjack.engine.sound.SoundSource;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Main implements IAppLogic {
-    private float lightAngle;
+
+    private EntityLoader entityLoader = new EntityLoader();
 
     private LightControls lightControls;
-    private EntityLoader entityLoader = new EntityLoader();
+    private boolean enableLightControl = false;
 
     private SoundSource playerSoundSource;
     private SoundManager soundManager;
@@ -27,110 +28,62 @@ public class Main implements IAppLogic {
         Main main = new Main();
         Window.WindowOptions opts = new Window.WindowOptions();
         opts.antiAliasing = true;
+        opts.borderless = false;
         Engine gameEngine = new Engine("Blackjack LWJGL", opts, main);
         gameEngine.start();
     }
 
-    @Override
-    public void cleanup() {
-        soundManager.cleanup();
-    }
-
+/*~~~ INITIALIZATION BLOCK ~~~*/
     @Override
     public void init(Window window, Scene scene, Render render) {
 
-        //Load entities (with models and textures)
+        /*~~~ LOAD ENTITIES (with models and textures) ~~~*/
         entityLoader.loadEntities(scene);
 
-        //Light control 
-        SceneLights sceneLights = new SceneLights();
-        sceneLights.getAmbientLight().setIntensity(0.5f);
-        sceneLights.getAmbientLight().setColor(0.3f, 0.3f, 0.3f);
+        /*~~~ LIGHT SETTINGS ~~~*/ 
+        initLights(scene);
 
-        sceneLights.getDirLight().setPosition(0, 1, 0);
-        sceneLights.getDirLight().setIntensity(1.0f);
-        
-        sceneLights.getPointLights().add(new PointLight());
+        /*~~~ SKYBOX + FOG SETTINGS ~~~*/
+        initSkyBoxAndFog(scene);
 
-        sceneLights.getSpotLights().add(new SpotLight());
-        
-        scene.setSceneLights(sceneLights);
-
-        SkyBox skyBox = new SkyBox("resources/models/skybox/skybox.obj", scene.getTextureCache());
-        skyBox.getSkyBoxEntity().setScale(100);
-        skyBox.getSkyBoxEntity().updateModelMatrix();
-        scene.setSkyBox(skyBox);
-
-        scene.setFog(new Fog(true, new Vector3f(0.5f, 0.5f, 0.5f), 0.02f));
-
+        /*~~~ PLAYER SPAWN POINT ~~~*/
         Camera camera = scene.getCamera();
         camera.setPosition(-1.5f, 2.0f, 4.5f);
         camera.addRotation((float) Math.toRadians(15.0f), (float) Math.toRadians(390.f));
 
-        lightAngle = 45;
         initSounds(entityLoader.getBobEntity().getPosition(), camera);
-        
-        lightControls = new LightControls(scene);
-        scene.setGuiInstance(lightControls);
     }
     
-
-    @Override
-    public void input(Window window, Scene scene, long diffTimeMillis, boolean inputConsumed) {
-        if (inputConsumed) {
-            return;
-        }
-        float move = diffTimeMillis * Consts.MOVEMENT_SPEED;
-        Camera camera = scene.getCamera();
-        if (window.isKeyPressed(GLFW_KEY_W)) {
-            camera.moveForward(move);
-        } else if (window.isKeyPressed(GLFW_KEY_S)) {
-            camera.moveBackwards(move);
-        }
-        if (window.isKeyPressed(GLFW_KEY_A)) {
-            camera.moveLeft(move);
-        } else if (window.isKeyPressed(GLFW_KEY_D)) {
-            camera.moveRight(move);
-        }
-        //ARROWS LEFT AND RIGHT FOR LIGHT CONTROL
-        if (window.isKeyPressed(GLFW_KEY_LEFT)) {
-            lightAngle -= 2.5f;
-            if (lightAngle < -90) {
-                lightAngle = -90;
-            }
-        } else if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
-            lightAngle += 2.5f;
-            if (lightAngle > 90) {
-                lightAngle = 90;
-            }
-        }
-
-        MouseInput mouseInput = window.getMouseInput();
-        if (mouseInput.isRightButtonPressed()) {
-            Vector2f displVec = mouseInput.getDisplVec();
-            camera.addRotation(
-                (float) Math.toRadians(displVec.x * Consts.MOUSE_SENS),
-                (float) Math.toRadians(displVec.y * Consts.MOUSE_SENS));
-        }
-        if (mouseInput.isLeftButtonPressed()){
-            entityLoader.selectEntity(window, scene, mouseInput.getCurrentPos());
-        }
+    private void initLights(Scene scene) {
+        SceneLights sceneLights = new SceneLights();
         
-        SceneLights sceneLights = scene.getSceneLights();
+        /*~~~ AMBIENT ~~~*/
+        AmbientLight ambientLight= sceneLights.getAmbientLight();
+        ambientLight.setIntensity(0.5f);
+        ambientLight.setColor(0.3f, 0.3f, 0.3f);
+        
+        /*~~~ DIRECTIONAL ~~~*/
         DirLight dirLight = sceneLights.getDirLight();
-        double angRad = Math.toRadians(lightAngle);
-        dirLight.getDirection().x = (float) Math.sin(angRad);
-        dirLight.getDirection().y = (float) Math.cos(angRad);
+        dirLight.setPosition(0.0f, 1.0f, 0.79f);
+        dirLight.setIntensity(0.88f);
+        
+        /*~~~ POINTLIGHT ~~~*/
+        // PointLight pointLight_1 = new PointLight();
+        // pointLight_1.setPosition(0.0f, 0.0f, 2.61f);
+        // pointLight_1.setIntensity(0.88f);
 
-        soundManager.updateListenerPosition(camera);
-    }
+        // sceneLights.getPointLights().add(pointLight_1);
 
-    @Override
-    public void update(Window window, Scene scene, long diffTimeMillis) {
-        entityLoader.getAnimationData().nextFrame();
-        if (entityLoader.getAnimationData().getCurrentFrameIdx() == 45){
-            playerSoundSource.play();
-        }
+        /*~~~ SPOTLIGHT ~~~*/
+        SpotLight spotLight_1 = new SpotLight();
+        PointLight spotLight_pointLight = spotLight_1.getPointLight();
+        spotLight_pointLight.setPosition(0.0f, 1.09f, 2.03f);
+        spotLight_pointLight.setIntensity(1.0f);
+        spotLight_1.setCutOffAngle(227);
+
+        sceneLights.getSpotLights().add(spotLight_1);
+        
+        scene.setSceneLights(sceneLights);
     }
 
     private void initSounds(Vector3f position, Camera camera){
@@ -158,4 +111,81 @@ public class Main implements IAppLogic {
         soundManager.addSoundSource("MUSIC", source);
         source.play();
     }
+
+    private void initSkyBoxAndFog(Scene scene) {
+        SkyBox skyBox = new SkyBox("resources/models/skybox/skybox.obj", scene.getTextureCache());
+        skyBox.getSkyBoxEntity().setScale(100);
+        skyBox.getSkyBoxEntity().updateModelMatrix();
+        scene.setSkyBox(skyBox);
+        scene.setFog(new Fog(true, new Vector3f(0.5f, 0.5f, 0.5f), 0.02f));
+    }
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+
+/*~~~ INPUT BLOCK ~~~*/
+    @Override
+    public void input(Window window, Scene scene, long diffTimeMillis, boolean inputConsumed) {
+        if (inputConsumed) {
+            return;
+        }
+        float move = diffTimeMillis * Consts.MOVEMENT_SPEED;
+        Camera camera = scene.getCamera();
+
+        /*~~~ WASD MOVEMENT ~~~*/
+        if (window.isKeyPressed(GLFW_KEY_W)) {
+            camera.moveForward(move);
+        } else if (window.isKeyPressed(GLFW_KEY_S)) {
+            camera.moveBackwards(move);
+        }
+        if (window.isKeyPressed(GLFW_KEY_A)) {
+            camera.moveLeft(move);
+        } else if (window.isKeyPressed(GLFW_KEY_D)) {
+            camera.moveRight(move);
+        }
+        
+        soundManager.updateListenerPosition(camera);        //Adapt listener position to player position
+
+
+        /*~~~ MOUSE INPUT ~~~*/
+        MouseInput mouseInput = window.getMouseInput();
+        Vector2f displVec = mouseInput.getDisplVec();
+        camera.addRotation((float) Math.toRadians(displVec.x * Consts.MOUSE_SENS), (float) Math.toRadians(displVec.y * Consts.MOUSE_SENS));
+        if (mouseInput.isLeftButtonPressed()){
+            entityLoader.selectEntity(window, scene, mouseInput.getCurrentPos());
+        }
+        
+
+        /*~~~ TOGGLE LIGHTS UI ~~~~*/
+        if (window.isKeyPressed(GLFW_KEY_O)) {
+            toggleLightControls(scene);
+        }
+    }
+
+    private void toggleLightControls(Scene scene) {
+        lightControls = new LightControls(scene);
+        enableLightControl = !enableLightControl;
+        if (enableLightControl) {
+            scene.setGuiInstance(lightControls);
+        } else {
+            scene.setGuiInstance(null);
+        }
+    }
+
+/*~~~~~~~~~~~~~~~~~~ */    
+
+/*~~~ FREE RESOURCES ~~~*/
+    @Override
+    public void cleanup() {
+        soundManager.cleanup();
+    }
+
+/*~~~ UPDATE PER FRAME ~~~*/
+    @Override
+    public void update(Window window, Scene scene, long diffTimeMillis) {
+        entityLoader.getAnimationData().nextFrame();
+        if (entityLoader.getAnimationData().getCurrentFrameIdx() == 45){
+            playerSoundSource.play();
+        }
+    }
+
 }

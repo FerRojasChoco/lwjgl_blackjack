@@ -22,9 +22,16 @@ public class Camera {
         invViewMatrix = new Matrix4f();
     }
 
-    //"camera" movement methods
-    public void addRotation(float x, float y) {
-        rotation.add(x, y);
+    
+    public void addRotation(float pitch, float yaw){
+        rotation.x += pitch;  // Assuming x is pitch (vertical)
+        rotation.y += yaw;    // Assuming y is yaw (horizontal)
+
+        // Clamp pitch to ±89 degrees to prevent over-rotation
+        float limit = (float) java.lang.Math.toRadians(89.0);
+        if (rotation.x > limit) rotation.x = limit;
+        if (rotation.x < -limit) rotation.x = -limit;
+
         recalculate();
     }
     
