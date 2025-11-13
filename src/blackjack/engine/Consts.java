@@ -37,7 +37,7 @@ public class Consts {
     
     /*~~~ MOUSE RELATED ~~~ */
     public static final float MOUSE_SENS = 0.05f;
-    public static final float MOVEMENT_SPEED = 0.001f;
+    public static final float MOVEMENT_SPEED = 0.01f;
 
     /*~~~ ANIMATION RELATED ~~~*/
     public static final int MAX_BONES = 150;

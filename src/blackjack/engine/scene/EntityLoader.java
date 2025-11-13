@@ -22,6 +22,7 @@ public class EntityLoader {
     private Entity cubeEntity;
     private Entity chairEntity;
     private Entity tableEntity;
+    private Entity[] chipsEntities;
 
     public void loadEntities(Scene scene){
 
@@ -97,6 +98,33 @@ public class EntityLoader {
         scene.addEntity(chairEntity);
         scene.addEntity(tableEntity);
 
+// Dynamically add the chips
+        String[] chipValues = {"1", "5", "10", "20", "50", "100", "500", "1000", "5000"};
+        chipsEntities = new Entity[chipValues.length];
+
+        for(int i = 0; i < chipValues.length; i++) {
+            
+            String modelId =  "chip" + chipValues[i] + "Model";
+            String modelPath = "resources\\models\\blackjack chips\\poker_chip_" + chipValues[i] + "\\poker_chip_" + chipValues[i] + ".obj";
+            Model chipModel = ModelLoader.loadModel(
+                modelId,
+                modelPath,
+                scene.getTextureCache(),
+                false
+            );
+
+            scene.addModel(chipModel);
+
+            // Match entities with their models and assign a position
+            String entityId = "chip" + chipValues[i] + "-entity";
+            Entity chipEntity = new Entity(entityId, chipModel.getId(), true);
+            float offsetX = (i - chipValues.length / 2f) * 0.05f;
+            chipEntity.setPosition(offsetX, 1f, 1.0f);
+
+            scene.addEntity(chipEntity);
+            chipEntity.updateModelMatrix();
+
+        }
     }
 
     public void selectEntity(Window window, Scene scene, Vector2f mousePos){
@@ -177,6 +205,10 @@ public class EntityLoader {
 
     public Entity getBobEntity(){
         return bobEntity;
+    }
+
+    public Entity[] getChipsEntities() {
+        return chipsEntities;
     }
     
     public AnimationData getAnimationData() {
