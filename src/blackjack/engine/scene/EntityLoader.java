@@ -65,7 +65,7 @@ public class EntityLoader {
 
         Model cardModel = ModelLoader.loadModel(
             "card-model",
-            "resources\\models\\cards\\clubs_2.obj", 
+            "resources\\models\\cards\\clubs_8.obj", 
             scene.getTextureCache(),
             false
         );

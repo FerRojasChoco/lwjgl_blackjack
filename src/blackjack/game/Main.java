@@ -28,7 +28,7 @@ public class Main implements IAppLogic {
         Main main = new Main();
         Window.WindowOptions opts = new Window.WindowOptions();
         opts.antiAliasing = true;
-        opts.borderless = false;
+        opts.borderless = true;
         Engine gameEngine = new Engine("Blackjack LWJGL", opts, main);
         gameEngine.start();
     }
@@ -68,11 +68,11 @@ public class Main implements IAppLogic {
         dirLight.setIntensity(0.88f);
         
         /*~~~ POINTLIGHT ~~~*/
-        // PointLight pointLight_1 = new PointLight();
-        // pointLight_1.setPosition(0.0f, 0.0f, 2.61f);
-        // pointLight_1.setIntensity(0.88f);
+        PointLight pointLight_1 = new PointLight();
+        pointLight_1.setPosition(0.0f, 0.0f, 2.61f);
+        pointLight_1.setIntensity(0.88f);
 
-        // sceneLights.getPointLights().add(pointLight_1);
+        sceneLights.getPointLights().add(pointLight_1);
 
         /*~~~ SPOTLIGHT ~~~*/
         SpotLight spotLight_1 = new SpotLight();
