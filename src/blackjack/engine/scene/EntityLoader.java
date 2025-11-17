@@ -65,7 +65,7 @@ public class EntityLoader {
 
         Model cardModel = ModelLoader.loadModel(
             "card-model",
-            "resources\\models\\cards\\clubs_8.obj", 
+            "resources\\models\\cards\\clubs_11.obj", 
             scene.getTextureCache(),
             false
         );
@@ -95,8 +95,9 @@ public class EntityLoader {
         tableEntity = new Entity("table-entity", tableModel.getId(), false);
 
         cardsEntity = new Entity("card-entity", cardModel.getId(), false);
-        cardsEntity.setPosition(0.0f, 0.9f, 1.35f);
-        cardsEntity.setScale(0.09f);
+        cardsEntity.setPosition(5.0f, 1.0f, 1.35f);
+        cardsEntity.setScale(1.0f);
+        
 
         terrainEntity.updateModelMatrix();
         bobEntity.updateModelMatrix();
