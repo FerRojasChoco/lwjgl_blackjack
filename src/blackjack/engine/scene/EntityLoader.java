@@ -79,14 +79,15 @@ public class EntityLoader {
     private static final float DEALER_START_X = -0.40f;
     private static final float PLAYER_START_X = -0.40f;
     private static final float Y = 0.9f;
-
-    private static final float DEALER_Z = 0.65f;
-    private static final float PLAYER_Z = 1.05f;
+    private static final float DEALER_START_Z = 0.55f;
+    private static final float PLAYER_START_Z = 0.95f;
 
     private static float dealerOffsetX = 0f;
     private static float playerOffsetX = 0f;
     private static float dealerOffsetY = 0f;
     private static float playerOffsetY = 0f;
+    private static float dealerOffsetZ = 0f;
+    private static float playerOffsetZ = 0f;
 
     public enum CardType {
         HIDDEN,
@@ -504,25 +505,28 @@ public class EntityLoader {
 
                 backCardEntity = new Entity("back-entity", backModel.getId(), false);
                 backCardEntity.setScale(cardScale);
-                backCardEntity.setPosition(DEALER_START_X, Y + dealerOffsetY, DEALER_Z);
+                backCardEntity.setPosition(DEALER_START_X, Y + dealerOffsetY, DEALER_START_Z + dealerOffsetZ);
                 
-                dealerOffsetX += 0.15f;
+                dealerOffsetX += 0.10f;
                 dealerOffsetY += 0.01f;
+                dealerOffsetZ += 0.03f;
 
                 backCardEntity.updateModelMatrix();
                 scene.addEntity(backCardEntity);
                 return; 
 
             case DEALER:
-                entity.setPosition(DEALER_START_X + dealerOffsetX, Y + dealerOffsetY, DEALER_Z);
-                dealerOffsetX += 0.15f;
+                entity.setPosition(DEALER_START_X + dealerOffsetX, Y + dealerOffsetY, DEALER_START_Z+ dealerOffsetZ);
+                dealerOffsetX += 0.10f;
                 dealerOffsetY += 0.01f;
+                dealerOffsetZ += 0.03f;
                 break;
 
             case PLAYER:
-                entity.setPosition(PLAYER_START_X + playerOffsetX, Y + playerOffsetY, PLAYER_Z);
-                playerOffsetX += 0.15f;
+                entity.setPosition(PLAYER_START_X + playerOffsetX, Y + playerOffsetY, PLAYER_START_Z + playerOffsetZ);
+                playerOffsetX += 0.10f;
                 playerOffsetY += 0.01f;
+                playerOffsetZ += 0.03f;
                 break;
         }
         
@@ -539,7 +543,7 @@ public class EntityLoader {
 
         Model card1 = cardModels.get(card); 
         Entity cardEntity = new Entity("card-" + System.nanoTime(), card1.getId(), false);
-        cardEntity.setPosition(HIDDEN_X, 0.9f, 0.65f);
+        cardEntity.setPosition(HIDDEN_X, Y, DEALER_START_Z);
         cardEntity.setScale(cardScale);
         cardEntity.updateModelMatrix();
         scene.addEntity(cardEntity);
@@ -558,6 +562,8 @@ public class EntityLoader {
         playerOffsetX = 0f;
         dealerOffsetY = 0f;
         playerOffsetY = 0f;
+        dealerOffsetZ = 0f;
+        playerOffsetZ = 0f;
         hiddenCardEntity = null;
     }
     

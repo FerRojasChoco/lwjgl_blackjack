@@ -128,7 +128,7 @@ public class Camera {
 
     public void setTopDownView() {
         setLocked(true);
-        setPosition(0f, 2f, 1.2f); 
+        setPosition(0f, 2f, 1.1f); 
         setRotation((float) + Math.PI / 2f, 0f); // look straight down
     }
 

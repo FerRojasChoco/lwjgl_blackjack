@@ -163,6 +163,8 @@ public class BlackJackLogic {
             state = GameState.ROUND_OVER;
             revealHiddenCard(scene);
             finishDealer(scene);
+
+
         }
         }
 
@@ -170,8 +172,32 @@ public class BlackJackLogic {
         if (state != GameState.DEALER_TURN) return;
 
         revealHiddenCard(scene);
-        finishDealer(scene);
+
+        boolean needsMore = dealerDrawOneCard(scene);
+
+        if (!needsMore) {
+            state = GameState.ROUND_OVER;
+            decideWinner(scene);
+        }
     }
+
+    public boolean dealerDrawOneCard(Scene scene) {
+        if (dealerSum >= 17) {
+            return false; // No more cards to draw
+        }
+
+        Card card = deck.remove(deck.size() - 1);
+        dealerHand.add(card);
+
+        dealerSum += card.getValue();
+        dealerAceCount += card.isAce() ? 1 : 0;
+        reduceDealerAce();
+
+        EntityLoader.loadCard(card.getPath(), scene, EntityLoader.CardType.DEALER);
+
+        return dealerSum < 17; // true = more cards needed, false = done
+    }
+
 
     public void buildDeck() {
         deck = new ArrayList<Card>();
@@ -335,6 +361,10 @@ public class BlackJackLogic {
 
     public void clearCards(Scene scene) {
         scene.clearCardEntities(EntityLoader.getCardModels());
+        EntityLoader.clearChips(scene); 
+                for (int i = 0; i < EntityLoader.CHIP_VALUES.length; i++) {
+                    EntityLoader.loadChips(i, EntityLoader.CHIP_VALUES[i], scene);
+                }
         EntityLoader.removeHiddenCard(scene);
         EntityLoader.resetOffsets();
     }
@@ -349,10 +379,6 @@ public class BlackJackLogic {
 
             // Start game
             if (key == GLFW_KEY_P && action == GLFW_RELEASE) {
-                EntityLoader.clearChips(scene); 
-                for (int i = 0; i < EntityLoader.CHIP_VALUES.length; i++) {
-                    EntityLoader.loadChips(i, EntityLoader.CHIP_VALUES[i], scene);
-                }
                 logic.startGame(scene);
                 scene.getCamera().setTopDownView(); 
             }
@@ -383,6 +409,10 @@ public class BlackJackLogic {
                 scene.clearCardEntities(EntityLoader.getCardModels());
                 EntityLoader.removeHiddenCard(scene);
                 EntityLoader.resetOffsets();
+                EntityLoader.clearChips(scene); 
+                for (int i = 0; i < EntityLoader.CHIP_VALUES.length; i++) {
+                    EntityLoader.loadChips(i, EntityLoader.CHIP_VALUES[i], scene);
+                }
             }
         });
     }
