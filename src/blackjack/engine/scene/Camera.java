@@ -2,6 +2,8 @@ package blackjack.engine.scene;
 
 import org.joml.*;
 
+// Added for the camera to force 0 radians (no movement)
+import java.lang.Math;
 public class Camera {
 
     private Vector3f direction;
@@ -11,6 +13,8 @@ public class Camera {
     private Vector3f up;
     private Matrix4f viewMatrix;
     private Matrix4f invViewMatrix;
+
+    private boolean locked = false;
 
     public Camera() {
         direction = new Vector3f();
@@ -24,6 +28,7 @@ public class Camera {
 
     
     public void addRotation(float pitch, float yaw){
+        if (locked) return;
         rotation.x += pitch;  // Assuming x is pitch (vertical)
         rotation.y += yaw;    // Assuming y is yaw (horizontal)
 
@@ -36,6 +41,7 @@ public class Camera {
     }
     
     public void moveBackwards(float inc) {
+        if (locked) return;
         viewMatrix.positiveZ(direction).negate();
         direction.y = 0;
         direction.normalize();
@@ -45,12 +51,14 @@ public class Camera {
     }
 
     public void moveDown(float inc) {
+        if (locked) return;
         viewMatrix.positiveY(up).mul(inc);
         position.sub(up);
         recalculate();
     }
 
     public void moveForward(float inc) {
+        if (locked) return;
         viewMatrix.positiveZ(direction).negate();
         //fixed "flying" player by assigning 0 to the vertical component
         direction.y = 0;
@@ -61,6 +69,7 @@ public class Camera {
     }
 
     public void moveLeft(float inc) {
+        if (locked) return;
         viewMatrix.positiveX(right);
         right.y = 0;
         right.normalize();
@@ -70,6 +79,7 @@ public class Camera {
     }
 
     public void moveRight(float inc) {
+        if (locked) return;
         viewMatrix.positiveX(right);
         right.y = 0;
         right.normalize();
@@ -79,6 +89,7 @@ public class Camera {
     }
 
     public void moveUp(float inc) {
+        if (locked) return;
         viewMatrix.positiveY(up).mul(inc);
         position.add(up);
         recalculate();
@@ -113,5 +124,26 @@ public class Camera {
     public void setRotation(float x, float y) {
         rotation.set(x, y);
         recalculate();
+    }
+
+    public void setTopDownView() {
+        setLocked(true);
+        setPosition(0f, 2f, 1.2f); 
+        setRotation((float) + Math.PI / 2f, 0f); // look straight down
+    }
+
+    public void setNormalView() {
+        setLocked(false);       
+        setPosition(0f, 1.8f, 3.5f);  
+        setRotation(0f, 0f);    
+    }
+
+
+    public void setLocked(boolean value) {
+        locked = value;
+    }
+
+    public boolean isLocked() {
+        return locked;
     }
 }

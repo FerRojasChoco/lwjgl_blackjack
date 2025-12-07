@@ -133,6 +133,12 @@ public class Window {
         } else if (key == GLFW_KEY_K) {
             glfwSetInputMode(windowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
+
+        else if (key == GLFW_KEY_N) {
+            double centerX = width / 2;
+            double centerY = height / 2;
+            glfwSetCursorPos(windowHandle, centerX, centerY);
+        }
     }
     
     //free resources

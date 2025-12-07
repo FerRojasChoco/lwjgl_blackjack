@@ -34,6 +34,11 @@ public class EntityLoader {
     private Entity chairEntity;
     private Entity tableEntity;
     private Entity[] chipsEntities;
+    private static Map<String, Model> chipModels = new HashMap<>();
+    private static List<Entity> allChipEntities = new ArrayList<>();
+    public static final String[] CHIP_VALUES = {"10", "50", "100", "500", "1000"};
+
+
     private Entity chipEntity;
     private static Entity hiddenCardEntity;
     private static Entity backCardEntity;
@@ -203,58 +208,79 @@ public class EntityLoader {
         scene.addEntity(tableEntity);
 
         // Dynamically add the chips
+        // String[] chipValues = {"10", "50", "100", "500", "1000"};
+        // chipsEntities = new Entity[chipValues.length];
+
+        // for(int i = 0; i < chipValues.length; i++) {
+        //     offsetY_Chips = 0.87f;
+        //     for (int j = 0; j < 5; j++) {
+        //         String modelId =  "chip " + chipValues[i] + j + "Model";
+        //         String modelPath = "resources\\models\\blackjack chips\\poker_chip_" + chipValues[i] + "\\poker_chip_" + chipValues[i] + ".obj";
+        //         Model chipModel = ModelLoader.loadModel(
+        //             modelId,
+        //             modelPath,
+        //             scene.getTextureCache(),
+        //             false
+        //         );
+
+        //         scene.addModel(chipModel);
+
+        //         // Match entities with their models and assign a position
+        //         String entityId = chipValues[i] + j;
+        //         chipEntity = new Entity(entityId, chipModel.getId(), true);
+        //         float offsetX = (i - chipValues.length / 2f) * 0.1f;
+        //         offsetY_Chips = offsetY_Chips + 0.01f; 
+        //         chipEntity.setPosition(offsetX, offsetY_Chips, 1.55f);
+
+        //         scene.addEntity(chipEntity);
+        //         chipEntity.updateModelMatrix();
+
+        //         int chipValue = Integer.parseInt(chipValues[i]);
+        //         switch (chipValue) {
+        //             case 10:
+        //                 chip10Entity=chipEntity;
+        //                 break;
+                
+        //             case 50:
+        //                 chip50Entity=chipEntity;
+        //                 break;
+
+        //             case 100:
+        //                 chip100Entity=chipEntity;
+        //                 break;
+
+        //             case 500:
+        //                 chip500Entity=chipEntity;
+        //                 break;
+
+        //             case 1000:
+        //                 chip1000Entity=chipEntity;
+        //                 break;
+        //         }
+                
+                
+        //     }
+        // }
+
         String[] chipValues = {"10", "50", "100", "500", "1000"};
-        chipsEntities = new Entity[chipValues.length];
 
-        for(int i = 0; i < chipValues.length; i++) {
-            offsetY_Chips = 0.87f;
-            for (int j = 0; j < 5; j++) {
-                String modelId =  "chip " + chipValues[i] + j + "Model";
-                String modelPath = "resources\\models\\blackjack chips\\poker_chip_" + chipValues[i] + "\\poker_chip_" + chipValues[i] + ".obj";
-                Model chipModel = ModelLoader.loadModel(
-                    modelId,
-                    modelPath,
-                    scene.getTextureCache(),
-                    false
-                );
+        for (int i = 0; i < chipValues.length; i++) {
 
-                scene.addModel(chipModel);
+            String value = chipValues[i];
 
-                // Match entities with their models and assign a position
-                String entityId = chipValues[i] + j;
-                chipEntity = new Entity(entityId, chipModel.getId(), true);
-                float offsetX = (i - chipValues.length / 2f) * 0.1f;
-                offsetY_Chips = offsetY_Chips + 0.01f; 
-                chipEntity.setPosition(offsetX, offsetY_Chips, 1.55f);
+            String modelId = "chipModel_" + value;
+            String modelPath = "resources\\models\\blackjack chips\\poker_chip_" 
+                                + value + "\\poker_chip_" + value + ".obj";
 
-                scene.addEntity(chipEntity);
-                chipEntity.updateModelMatrix();
+            Model chipModel = ModelLoader.loadModel(
+                modelId, modelPath, scene.getTextureCache(), false
+            );
 
-                int chipValue = Integer.parseInt(chipValues[i]);
-                switch (chipValue) {
-                    case 10:
-                        chip10Entity=chipEntity;
-                        break;
-                
-                    case 50:
-                        chip50Entity=chipEntity;
-                        break;
+            scene.addModel(chipModel);
 
-                    case 100:
-                        chip100Entity=chipEntity;
-                        break;
+            chipModels.put(value, chipModel);   
 
-                    case 500:
-                        chip500Entity=chipEntity;
-                        break;
-
-                    case 1000:
-                        chip1000Entity=chipEntity;
-                        break;
-                }
-                
-                
-            }
+            loadChips(i, value, scene);
         }
 
         // Dynamically add the cards
@@ -283,6 +309,60 @@ public class EntityLoader {
             }
         }
     }
+
+    public static void loadChips(int i, String chipValue, Scene scene) {
+
+        Model chipModel = chipModels.get(chipValue);
+        if (chipModel == null) {
+            System.err.println("Chip model not loaded: " + chipValue);
+            return;
+        }
+
+        String modelHandle = chipModel.getId();   // MUST be String (same as cards)
+
+        float offsetY = 0.87f;
+
+        for (int j = 0; j < 5; j++) {
+
+            String entityId = chipValue + j;
+            Entity entity = new Entity(entityId, modelHandle, true); // now correct
+
+            float offsetX = (i - 5 / 2f) * 0.1f;
+            offsetY += 0.01f;
+
+            entity.setPosition(offsetX, offsetY, 1.55f);
+            entity.updateModelMatrix();
+            scene.addEntity(entity);
+
+            allChipEntities.add(entity);
+
+
+            switch (chipValue) {
+                case "10":   chip10Entity = entity; break;
+                case "50":   chip50Entity = entity; break;
+                case "100":  chip100Entity = entity; break;
+                case "500":  chip500Entity = entity; break;
+                case "1000": chip1000Entity = entity; break;
+            }
+        }
+    }
+
+    public static void clearChips(Scene scene) {
+
+        for (Entity e : allChipEntities) {
+            scene.removeEntity(e);   // you MUST have/remove this method in Scene
+        }
+
+        allChipEntities.clear();
+
+        // Reset your reference variables
+        chip10Entity = null;
+        chip50Entity = null;
+        chip100Entity = null;
+        chip500Entity = null;
+        chip1000Entity = null;
+    }
+
 
     public static void moveBetChips(Scene scene, String chipValue) {
         // Remove selected chip 
@@ -499,7 +579,7 @@ public class EntityLoader {
         scene.addEntity(entity);
     }
 
-    public static void removeHiddedCard(String card, Scene scene) {
+    public static void replaceHiddedCard(String card, Scene scene) {
         if (hiddenCardEntity != null) {
             scene.removeEntity(hiddenCardEntity);
             hiddenCardEntity = null;
@@ -512,6 +592,13 @@ public class EntityLoader {
         cardEntity.updateModelMatrix();
         scene.addEntity(cardEntity);
         
+    }
+
+    public static void removeHiddenCard(Scene scene) {
+        if (backCardEntity != null) {
+            scene.removeEntity(backCardEntity);
+            backCardEntity = null;
+        }
     }
 
     public static void resetOffsets() {

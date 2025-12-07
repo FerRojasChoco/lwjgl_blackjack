@@ -3,6 +3,7 @@ package blackjack.logic;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_H;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_P;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_J;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_Q;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 
@@ -78,8 +79,10 @@ public class BlackJackLogic {
 
     // GAME LOGIC
     public void startGame(Scene scene) {
+        
         System.out.println("========== NEW GAME STARTS ==========");
         clearCards(scene);
+        PlayerBet = 0;
         // Getting deck ready
         buildDeck();
         shuffleDeck();
@@ -208,7 +211,6 @@ public class BlackJackLogic {
     }
 
     public static void betChips(String chipValue, Scene scene, float z) {
-        System.out.println("Position z asdf" +z);
         if (z != 1.55f) return;
         if (state != GameState.ROUND_START) return;
         int correctedValue = Integer.parseInt(chipValue) / 10;
@@ -228,7 +230,6 @@ public class BlackJackLogic {
     }
 
     public static void undoBetChips(String chipValue, Scene scene, float z) {
-        System.out.println("Position z " +z);
         if (z != 1.45f) return;
         
         if (state != GameState.ROUND_START) return;
@@ -255,7 +256,7 @@ public class BlackJackLogic {
     }
 
     public void revealHiddenCard(Scene scene) {
-        EntityLoader.removeHiddedCard(hiddenCard.getPath(), scene);
+        EntityLoader.replaceHiddedCard(hiddenCard.getPath(), scene);
     }
 
     public void finishDealer(Scene scene) {
@@ -271,10 +272,10 @@ public class BlackJackLogic {
             EntityLoader.loadCard(card.getPath(), scene, EntityLoader.CardType.DEALER);
         } 
         state = GameState.ROUND_OVER;
-        decideWinner();
+        decideWinner(scene);
     }
 
-    public void decideWinner() {
+    public void decideWinner(Scene scene) {
         if (state != GameState.ROUND_OVER) return;
 
         System.out.println("PLAYER POINTS: " + playerSum);
@@ -284,6 +285,11 @@ public class BlackJackLogic {
             System.out.println("GAME RESULT: PLAYER LOST (BUST)");
             PlayerCapital -= PlayerBet;   
             PlayerBet = 0;   
+            if(PlayerCapital == 0) {
+                System.out.println("GAME OVER");
+                clearCards(scene);
+                scene.getCamera().setNormalView();
+            }
             return;
         }
 
@@ -317,12 +323,18 @@ public class BlackJackLogic {
             System.out.println("GAME RESULT: DEALER WINS");
             PlayerCapital -= PlayerBet;
             PlayerBet = 0;     
+            if(PlayerCapital == 0) {
+                System.out.println("GAME OVER");
+                clearCards(scene);
+                scene.getCamera().setNormalView();
+            }
             return;
         }
     }
 
     public void clearCards(Scene scene) {
         scene.clearCardEntities(EntityLoader.getCardModels());
+        EntityLoader.removeHiddenCard(scene);
         EntityLoader.resetOffsets();
     }
     
@@ -336,7 +348,12 @@ public class BlackJackLogic {
 
             // Start game
             if (key == GLFW_KEY_P && action == GLFW_RELEASE) {
+                EntityLoader.clearChips(scene); 
+                for (int i = 0; i < EntityLoader.CHIP_VALUES.length; i++) {
+                    EntityLoader.loadChips(i, EntityLoader.CHIP_VALUES[i], scene);
+                }
                 logic.startGame(scene);
+                scene.getCamera().setTopDownView(); 
             }
 
             // Hit
@@ -357,6 +374,14 @@ public class BlackJackLogic {
                     logic.stand(scene);
                 }   
                 
+            }
+
+            // End Game
+            if (key == GLFW_KEY_Q && action == GLFW_RELEASE) {
+                scene.getCamera().setNormalView();
+                scene.clearCardEntities(EntityLoader.getCardModels());
+                EntityLoader.removeHiddenCard(scene);
+                EntityLoader.resetOffsets();
             }
         });
     }

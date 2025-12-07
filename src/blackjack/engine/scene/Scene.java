@@ -10,7 +10,7 @@ import blackjack.engine.IGuiInstance;
 
 import blackjack.engine.graph.*;
 import blackjack.engine.scene.lights.SceneLights;
-
+import blackjack.engine.scene.EntityLoader;
 import java.util.*;
 
 public class Scene {
