@@ -8,7 +8,7 @@ public class MouseInput {
 
     private Vector2f currentPos;
     private Vector2f displVec;
-    private boolean inWindow;
+  //  private boolean inWindow;
     private boolean leftButtonPressed;
     private Vector2f previousPos;
     private boolean rightButtonPressed;
@@ -19,18 +19,30 @@ public class MouseInput {
         displVec = new Vector2f();
         leftButtonPressed = false;
         rightButtonPressed = false;
-        inWindow = false;
+      //  inWindow = false;
 
         glfwSetCursorPosCallback(windowHandle, (handle, xpos, ypos) -> {
             currentPos.x = (float) xpos;
             currentPos.y = (float) ypos;
         });
-        glfwSetCursorEnterCallback(windowHandle, (handle, entered) -> inWindow = entered);
+     //   glfwSetCursorEnterCallback(windowHandle, (handle, entered) -> inWindow = entered);
         glfwSetMouseButtonCallback(windowHandle, (handle, button, action, mode) -> {
             leftButtonPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
             rightButtonPressed = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS;
         });
     }
+    public void forcePosition(double xpos, double ypos) {
+    // Override all internal mouse states
+    currentPos.x = (float) xpos;
+    currentPos.y = (float) ypos;
+
+    previousPos.x = (float) xpos;
+    previousPos.y = (float) ypos;
+
+    displVec.x = 0;
+    displVec.y = 0;
+    }
+
 
     public Vector2f getCurrentPos() {
         return currentPos;
@@ -43,7 +55,14 @@ public class MouseInput {
     public void input() {
         displVec.x = 0;
         displVec.y = 0;
-        if (previousPos.x > 0 && previousPos.y > 0 && inWindow) {
+        /*if (previousPos.x > 0 && previousPos.y > 0) {
+            if(inWindow){
+                System.out.println("in window");
+            }
+            else{
+                System.out.println("not in window");
+            }*/
+
             double deltax = currentPos.x - previousPos.x;
             double deltay = currentPos.y - previousPos.y;
             boolean rotateX = deltax != 0;
@@ -54,7 +73,7 @@ public class MouseInput {
             if (rotateY) {
                 displVec.x = (float) deltay;
             }
-        }
+       // }
         previousPos.x = currentPos.x;
         previousPos.y = currentPos.y;
     }
