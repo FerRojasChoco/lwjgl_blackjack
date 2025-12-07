@@ -47,7 +47,7 @@ public class EntityLoader {
     private static float offsetY_Chips;
 
     // Variables for moveChips function
-    private static float offsetY_start = 0.9f;
+    private static float offsetY_start = 0.87f;
     private static float offsetY_10 = 0;
     private static float offsetY_50 = 0;
     private static float offsetY_100 = 0;
@@ -207,7 +207,7 @@ public class EntityLoader {
         chipsEntities = new Entity[chipValues.length];
 
         for(int i = 0; i < chipValues.length; i++) {
-            offsetY_Chips = 0.9f;
+            offsetY_Chips = 0.87f;
             for (int j = 0; j < 5; j++) {
                 String modelId =  "chip " + chipValues[i] + j + "Model";
                 String modelPath = "resources\\models\\blackjack chips\\poker_chip_" + chipValues[i] + "\\poker_chip_" + chipValues[i] + ".obj";
@@ -294,8 +294,9 @@ public class EntityLoader {
             int index = Integer.parseInt(chipValue) / 10;
             switch (index) {
                 case 10:
-                    offsetY_10 = offsetY_start + 0.01f*(counter[0]);
                     counter[0] = counter[0] + 1.0f;
+                    offsetY_10 = offsetY_start + 0.01f*(counter[0]);
+                    
                     newChip.setPosition(-0.25f, offsetY_10, 1.45f);
                     break;
                 case 50:
