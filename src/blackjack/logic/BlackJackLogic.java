@@ -257,6 +257,7 @@ public class BlackJackLogic {
 
     public void revealHiddenCard(Scene scene) {
         EntityLoader.replaceHiddedCard(hiddenCard.getPath(), scene);
+        EntityLoader.removeHiddenCard(scene);
     }
 
     public void finishDealer(Scene scene) {
