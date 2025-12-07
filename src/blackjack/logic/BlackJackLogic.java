@@ -207,33 +207,49 @@ public class BlackJackLogic {
         return dealerSum;
     }
 
-    public static void betChips(String chipValue) {
+    public static void betChips(String chipValue, Scene scene, float z) {
+        System.out.println("Position z asdf" +z);
+        if (z != 1.55f) return;
         if (state != GameState.ROUND_START) return;
-        int checkBetLimit = PlayerBet + Integer.parseInt(chipValue);
-        
+        int correctedValue = Integer.parseInt(chipValue) / 10;
+        int checkBetLimit = PlayerBet + correctedValue;
+
         if (checkBetLimit > PlayerCapital) {
             System.out.println("Not enough money ");
         }
 
         else {
-            PlayerBet = PlayerBet + Integer.parseInt(chipValue);
+            PlayerBet = PlayerBet + correctedValue;
             System.out.println("Player's Current Bet " + PlayerBet);
+            EntityLoader.moveBetChips(scene, chipValue);
+
         }
         
     }
 
-    public static void undoBetChips(String chipValue) {
-        if (state != GameState.ROUND_START) return;
-        int checkNotLessthan0 = PlayerBet - Integer.parseInt(chipValue);
+    public static void undoBetChips(String chipValue, Scene scene, float z) {
+        System.out.println("Position z " +z);
+        if (z != 1.45f) return;
         
-        if (checkNotLessthan0 <= 0) {
+        if (state != GameState.ROUND_START) return;
+        int correctedValue = Integer.parseInt(chipValue) / 10;
+        int checkNotLessthan0 = PlayerBet - correctedValue;
+        
+        if (checkNotLessthan0 < 0) {
             PlayerBet = 0;
             System.out.println("Player's Current Bet " + PlayerBet);
         }
 
-        else {
-            PlayerBet = PlayerBet - Integer.parseInt(chipValue);
+        else if(checkNotLessthan0 == 0) {
+            PlayerBet = 0;
             System.out.println("Player's Current Bet " + PlayerBet);
+            EntityLoader.removeBetChips(scene, chipValue);
+        }
+
+        else {
+            PlayerBet = PlayerBet - correctedValue;
+            System.out.println("Player's Current Bet " + PlayerBet);
+            EntityLoader.removeBetChips(scene, chipValue);
         }
         
     }

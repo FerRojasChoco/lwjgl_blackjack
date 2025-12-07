@@ -41,7 +41,7 @@ public class Main implements IAppLogic {
         entityLoader.loadEntities(scene);
         
         BlackJackLogic.keyCallBack(window, scene); // This is to show cards
-        EntityLoader.clickChips(window.getWindowHandle()); // This is to select chips
+        EntityLoader.clickChips(window.getWindowHandle(), scene); // This is to select chips
         /*~~~ LIGHT SETTINGS ~~~*/ 
         initLights(scene);
 
@@ -144,7 +144,11 @@ public class Main implements IAppLogic {
         } else if (window.isKeyPressed(GLFW_KEY_D)) {
             camera.moveRight(move);
         }
-        
+        if (window.isKeyPressed(GLFW_KEY_UP)) {
+            camera.moveUp(move);;
+        } else if (window.isKeyPressed(GLFW_KEY_DOWN)) {
+            camera.moveDown(move);;
+        }
         soundManager.updateListenerPosition(camera);        //Adapt listener position to player position
 
 
