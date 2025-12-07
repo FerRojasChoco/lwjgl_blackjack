@@ -23,6 +23,7 @@ import blackjack.logic.*;
 import blackjack.engine.MouseInput;
 import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
+import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_2;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 public class EntityLoader {
 
@@ -46,6 +47,10 @@ public class EntityLoader {
 
     public static void getChipSelected(String chipSelected) {
         BlackJackLogic.betChips(chipSelected);
+    }
+
+    public static void removeChipSelected(String chipSelected) {
+        BlackJackLogic.undoBetChips(chipSelected);
     }
 
 
@@ -340,6 +345,10 @@ public class EntityLoader {
                     getChipSelected(ChipSelected);
                 }
             }
+            else if (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS) {
+                ChipSelected = hoveredEntity.getId();
+                removeChipSelected(ChipSelected);
+            }
         });
     }
 
@@ -358,7 +367,6 @@ public class EntityLoader {
         switch (type) {
 
             case HIDDEN:
-                System.out.println("Hidden card: " +card);
                 hiddenCardEntity = entity;
 
                 Model backModel = ModelLoader.loadModel(
@@ -380,13 +388,11 @@ public class EntityLoader {
                 return; 
 
             case DEALER:
-                System.out.println("Dealer card: " +card);
                 entity.setPosition(DEALER_START_X + dealerOffsetX, Y, DEALER_Z);
                 dealerOffsetX += 0.30f;
                 break;
 
             case PLAYER:
-                System.out.println("Player card: " +card);
                 entity.setPosition(PLAYER_START_X + playerOffsetX, Y, PLAYER_Z);
                 playerOffsetX += 0.30f;
                 break;

@@ -25,7 +25,10 @@ public class BlackJackLogic {
         ROUND_START,
         PLAYER_TURN,
         DEALER_TURN,
-        ROUND_OVER
+        ROUND_OVER,
+        PLAYER_WON,
+        PLAYER_LOSS,
+        DRAW,
     }
 
     private static GameState state = GameState.NONE;
@@ -54,6 +57,9 @@ public class BlackJackLogic {
         }
     }
 
+    public static int PlayerCapital = 1000;
+    public static int PlayerBet = 0;
+
     ArrayList<Card> deck;
     Random random = new Random();
 
@@ -79,7 +85,10 @@ public class BlackJackLogic {
         shuffleDeck();
 
         // Set game state
-        state = GameState.PLAYER_TURN;
+        state = GameState.ROUND_START;
+        System.out.println("ROUND STARTED");
+        System.out.println("Player's Capital: " + PlayerCapital);
+        System.out.println("Player's Current Bet " + PlayerBet);
 
         // Variables 
         String cardPath;
@@ -116,6 +125,25 @@ public class BlackJackLogic {
         }
     }
 
+    public void changeGameStatetoPlayerTurn() {
+        state = GameState.PLAYER_TURN; 
+    }
+
+    public void changeGameStatetoDealerTurn() {
+        state = GameState.DEALER_TURN;
+    }
+
+    public boolean checkBet() {
+        if (PlayerBet == 0) {
+            System.out.println("Must set a bet!");
+            return false;
+        }
+
+        else {
+            return true;
+        }
+    }
+
     public void hit(Scene scene) {
         if (state != GameState.PLAYER_TURN) return;
 
@@ -130,16 +158,13 @@ public class BlackJackLogic {
 
         if (playerSum > 21) {
             state = GameState.ROUND_OVER;
-            //System.out.println("Player busts!");
             revealHiddenCard(scene);
             finishDealer(scene);
         }
         }
 
     public void stand(Scene scene) {
-        if (state != GameState.PLAYER_TURN) return;
-
-        state = GameState.DEALER_TURN;
+        if (state != GameState.DEALER_TURN) return;
 
         revealHiddenCard(scene);
         finishDealer(scene);
@@ -183,8 +208,34 @@ public class BlackJackLogic {
     }
 
     public static void betChips(String chipValue) {
-        if (state != GameState.PLAYER_TURN) return;
-        System.out.println("Arrived " + chipValue);
+        if (state != GameState.ROUND_START) return;
+        int checkBetLimit = PlayerBet + Integer.parseInt(chipValue);
+        
+        if (checkBetLimit > PlayerCapital) {
+            System.out.println("Not enough money ");
+        }
+
+        else {
+            PlayerBet = PlayerBet + Integer.parseInt(chipValue);
+            System.out.println("Player's Current Bet " + PlayerBet);
+        }
+        
+    }
+
+    public static void undoBetChips(String chipValue) {
+        if (state != GameState.ROUND_START) return;
+        int checkNotLessthan0 = PlayerBet - Integer.parseInt(chipValue);
+        
+        if (checkNotLessthan0 <= 0) {
+            PlayerBet = 0;
+            System.out.println("Player's Current Bet " + PlayerBet);
+        }
+
+        else {
+            PlayerBet = PlayerBet - Integer.parseInt(chipValue);
+            System.out.println("Player's Current Bet " + PlayerBet);
+        }
+        
     }
 
     public void revealHiddenCard(Scene scene) {
@@ -212,39 +263,47 @@ public class BlackJackLogic {
 
         System.out.println("PLAYER POINTS: " + playerSum);
         System.out.println("DEALER POINTS: " + dealerSum);
-        // --- 1. Player busts ---
+       // --- 1. Player busts ---
         if (playerSum > 21) {
             System.out.println("GAME RESULT: PLAYER LOST (BUST)");
+            PlayerCapital -= PlayerBet;   
+            PlayerBet = 0;   
             return;
         }
 
         // --- 2. Dealer busts ---
         if (dealerSum > 21) {
             System.out.println("GAME RESULT: PLAYER WINS (DEALER BUST)");
+            PlayerCapital += PlayerBet;      
+            PlayerBet = 0;
             return;
         }
 
-        // --- 3. Both not bust → compare values ---
+        // --- 3. Both not bust compare values ---
 
         // Exact tie
         if (playerSum == dealerSum) {
             System.out.println("GAME RESULT: DRAW");
+            PlayerBet = 0;
             return;
         }
 
         // Player wins with higher total
         if (playerSum > dealerSum) {
             System.out.println("GAME RESULT: PLAYER WINS");
+            PlayerCapital += PlayerBet;  
+            PlayerBet = 0;    
             return;
         }
 
         // Dealer wins with higher total
         if (dealerSum > playerSum) {
             System.out.println("GAME RESULT: DEALER WINS");
+            PlayerCapital -= PlayerBet;
+            PlayerBet = 0;     
             return;
         }
     }
-
 
     public void clearCards(Scene scene) {
         scene.clearCardEntities(EntityLoader.getCardModels());
@@ -266,12 +325,22 @@ public class BlackJackLogic {
 
             // Hit
             if (key == GLFW_KEY_H && action == GLFW_RELEASE) {
-                logic.hit(scene);
+                if (logic.checkBet())
+                {
+                    logic.changeGameStatetoPlayerTurn();
+                    logic.hit(scene);
+                }   
+                
             }
 
             // Stand
             if (key == GLFW_KEY_J && action == GLFW_RELEASE) {
-                logic.stand(scene);
+                if (logic.checkBet())
+                {
+                    logic.changeGameStatetoDealerTurn();
+                    logic.stand(scene);
+                }   
+                
             }
         });
     }
