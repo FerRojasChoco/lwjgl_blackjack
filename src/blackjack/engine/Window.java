@@ -22,6 +22,7 @@ public class Window {
     private int width;
     private Callable<Void> resizeFunc;
     private MouseInput mouseInput;
+    boolean suppressNextMouseDelta = false;
 
     public Window(String title, WindowOptions opts, Callable<Void> resizeFunc){
         this.resizeFunc = resizeFunc;
@@ -73,7 +74,8 @@ public class Window {
         if (windowHandle == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
-
+        //mouse hidden by default
+        glfwSetInputMode(windowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         // borderless handle
         if (opts.borderless) {
             glfwSetWindowPos(windowHandle, 0, 0);
@@ -122,7 +124,12 @@ public class Window {
         }
         
         if (key == GLFW_KEY_L) {
+            double centerX = width / 2;
+            double centerY = height / 2;
+            glfwSetCursorPos(windowHandle, centerX, centerY);
+            mouseInput.forcePosition(centerX, centerY);
             glfwSetInputMode(windowHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            //if (mouseInput != null) mouseInput.reset();
         } else if (key == GLFW_KEY_K) {
             glfwSetInputMode(windowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
