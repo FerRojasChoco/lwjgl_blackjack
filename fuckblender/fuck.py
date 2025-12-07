@@ -1,7 +1,7 @@
 # -----------------------------------------------------------
 # Hard-coded OBJ file path — EDIT THIS
 # -----------------------------------------------------------
-OBJ_FILE_PATH = r"fuckblender\clubs_11.obj"   # <-- put your .obj path here
+OBJ_FILE_PATH = r"fuckblender\clubs_10.obj"   # <-- put your .obj path here
 
 
 def clean_obj_file(input_path):

@@ -1,7 +1,9 @@
 package blackjack.engine.scene;
-
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.joml.Intersectionf;
 import org.joml.Matrix4f;
@@ -13,6 +15,12 @@ import blackjack.engine.Window;
 import blackjack.engine.graph.Material;
 import blackjack.engine.graph.Mesh;
 import blackjack.engine.graph.Model;
+import imgui.ImGuiIO;
+
+// Testeo
+import org.lwjgl.glfw.GLFWKeyCallback;
+import blackjack.logic.*;
+
 
 public class EntityLoader {
 
@@ -23,9 +31,75 @@ public class EntityLoader {
     private Entity chairEntity;
     private Entity tableEntity;
     private Entity[] chipsEntities;
-    private Entity cardsEntity;
+    private static Entity hiddenCardEntity;
+    private static Entity backCardEntity;
 
+    private static Map<String, Model> cardModels = new HashMap<>();
+    public static Map<String, Model> getCardModels() {
+        return cardModels;
+    }
+
+    private static float cardScale = 0.06f;
+    private static final float HIDDEN_X = -0.42f;
+    private static final float DEALER_START_X = -0.60f;
+    private static final float PLAYER_START_X = -0.60f;
+
+    private static final float Y = 0.9f;
+    private static final float DEALER_Z = 0.65f;
+    private static final float PLAYER_Z = 1.05f;
+
+    private static float dealerOffsetX = 0f;
+    private static float playerOffsetX = 0f;
+
+    public enum CardType {
+        HIDDEN,
+        DEALER,
+        PLAYER
+    }
+    // Temporal
+    private class Card {
+        String value;
+        String type; 
+
+        // Now we created a constructor
+        Card(String value, String type) {
+            this.value = value;
+            this.type = type;
+        }
+
+        public String toString() {
+            return type + "_" + value;
+        }
+
+        public int getValue() {
+            if(value == "1") {
+                return 11;
+            }
+            else if(value == "11" || value == "12" || value == "13") {
+                return 10;
+            }
+            else {
+                return Integer.parseInt(value); // 2 ~ 10
+            }
+            
+        }
+
+        public boolean isAce() {
+            if(value == "1") {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        public String getPath() {
+            return "resources\\models\\cards\\" + toString() + ".obj";
+        }
+    }
+    
     public void loadEntities(Scene scene){
+        
 
         // define models to be rendered
         Model terrainModel = ModelLoader.loadModel(
@@ -63,19 +137,11 @@ public class EntityLoader {
             false
         );
 
-        Model cardModel = ModelLoader.loadModel(
-            "card-model",
-            "resources\\models\\cards\\clubs_11.obj", 
-            scene.getTextureCache(),
-            false
-        );
-
         scene.addModel(terrainModel); 
         scene.addModel(bobModel);
         scene.addModel(cubeModel);
         scene.addModel(chairModel);
         scene.addModel(tableModel);
-        scene.addModel(cardModel);
 
         //define entity properties
         terrainEntity = new Entity("terrain-entity", terrainModel.getId(), false);
@@ -94,27 +160,21 @@ public class EntityLoader {
         
         tableEntity = new Entity("table-entity", tableModel.getId(), false);
 
-        cardsEntity = new Entity("card-entity", cardModel.getId(), false);
-        cardsEntity.setPosition(5.0f, 1.0f, 1.35f);
-        cardsEntity.setScale(1.0f);
-        
-
         terrainEntity.updateModelMatrix();
         bobEntity.updateModelMatrix();
         cubeEntity.updateModelMatrix();
         chairEntity.updateModelMatrix();
         tableEntity.updateModelMatrix();
-        cardsEntity.updateModelMatrix();
 
         scene.addEntity(terrainEntity);
         scene.addEntity(bobEntity);
         scene.addEntity(cubeEntity);
         scene.addEntity(chairEntity);
         scene.addEntity(tableEntity);
-        scene.addEntity(cardsEntity);
 
-// Dynamically add the chips
-        String[] chipValues = {"1", "5", "10", "20", "50", "100", "500", "1000", "5000"};
+        // Dynamically add the chips
+        //String[] chipValues = {"1", "5", "10", "20", "50", "100", "500", "1000", "5000"};
+        String[] chipValues = {"10", "50", "100", "500", "1000"};
         chipsEntities = new Entity[chipValues.length];
 
         for(int i = 0; i < chipValues.length; i++) {
@@ -133,12 +193,37 @@ public class EntityLoader {
             // Match entities with their models and assign a position
             String entityId = "chip" + chipValues[i] + "-entity";
             Entity chipEntity = new Entity(entityId, chipModel.getId(), true);
-            float offsetX = (i - chipValues.length / 2f) * 0.05f;
+            float offsetX = (i - chipValues.length / 2f) * 0.1f;
             chipEntity.setPosition(offsetX, 1f, 1.0f);
 
             scene.addEntity(chipEntity);
             chipEntity.updateModelMatrix();
+        }
 
+        // Dynamically add the cards
+        String[] values = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"};
+        String [] types = {"clubs", "diamonds", "hearts", "spades"}; 
+        
+        // Load all cards models
+        for (String type : types) {
+            for (String value : values) {
+
+                Card card = new Card(value, type);
+
+                String modelId = card.toString();   
+                String modelPath = card.getPath();  
+
+                // Load model ONCE per card
+                Model model = ModelLoader.loadModel(
+                    modelId,
+                    modelPath,
+                    scene.getTextureCache(),
+                    false
+                );
+
+                cardModels.put(modelId, model);
+                scene.addModel(model);
+            }
         }
     }
 
@@ -203,6 +288,81 @@ public class EntityLoader {
             }
         }
         scene.setSelectedEntity(selectedEntity);
+    }
+
+    public static void loadCard(String card, Scene scene, CardType type) {
+        Model model = cardModels.get(card);
+        if (model == null) {
+            System.err.println("card wrong idk" + card);
+            return;
+        }
+        
+        
+        Entity entity = new Entity("card-" + System.nanoTime(), model.getId(), false);
+        entity.setScale(cardScale);
+
+        switch (type) {
+
+            case HIDDEN:
+                System.out.println("Hidden card: " +card);
+                hiddenCardEntity = entity;
+
+                Model backModel = ModelLoader.loadModel(
+                    "back-model",
+                    "resources\\models\\backCard\\back.obj",
+                    scene.getTextureCache(),
+                    false
+                );
+                scene.addModel(backModel);
+
+                backCardEntity = new Entity("back-entity", backModel.getId(), false);
+                backCardEntity.setScale(cardScale);
+                backCardEntity.setPosition(DEALER_START_X, Y, DEALER_Z);
+                
+                dealerOffsetX += 0.30f;
+
+                backCardEntity.updateModelMatrix();
+                scene.addEntity(backCardEntity);
+                return; 
+
+            case DEALER:
+                System.out.println("Dealer card: " +card);
+                entity.setPosition(DEALER_START_X + dealerOffsetX, Y, DEALER_Z);
+                dealerOffsetX += 0.30f;
+                break;
+
+            case PLAYER:
+                System.out.println("Player card: " +card);
+                entity.setPosition(PLAYER_START_X + playerOffsetX, Y, PLAYER_Z);
+                playerOffsetX += 0.30f;
+                break;
+        }
+        
+
+        entity.updateModelMatrix();
+        scene.addEntity(entity);
+    }
+
+
+    public static void removeHiddedCard(String card, Scene scene) {
+        if (hiddenCardEntity != null) {
+            scene.removeEntity(hiddenCardEntity);
+            hiddenCardEntity = null;
+        }
+
+        Model card1 = cardModels.get(card); 
+        Entity cardEntity = new Entity("card-" + System.nanoTime(), card1.getId(), false);
+        cardEntity.setPosition(-0.60f, 0.9f, 0.65f);
+        cardEntity.setScale(cardScale);
+        cardEntity.updateModelMatrix();
+        scene.addEntity(cardEntity);
+        
+    }
+
+    public static void resetOffsets() {
+        dealerOffsetX = 0f;
+        playerOffsetX = 0f;
+        hiddenCardEntity = null;
     }
     
     // getters for entities in case some class needs them for updating

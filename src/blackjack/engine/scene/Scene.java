@@ -42,8 +42,21 @@ public class Scene {
         model.getEntitiesList().add(entity);
     }
 
+    public void removeEntity(Entity entity) {
+        String modelId = entity.getModelId();
+        Model model = modelMap.get(modelId);
+        if (model == null) {
+            throw new RuntimeException("Could not find model [" + modelId + "]");
+        }
+        model.getEntitiesList().remove(entity);
+    }
+
     public void addModel(Model model) {
         modelMap.put(model.getId(), model);
+    }
+
+    public void removeModel(Model model) {
+        modelMap.remove(model.getId());
     }
 
     //free resources
@@ -51,6 +64,12 @@ public class Scene {
         modelMap.values().forEach(Model::cleanup);
     }
     
+    public void clearCardEntities(Map<String, Model> cardModels) {
+        for (Model cardModel : cardModels.values()) {
+            cardModel.getEntitiesList().clear();
+        }
+    }
+
     //getters and setters
     public Camera getCamera() {
         return camera;
