@@ -195,7 +195,8 @@ public class BlackJackLogic {
 
         EntityLoader.loadCard(card.getPath(), scene, EntityLoader.CardType.DEALER);
 
-        return dealerSum < 17; // true = more cards needed, false = done
+        state = GameState.PLAYER_TURN;
+        return dealerSum < 17; 
     }
 
 
