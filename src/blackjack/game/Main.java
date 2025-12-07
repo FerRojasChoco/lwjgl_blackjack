@@ -41,7 +41,7 @@ public class Main implements IAppLogic {
         entityLoader.loadEntities(scene);
         
         BlackJackLogic.keyCallBack(window, scene); // This is to show cards
-        //entityLoader.keyCallBack(window, scene);
+        EntityLoader.clickChips(window.getWindowHandle()); // This is to select chips
         /*~~~ LIGHT SETTINGS ~~~*/ 
         initLights(scene);
 
@@ -152,9 +152,17 @@ public class Main implements IAppLogic {
         MouseInput mouseInput = window.getMouseInput();
         Vector2f displVec = mouseInput.getDisplVec();
         camera.addRotation((float) Math.toRadians(displVec.x * Consts.MOUSE_SENS), (float) Math.toRadians(displVec.y * Consts.MOUSE_SENS));
-        if (mouseInput.isLeftButtonPressed()){
-            entityLoader.selectEntity(window, scene, mouseInput.getCurrentPos());
-        }
+        
+        // I did this change so the hover feature in EntityLoader can be refresh every frame
+        // Needed this to make chips work properly
+
+        // Before
+        // if (mouseInput.isLeftButtonPressed()){
+        //     entityLoader.selectEntity(window, scene, mouseInput.getCurrentPos());
+        // }
+        
+        // After
+        entityLoader.selectEntity(window, scene, mouseInput.getCurrentPos());
         
 
         /*~~~ TOGGLE LIGHTS UI ~~~~*/

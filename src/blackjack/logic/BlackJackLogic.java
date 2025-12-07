@@ -22,12 +22,13 @@ public class BlackJackLogic {
 
     public enum GameState {
         NONE,       // Not started
+        ROUND_START,
         PLAYER_TURN,
         DEALER_TURN,
         ROUND_OVER
     }
 
-    private GameState state = GameState.NONE;
+    private static GameState state = GameState.NONE;
 
     private class Card {
         String value;
@@ -179,6 +180,11 @@ public class BlackJackLogic {
             dealerAceCount--;
         }
         return dealerSum;
+    }
+
+    public static void betChips(String chipValue) {
+        if (state != GameState.PLAYER_TURN) return;
+        System.out.println("Arrived " + chipValue);
     }
 
     public void revealHiddenCard(Scene scene) {

@@ -20,8 +20,10 @@ import imgui.ImGuiIO;
 // Testeo
 import org.lwjgl.glfw.GLFWKeyCallback;
 import blackjack.logic.*;
-
-
+import blackjack.engine.MouseInput;
+import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
+import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
+import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 public class EntityLoader {
 
     private AnimationData animationData;
@@ -31,8 +33,21 @@ public class EntityLoader {
     private Entity chairEntity;
     private Entity tableEntity;
     private Entity[] chipsEntities;
+    private Entity chipEntity;
     private static Entity hiddenCardEntity;
     private static Entity backCardEntity;
+    private static Entity chip10Entity;
+    private static Entity chip50Entity;
+    private static Entity chip100Entity;
+    private static Entity chip500Entity;
+    private static Entity chip1000Entity;
+    private static Entity hoveredEntity = null;
+    private static String ChipSelected = null;
+
+    public static void getChipSelected(String chipSelected) {
+        BlackJackLogic.betChips(chipSelected);
+    }
+
 
     private static Map<String, Model> cardModels = new HashMap<>();
     public static Map<String, Model> getCardModels() {
@@ -191,13 +206,38 @@ public class EntityLoader {
             scene.addModel(chipModel);
 
             // Match entities with their models and assign a position
-            String entityId = "chip" + chipValues[i] + "-entity";
-            Entity chipEntity = new Entity(entityId, chipModel.getId(), true);
+            String entityId = chipValues[i];
+            chipEntity = new Entity(entityId, chipModel.getId(), true);
             float offsetX = (i - chipValues.length / 2f) * 0.1f;
             chipEntity.setPosition(offsetX, 1f, 1.0f);
 
             scene.addEntity(chipEntity);
             chipEntity.updateModelMatrix();
+
+            int chipValue = Integer.parseInt(chipValues[i]);
+            switch (chipValue) {
+                case 10:
+                    chip10Entity=chipEntity;
+                    break;
+            
+                case 50:
+                    chip50Entity=chipEntity;
+                    break;
+
+                case 100:
+                    chip100Entity=chipEntity;
+                    break;
+
+                case 500:
+                    chip500Entity=chipEntity;
+                    break;
+
+                case 1000:
+                    chip1000Entity=chipEntity;
+                    break;
+            }
+
+
         }
 
         // Dynamically add the cards
@@ -288,7 +328,21 @@ public class EntityLoader {
             }
         }
         scene.setSelectedEntity(selectedEntity);
+        hoveredEntity = selectedEntity; 
+
     }
+
+    public static void clickChips(long windowHandle) {
+        glfwSetMouseButtonCallback(windowHandle, (handle, button, action, mods) -> {
+            if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) {
+                if (hoveredEntity != null) {
+                    ChipSelected = hoveredEntity.getId();
+                    getChipSelected(ChipSelected);
+                }
+            }
+        });
+    }
+
 
     public static void loadCard(String card, Scene scene, CardType type) {
         Model model = cardModels.get(card);
@@ -342,7 +396,6 @@ public class EntityLoader {
         entity.updateModelMatrix();
         scene.addEntity(entity);
     }
-
 
     public static void removeHiddedCard(String card, Scene scene) {
         if (hiddenCardEntity != null) {
