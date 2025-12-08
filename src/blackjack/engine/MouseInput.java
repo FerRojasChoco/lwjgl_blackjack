@@ -10,8 +10,12 @@ public class MouseInput {
     private Vector2f displVec;
   //  private boolean inWindow;
     private boolean leftButtonPressed;
+    private boolean leftButtonClicked;
     private Vector2f previousPos;
     private boolean rightButtonPressed;
+    private boolean rightButtonClicked;
+
+
 
     public MouseInput(long windowHandle) {
         previousPos = new Vector2f(-1, -1);
@@ -26,11 +30,58 @@ public class MouseInput {
             currentPos.y = (float) ypos;
         });
      //   glfwSetCursorEnterCallback(windowHandle, (handle, entered) -> inWindow = entered);
-        glfwSetMouseButtonCallback(windowHandle, (handle, button, action, mode) -> {
-            leftButtonPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
-            rightButtonPressed = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS;
+        // glfwSetMouseButtonCallback(windowHandle, (handle, button, action, mode) -> {
+        //     leftButtonPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
+        //     rightButtonPressed = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS;
+        // });
+        glfwSetMouseButtonCallback(windowHandle, (handle, button, action, mods) -> {
+
+            // // LEFT CLICK
+            // if (button == GLFW_MOUSE_BUTTON_LEFT) {
+            //     leftButtonPressed = (action == GLFW_PRESS);
+            // }
+
+            if (button == GLFW_MOUSE_BUTTON_1) {
+
+                if (action == GLFW_PRESS) {
+                    if (!leftButtonPressed) {   // ← transition detection
+                        leftButtonClicked = true;     // is TRUE only 1 frame
+                    }
+                    leftButtonPressed = true;
+                } 
+                else if (action == GLFW_RELEASE) {
+                    leftButtonPressed = false;
+                }
+            }
+
+            // RIGHT CLICK
+            if (button == GLFW_MOUSE_BUTTON_2) {
+
+                if (action == GLFW_PRESS) {
+                    if (!rightButtonPressed) {   // ← transition detection
+                        rightButtonClicked = true;     // is TRUE only 1 frame
+                    }
+                    rightButtonPressed = true;
+                } 
+                else if (action == GLFW_RELEASE) {
+                    rightButtonPressed = false;
+                }
+            }
         });
     }
+
+    public boolean isLeftClicked() {
+        boolean clicked = leftButtonClicked;
+        leftButtonClicked = false;   // reset event after reading
+        return clicked;
+    }
+
+    public boolean isRightClicked() {
+        boolean clicked = rightButtonClicked;
+        rightButtonClicked = false;   // reset event after reading
+        return clicked;
+    }
+
     public void forcePosition(double xpos, double ypos) {
     // Override all internal mouse states
     currentPos.x = (float) xpos;

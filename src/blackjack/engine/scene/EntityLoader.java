@@ -495,23 +495,38 @@ public class EntityLoader {
 
     }
 
-    public static void clickChips(long windowHandle, Scene scene) {
-        glfwSetMouseButtonCallback(windowHandle, (handle, button, action, mods) -> {
-            if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) {
-                if (hoveredEntity != null) {
-                    ChipSelected = hoveredEntity.getId();
-                    Vector3f position = hoveredEntity.getPosition();
-                    getChipSelected(ChipSelected, scene, position.z);
-                }
-            }
-            else if (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS) {
-                if (hoveredEntity != null) {
-                    ChipSelected = hoveredEntity.getId();
-                    Vector3f position = hoveredEntity.getPosition();
-                    removeChipSelected(ChipSelected, scene, position.z);
-                }
-            }
-        });
+    // public static void clickChips(long windowHandle, Scene scene) {
+    //     glfwSetMouseButtonCallback(windowHandle, (handle, button, action, mods) -> {
+    //         if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) {
+    //             if (hoveredEntity != null) {
+    //                 ChipSelected = hoveredEntity.getId();
+    //                 Vector3f position = hoveredEntity.getPosition();
+    //                 getChipSelected(ChipSelected, scene, position.z);
+    //             }
+    //         }
+    //         else if (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS) {
+    //             if (hoveredEntity != null) {
+    //                 ChipSelected = hoveredEntity.getId();
+    //                 Vector3f position = hoveredEntity.getPosition();
+    //                 removeChipSelected(ChipSelected, scene, position.z);
+    //             }
+    //         }
+    //     });
+    // }
+
+    public static void clickChips(Scene scene, boolean isLeftClick) {
+        if (hoveredEntity == null) return;
+
+        ChipSelected = hoveredEntity.getId();
+        Vector3f position = hoveredEntity.getPosition();
+        System.out.println(ChipSelected);
+        if (isLeftClick) {
+            // left click = bet
+            getChipSelected(ChipSelected, scene, position.z);
+        } else {
+            // right click = undo bet
+            removeChipSelected(ChipSelected, scene, position.z);
+        }
     }
 
     public static void loadCard(String card, Scene scene, CardType type) {
