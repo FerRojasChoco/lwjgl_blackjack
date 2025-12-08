@@ -51,7 +51,7 @@ public class Engine {
         float deltaFps = 0;
 
         long updateTime = initialTime;
-        IGuiInstance iGuiInstance = scene.getGuiInstance();
+        IGuiInstance iGuiInstance = scene.getGuiInstance(); 
         while (running && !window.windowShouldClose()) {
             window.pollEvents();    //start by polling events on the window
             

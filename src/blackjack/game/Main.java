@@ -11,6 +11,7 @@ import blackjack.engine.sound.SoundBuffer;
 import blackjack.engine.sound.SoundListener;
 import blackjack.engine.sound.SoundManager;
 import blackjack.engine.sound.SoundSource;
+import blackjack.gui.BlackJackGui;
 import blackjack.logic.*;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -38,6 +39,8 @@ public class Main implements IAppLogic {
     @Override
     public void init(Window window, Scene scene, Render render) {
         /*~~~ LOAD ENTITIES (with models and textures) ~~~*/
+        //scene.setGuiInstance(new BlackJackGui());
+
         entityLoader.loadEntities(scene);
         
         BlackJackLogic.keyCallBack(window, scene); // This is to show cards
@@ -54,6 +57,8 @@ public class Main implements IAppLogic {
         camera.addRotation((float) Math.toRadians(15.0f), (float) Math.toRadians(390.f));
 
         initSounds(entityLoader.getBobEntity().getPosition(), camera);
+        scene.setGuiInstance(new BlackJackGui());
+
     }
     
     private void initLights(Scene scene) {
