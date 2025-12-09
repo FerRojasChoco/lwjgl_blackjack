@@ -208,21 +208,22 @@ public class EntityLoader {
         tableEntity = new Entity("table-entity", tableModel.getId(), false);
 
         casinoEntity = new Entity("casino-entity", casinoModel.getId(), false);
-        casinoEntity.setScale(10.0f);
+        casinoEntity.setScale(0.035f);
+        casinoEntity.setPosition(24.5f, 9.58f, -12.0f);
         
         terrainEntity.updateModelMatrix();
         //bobEntity.updateModelMatrix();
         cubeEntity.updateModelMatrix();
         chairEntity.updateModelMatrix();
         tableEntity.updateModelMatrix();
-        //casinoEntity.updateModelMatrix();
+        casinoEntity.updateModelMatrix();
 
         scene.addEntity(terrainEntity);
         //scene.addEntity(bobEntity);
         scene.addEntity(cubeEntity);
         scene.addEntity(chairEntity);
         scene.addEntity(tableEntity);
-        //scene.addEntity(casinoEntity);
+        scene.addEntity(casinoEntity);
 
         // Dynamically add the chips
         String[] chipValues = {"10", "50", "100", "500", "1000"};

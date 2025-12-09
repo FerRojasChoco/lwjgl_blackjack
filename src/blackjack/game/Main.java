@@ -66,13 +66,17 @@ public class Main implements IAppLogic {
         
         /*~~~ AMBIENT ~~~*/
         AmbientLight ambientLight= sceneLights.getAmbientLight();
-        ambientLight.setIntensity(0.5f);
-        ambientLight.setColor(0.3f, 0.3f, 0.3f);
+        ambientLight.setIntensity(0.2f);
+        ambientLight.setColor(0.1f, 0.1f, 0.15f);
         
         /*~~~ DIRECTIONAL ~~~*/
         DirLight dirLight = sceneLights.getDirLight();
         dirLight.setPosition(0.0f, 1.0f, 0.79f);
         dirLight.setIntensity(0.88f);
+
+        // DirLight dirLight = sceneLights.getDirLights().get(0);
+        // dirLight.setPosition(0.0f, -1.0f, 0.79f);
+        // dirLight.setIntensity(0.1f);
         
         /*~~~ POINTLIGHT ~~~*/
         PointLight pointLight_1 = new PointLight();
@@ -82,6 +86,44 @@ public class Main implements IAppLogic {
         sceneLights.getPointLights().add(pointLight_1);
 
         /*~~~ SPOTLIGHT ~~~*/
+        sceneLights.getSpotLights().clear();
+
+         // Create a grid of spotlights across the casino ceiling
+        float casinoWidth = 7.0f;  // Adjust based on your building size
+        float casinoLength = 9.0f;
+        float ceilingHeight = 5.0f;
+        
+        int rows = 5;
+        int columns = 7;
+        
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < columns; col++) {
+                float x = (col * casinoWidth / (columns - 1)) - (casinoWidth / 2);
+                float z = (row * casinoLength / (rows - 1)) - (casinoLength / 2);
+                
+                SpotLight spotlight = new SpotLight();
+                PointLight pointLight = spotlight.getPointLight();
+                
+                // Position at ceiling height
+                pointLight.setPosition(x, ceilingHeight - 0.5f, z);
+                
+                // Casino lights are usually warm white/yellow
+                pointLight.setColor(1.0f, 0.95f, 0.8f);  // Warm white
+                pointLight.setIntensity(100.5f);  // Bright overhead lights
+                
+                // Spotlight parameters
+                spotlight.setCutOffAngle(45.0f);  // Medium-wide beam
+                spotlight.setConeDirection(0.0f, -1.0f, 0.0f);  // Pointing straight down
+                
+                // Add attenuation so light doesn't spread too far
+                pointLight.getAttenuation().setExponent(2.0f);
+                pointLight.getAttenuation().setLinear(0.1f);
+                
+                sceneLights.getSpotLights().add(spotlight);
+            }
+        }
+        
+
         SpotLight spotLight_1 = new SpotLight();
         PointLight spotLight_pointLight = spotLight_1.getPointLight();
         spotLight_pointLight.setPosition(0.0f, 1.09f, 2.03f);
