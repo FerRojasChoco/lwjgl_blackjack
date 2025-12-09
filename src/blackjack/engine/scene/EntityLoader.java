@@ -520,6 +520,8 @@ public class EntityLoader {
         ChipSelected = hoveredEntity.getId();
         Vector3f position = hoveredEntity.getPosition();
         System.out.println(ChipSelected);
+        System.out.println("isLeftClick: " + isLeftClick);
+        
         if (isLeftClick) {
             // left click = bet
             getChipSelected(ChipSelected, scene, position.z);

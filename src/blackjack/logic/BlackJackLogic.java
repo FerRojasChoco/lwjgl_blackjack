@@ -89,7 +89,7 @@ public class BlackJackLogic {
     public static final float GameOver_Scale = 6.0f;
 
     // Variables of buttons
-    public static final float Start_X_ShowCardsButton =  0.8f;
+    public static final float Start_X_ShowCardsButton =  0.80f;
     public static final float Start_Y_ShowCardsButton = 0.75f; 
     public static final float width_ShowCardsButton = 200f;
     public static final float height_ShowCardsButton = 80f;
@@ -100,7 +100,7 @@ public class BlackJackLogic {
     public static final float height_HitButton = 80f;
 
     public static final float Start_X_StandButton = 0.80f;
-    public static final float Start_Y_StandButton = 0.55f;
+    public static final float Start_Y_StandButton = 0.65f;
     public static final float width_StandButton   = 200f;
     public static final float height_StandButton  = 80f;
 
@@ -247,25 +247,22 @@ public class BlackJackLogic {
             1f, 1f, 1f, 1f
             ));
         }
-        System.out.println("drawcrad");
         pendingButtonUpdate = true;
     }
 
     public void manageButtons(Scene scene) {
-        System.out.println("hola?");
         if (!(scene.getGuiInstance() instanceof BlackJackGui)) {
                 scene.setGuiInstance(new BlackJackGui());
             }
         BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
-        System.out.println("hola2");
         gui.clearButtons();
-        pendingButtonUpdate = false;
-        System.out.println("hola3");
+        pendingButtonUpdate = false;;
         switch(state) {
             case NONE:
                 break;
-            
+        
             case ROUND_START: 
+                
                 gui.addButton(new BlackJackGui.GuiButton(
                     "showCards_btn",
                     "showCards",
@@ -275,7 +272,7 @@ public class BlackJackLogic {
                     height_ShowCardsButton,          
                     0.20f, 0.85f, 0.60f, 1f,
                     () -> {
-                        System.out.println("fuerza");
+                        if (PlayerBet == 0) return; 
                         changeGameStatetoPlayerTurn();
                         drawCards(scene);
                     }
@@ -325,7 +322,9 @@ public class BlackJackLogic {
                     height_ContinueButton,          
                     0.20f, 0.85f, 0.60f, 1f,
                     () -> {
-                        System.out.println("hasta aca llegamo");
+                    changeGameStatetoRoundStart();
+                    startGame(scene);
+                    scene.getCamera().setTopDownView(); 
                         
                     }
                 ));
@@ -339,7 +338,13 @@ public class BlackJackLogic {
                     height_QuitButton,          
                     0.20f, 0.85f, 0.60f, 1f,
                     () -> {
-
+                    scene.getCamera().setNormalView();
+                    scene.clearCardEntities(EntityLoader.getCardModels());
+                    EntityLoader.removeHiddenCard(scene);
+                    EntityLoader.resetOffsets();
+                    ((BlackJackGui) scene.getGuiInstance()).clearMessages();
+                    EntityLoader.clearChips(scene); 
+                    resetPlayerCapital();
                     }
                 ));
                 break;
@@ -520,7 +525,7 @@ public class BlackJackLogic {
         gui.removeMessageById("BET_MESSAGE");
 
         gui.addMessage(new BlackJackGui.GuiMessage(
-            "BET_MESSAGE",  // <-- THIS IS THE UNIQUE ID
+            "BET_MESSAGE",  
             "Player's Current Bet: " + PlayerBet,
                 Start_X_PlayerBet, 
                 Start_Y_PlayerBet,
