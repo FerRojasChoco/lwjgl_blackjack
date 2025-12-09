@@ -11,6 +11,8 @@ import static org.lwjgl.openal.AL10.alDistanceModel;
 import static org.lwjgl.openal.ALC10.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+import java.util.Random;
+
 /*
  * this class has references to the SoundBuffer and SoundSource instances to track and later cleanup
  * buffers are stored in a list and sources in a map (so they can be retrieved by name)
@@ -24,8 +26,9 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  */
 public class SoundManager {
 
-    private final List<SoundBuffer> soundBufferList;
+    private final Map<String, SoundBuffer> soundBufferMap;
     private final Map<String, SoundSource> soundSourceMap;
+    private Random random;
 
     private long context;
     private long device;
@@ -34,8 +37,9 @@ public class SoundManager {
 
     public SoundManager(){
 
-        soundBufferList = new ArrayList<>();
+        soundBufferMap = new HashMap<>();
         soundSourceMap = new HashMap<>();
+        random = new Random();
 
         device = alcOpenDevice((ByteBuffer) null);
         if (device == NULL){
@@ -52,8 +56,70 @@ public class SoundManager {
         AL.createCapabilities(deviceCaps);
     }
 
+    // Sound Type Enum
+    public enum AudioType {
+        // Music
+        MUSIC_MAIN_MENU,
+        MUSIC_GAMEPLAY_1,
+        MUSIC_GAMEPLAY_2,
+        MUSIC_GAMEPLAY_3,
+        
+        // Sound Effects
+        SFX_BUTTON_1,
+        SFX_BUTTON_2,
+        SFX_CARD_DEAL,
+        SFX_CHIP_1,
+        SFX_CHIP_2,
+        SFX_CHIP_3,
+        SFX_CHIP_4,
+        SFX_WIN,
+        SFX_LOSE
+    }
+
+    public void loadSound(String name, String filePath) {
+        SoundBuffer buffer = new SoundBuffer(filePath);
+        soundBufferMap.put(name, buffer);
+    }
+    
+    public void playSFX(String name) {
+        SoundBuffer buffer = soundBufferMap.get(name);
+        if (buffer != null) {
+            // Use a separate source for SFX to allow overlapping
+            SoundSource source = new SoundSource(false, false);
+            source.setBuffer(buffer.getBufferId());
+            source.play();
+            
+            scheduleSourceCleanup(source);
+        }
+    }
+
+    private void scheduleSourceCleanup(SoundSource source) {
+        new Thread(() -> {
+            try {
+                // Wait 3 seconds for short sound effects to finish
+                Thread.sleep(3000);
+                source.cleanup();
+            } catch (InterruptedException e) {
+                source.cleanup();
+            }
+        }).start();
+    }
+    
+    public void playRandomChipSound() {
+        int chipNum = random.nextInt(4) + 1;
+        playSFX("CHIP_" + chipNum);
+    }
+
     public void addSoundBuffer(SoundBuffer soundBuffer){
-        this.soundBufferList.add(soundBuffer);
+        this.soundBufferMap.put("buffer_" + soundBufferMap.size(), soundBuffer);
+    }
+
+    public void addSoundBuffer(String name, SoundBuffer soundBuffer) {
+        this.soundBufferMap.put(name, soundBuffer);
+    }
+
+    public SoundBuffer getSoundBuffer(String name) {
+        return this.soundBufferMap.get(name);
     }
 
     public void addSoundSource(String name, SoundSource soundSource){
@@ -88,11 +154,17 @@ public class SoundManager {
 
     //free resources
     public void cleanup(){
-        soundSourceMap.values().forEach(SoundSource::cleanup);
+        // Clean up sound sources
+        for (SoundSource source : soundSourceMap.values()) {
+            source.cleanup();
+        }
         soundSourceMap.clear();
 
-        soundBufferList.forEach(SoundBuffer::cleanup);
-        soundBufferList.clear();
+        // Clean up sound buffers
+        for (SoundBuffer buffer : soundBufferMap.values()) {
+            buffer.cleanup();
+        }
+        soundBufferMap.clear();
 
         if (context != NULL){
             alcDestroyContext(context);
