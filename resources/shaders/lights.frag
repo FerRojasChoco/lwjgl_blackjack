@@ -1,7 +1,7 @@
 #version 330 core
 
-const int MAX_POINT_LIGHTS = 5;
-const int MAX_SPOT_LIGHTS = 5;
+const int MAX_POINT_LIGHTS = 9;
+const int MAX_SPOT_LIGHTS = 9;
 const float SPECULAR_POWER = 10;
 const int NUM_CASCADES = 3;
 const float BIAS = 0.0005;

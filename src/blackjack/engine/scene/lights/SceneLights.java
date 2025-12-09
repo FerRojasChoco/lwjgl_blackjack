@@ -12,6 +12,7 @@ public class SceneLights {
     
     private AmbientLight ambientLight;
     private DirLight dirLight;
+    //private List<DirLight> dirLights;
     private List<PointLight> pointLights;
     private List<SpotLight> spotLights;
 
@@ -19,6 +20,8 @@ public class SceneLights {
         ambientLight = new AmbientLight();
         pointLights = new ArrayList<>();
         spotLights = new ArrayList<>();
+        // dirLights = new ArrayList<>();
+        // dirLights.add(new DirLight(new Vector3f(1, 1, 1), new Vector3f(0, 1, 0), 1.0f));
         dirLight = new DirLight(new Vector3f(1, 1, 1), new Vector3f(0, 1, 0), 1.0f);
     }
 
@@ -30,6 +33,10 @@ public class SceneLights {
     public DirLight getDirLight() {
         return dirLight;
     }
+
+    // public List <DirLight> getDirLights() {
+    //     return dirLights;
+    // }
 
     public List<PointLight> getPointLights() {
         return pointLights;
