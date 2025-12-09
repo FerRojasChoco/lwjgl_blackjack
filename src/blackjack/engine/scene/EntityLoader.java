@@ -34,6 +34,7 @@ public class EntityLoader {
     private Entity chairEntity;
     private Entity tableEntity;
     private Entity casinoEntity;
+    private Entity newTableEntity;
 
     private Entity[] chipsEntities;
     private static Map<String, Model> chipModels = new HashMap<>();
@@ -139,8 +140,6 @@ public class EntityLoader {
     }
     
     public void loadEntities(Scene scene){
-        
-
         // define models to be rendered
         Model terrainModel = ModelLoader.loadModel(
             "terrain-model", 
@@ -181,7 +180,15 @@ public class EntityLoader {
         "casino-model", 
         "resources\\models\\casino\\ImageToStl.com_gameready_casino_scene\\gameready_casino_scene.obj", 
         scene.getTextureCache(), 
-        false);
+        false
+        );
+
+        Model newTableModel = ModelLoader.loadModel(
+            "newTable-model",
+            "resources\\models\\table\\1456193.59ff28b44ae9b\\export\\poker_table_.obj",
+            scene.getTextureCache(),
+            false
+        );
 
         scene.addModel(terrainModel); 
         scene.addModel(bobModel);
@@ -189,6 +196,7 @@ public class EntityLoader {
         scene.addModel(chairModel);
         scene.addModel(tableModel);
         scene.addModel(casinoModel);
+        scene.addModel(newTableModel);
 
         //define entity properties
         terrainEntity = new Entity("terrain-entity", terrainModel.getId(), false);
@@ -206,6 +214,8 @@ public class EntityLoader {
         chairEntity.setPosition(0.0f, 0.0f, -2.0f);
         
         tableEntity = new Entity("table-entity", tableModel.getId(), false);
+        newTableEntity = new Entity("newTable-entity", newTableModel.getId(), false);
+        newTableEntity.setScale(0.001f);
 
         casinoEntity = new Entity("casino-entity", casinoModel.getId(), false);
         casinoEntity.setScale(0.035f);
@@ -217,12 +227,14 @@ public class EntityLoader {
         chairEntity.updateModelMatrix();
         tableEntity.updateModelMatrix();
         casinoEntity.updateModelMatrix();
+        newTableEntity.updateModelMatrix();
 
         scene.addEntity(terrainEntity);
         //scene.addEntity(bobEntity);
         scene.addEntity(cubeEntity);
         scene.addEntity(chairEntity);
         scene.addEntity(tableEntity);
+        scene.addEntity(newTableEntity);
         scene.addEntity(casinoEntity);
 
         // Dynamically add the chips
@@ -411,6 +423,14 @@ public class EntityLoader {
         }
     }
 
+    public static void resetCounter() {
+        counter[0] = 0;
+        counter[1] = 0;
+        counter[2] = 0;
+        counter[3] = 0;
+        counter[4] = 0;
+    }
+
     public void selectEntity(Window window, Scene scene, Vector2f mousePos){
         int wdwWidth = window.getWidth();
         int wdwHeight = window.getHeight();
@@ -476,23 +496,40 @@ public class EntityLoader {
 
     }
 
-    public static void clickChips(long windowHandle, Scene scene) {
-        glfwSetMouseButtonCallback(windowHandle, (handle, button, action, mods) -> {
-            if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) {
-                if (hoveredEntity != null) {
-                    ChipSelected = hoveredEntity.getId();
-                    Vector3f position = hoveredEntity.getPosition();
-                    getChipSelected(ChipSelected, scene, position.z);
-                }
-            }
-            else if (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS) {
-                if (hoveredEntity != null) {
-                    ChipSelected = hoveredEntity.getId();
-                    Vector3f position = hoveredEntity.getPosition();
-                    removeChipSelected(ChipSelected, scene, position.z);
-                }
-            }
-        });
+    // public static void clickChips(long windowHandle, Scene scene) {
+    //     glfwSetMouseButtonCallback(windowHandle, (handle, button, action, mods) -> {
+    //         if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) {
+    //             if (hoveredEntity != null) {
+    //                 ChipSelected = hoveredEntity.getId();
+    //                 Vector3f position = hoveredEntity.getPosition();
+    //                 getChipSelected(ChipSelected, scene, position.z);
+    //             }
+    //         }
+    //         else if (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS) {
+    //             if (hoveredEntity != null) {
+    //                 ChipSelected = hoveredEntity.getId();
+    //                 Vector3f position = hoveredEntity.getPosition();
+    //                 removeChipSelected(ChipSelected, scene, position.z);
+    //             }
+    //         }
+    //     });
+    // }
+
+    public static void clickChips(Scene scene, boolean isLeftClick) {
+        if (hoveredEntity == null) return;
+
+        ChipSelected = hoveredEntity.getId();
+        Vector3f position = hoveredEntity.getPosition();
+        System.out.println(ChipSelected);
+        System.out.println("isLeftClick: " + isLeftClick);
+        
+        if (isLeftClick) {
+            // left click = bet
+            getChipSelected(ChipSelected, scene, position.z);
+        } else {
+            // right click = undo bet
+            removeChipSelected(ChipSelected, scene, position.z);
+        }
     }
 
     public static void loadCard(String card, Scene scene, CardType type) {

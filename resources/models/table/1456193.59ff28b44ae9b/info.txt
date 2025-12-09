@@ -1,0 +1,11 @@
+Name: poker_table
+Version: 2013
+Preview: Yes
+Units: Millimeters
+Dimension: 2039.17 x 1239.15 x 790.28
+Polys: 329 187
+XForm: No
+Box Trick: No
+Model Parts: 11
+Render: Corona
+Formats: 3Ds Max 2013, OBJ, FBX, 3DS

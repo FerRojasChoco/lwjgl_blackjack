@@ -44,7 +44,7 @@ public class Main implements IAppLogic {
         entityLoader.loadEntities(scene);
         
         BlackJackLogic.keyCallBack(window, scene); // This is to show cards
-        EntityLoader.clickChips(window.getWindowHandle(), scene); // This is to select chips
+        //EntityLoader.clickChips(window.getWindowHandle(), scene); // This is to select chips
         /*~~~ LIGHT SETTINGS ~~~*/ 
         initLights(scene);
 
@@ -141,17 +141,17 @@ public class Main implements IAppLogic {
         soundManager.setListener(new SoundListener(camera.getPosition()));
 
         //audio 1
-        SoundBuffer buffer = new SoundBuffer("resources/sounds/creak1.ogg");
-        soundManager.addSoundBuffer(buffer);
+        // SoundBuffer buffer = new SoundBuffer("resources/sounds/creak1.ogg");
+        // soundManager.addSoundBuffer(buffer);
 
-        playerSoundSource = new SoundSource(false, false);
-        playerSoundSource.setPosition(position);
-        playerSoundSource.setBuffer(buffer.getBufferId());
+        // playerSoundSource = new SoundSource(false, false);
+        // playerSoundSource.setPosition(position);
+        // playerSoundSource.setBuffer(buffer.getBufferId());
 
-        soundManager.addSoundSource("CREAK", playerSoundSource);
+        // soundManager.addSoundSource("CREAK", playerSoundSource);
 
         //audio 2
-        buffer = new SoundBuffer("resources/sounds/6.ogg");
+        SoundBuffer buffer = new SoundBuffer("resources/sounds/6.ogg");
         soundManager.addSoundBuffer(buffer);
 
         SoundSource source = new SoundSource(true, true);
@@ -213,7 +213,22 @@ public class Main implements IAppLogic {
         // }
         
         // After
-        entityLoader.selectEntity(window, scene, mouseInput.getCurrentPos());
+        Vector2f mousePos = mouseInput.getCurrentPos(); 
+
+        if (mouseInput.isLeftClicked()) {
+            entityLoader.selectEntity(window, scene, mousePos);
+        }
+
+        if (mouseInput.isRightClicked()) {
+            entityLoader.selectEntity(window, scene, mousePos);
+        }
+
+        if (mouseInput.isLeftButtonPressed()) {
+            EntityLoader.clickChips(scene, true);   // bet chip
+        }
+        if (mouseInput.isRightButtonPressed()) {
+            EntityLoader.clickChips(scene, false);  // undo bet
+}
         
 
         /*~~~ TOGGLE LIGHTS UI ~~~~*/
@@ -244,8 +259,12 @@ public class Main implements IAppLogic {
     @Override
     public void update(Window window, Scene scene, long diffTimeMillis) {
         entityLoader.getAnimationData().nextFrame();
-        if (entityLoader.getAnimationData().getCurrentFrameIdx() == 45){
-            playerSoundSource.play();
+        // if (entityLoader.getAnimationData().getCurrentFrameIdx() == 45){
+        //     playerSoundSource.play();
+        // }
+        if (BlackJackLogic.pendingButtonUpdate) {
+            BlackJackLogic.pendingButtonUpdate = false;
+            BlackJackLogic.getInstance().manageButtons(scene);
         }
     }
 
