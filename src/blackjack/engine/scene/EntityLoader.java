@@ -81,7 +81,7 @@ public class EntityLoader {
     private static final float HIDDEN_X = -0.40f;
     private static final float DEALER_START_X = -0.40f;
     private static final float PLAYER_START_X = -0.40f;
-    private static final float Y = 0.9f;
+    private static final float Y = 0.87f;
     private static final float DEALER_START_Z = 0.55f;
     private static final float PLAYER_START_Z = 1.05f;
 
@@ -185,7 +185,7 @@ public class EntityLoader {
 
         Model newTableModel = ModelLoader.loadModel(
             "newTable-model",
-            "resources\\models\\table\\1456193.59ff28b44ae9b\\export\\poker_table_.obj",
+            "resources/models/table/blackjack_table.obj",
             scene.getTextureCache(),
             false
         );
@@ -214,26 +214,30 @@ public class EntityLoader {
         chairEntity.setPosition(0.0f, 0.0f, -2.0f);
         
         tableEntity = new Entity("table-entity", tableModel.getId(), false);
+        tableEntity.setScale(1.5f);
+        tableEntity.setPosition(0f, -0.44f, -0.3f);
+
         newTableEntity = new Entity("newTable-entity", newTableModel.getId(), false);
-        newTableEntity.setScale(0.001f);
+        newTableEntity.setScale(0.0012f);
+        newTableEntity.setPosition(0.0f, 0.0f, 1.2f);
 
         casinoEntity = new Entity("casino-entity", casinoModel.getId(), false);
         casinoEntity.setScale(10.0f);
         
         terrainEntity.updateModelMatrix();
         //bobEntity.updateModelMatrix();
-        cubeEntity.updateModelMatrix();
-        chairEntity.updateModelMatrix();
+        //cubeEntity.updateModelMatrix();
+        //chairEntity.updateModelMatrix();
         tableEntity.updateModelMatrix();
         //casinoEntity.updateModelMatrix();
-        newTableEntity.updateModelMatrix();
+        //newTableEntity.updateModelMatrix();
 
         scene.addEntity(terrainEntity);
         //scene.addEntity(bobEntity);
-        scene.addEntity(cubeEntity);
-        scene.addEntity(chairEntity);
+        //scene.addEntity(cubeEntity);
+        //scene.addEntity(chairEntity);
         scene.addEntity(tableEntity);
-        scene.addEntity(newTableEntity);
+       // scene.addEntity(newTableEntity);
         //scene.addEntity(casinoEntity);
 
         // Dynamically add the chips
@@ -310,7 +314,6 @@ public class EntityLoader {
             scene.addEntity(entity);
 
             allChipEntities.add(entity);
-
 
             switch (chipValue) {
                 case "10":   chip10Entity = entity; break;

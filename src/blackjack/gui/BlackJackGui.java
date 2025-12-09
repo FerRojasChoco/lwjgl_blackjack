@@ -4,7 +4,7 @@ import blackjack.engine.IGuiInstance;
 import blackjack.engine.Window;
 import blackjack.engine.MouseInput;
 import blackjack.engine.scene.Scene;
-
+import blackjack.logic.BlackJackLogic;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiCol;
@@ -19,7 +19,6 @@ import java.util.List;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
 
 public class BlackJackGui implements IGuiInstance {
-
     // Message Class
     public static class GuiMessage {
         public final String id; 
@@ -130,31 +129,31 @@ public class BlackJackGui implements IGuiInstance {
 
            // Draw buttons
            
-        for (GuiButton btn : buttons) {
-            float posX = btn.x * w;
-            float posY = btn.y * h;
+            for (GuiButton btn : buttons) {
+                float posX = btn.x * w;
+                float posY = btn.y * h;
 
-            ImGui.setCursorPos(posX, posY);
+                ImGui.setCursorPos(posX, posY);
 
-            // ---- PRETTY BUTTON STYLE ----
-            ImGui.pushStyleVar(ImGuiStyleVar.FrameRounding, 15f);   // rounded corners
-            ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 14f, 10f);
+                // ---- PRETTY BUTTON STYLE ----
+                ImGui.pushStyleVar(ImGuiStyleVar.FrameRounding, 15f);   // rounded corners
+                ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 14f, 10f);
 
-            ImGui.pushStyleColor(ImGuiCol.Button, btn.r, btn.g, btn.b, btn.a);
-            ImGui.pushStyleColor(ImGuiCol.ButtonHovered, btn.r, btn.g + 0.2f, btn.b, btn.a);
-            ImGui.pushStyleColor(ImGuiCol.ButtonActive, btn.r - 0.2f, btn.g, btn.b, btn.a);
+                ImGui.pushStyleColor(ImGuiCol.Button, btn.r, btn.g, btn.b, btn.a);
+                ImGui.pushStyleColor(ImGuiCol.ButtonHovered, btn.r, btn.g + 0.2f, btn.b, btn.a);
+                ImGui.pushStyleColor(ImGuiCol.ButtonActive, btn.r - 0.2f, btn.g, btn.b, btn.a);
 
-            // Big text (5×)
-            ImGui.setWindowFontScale(2f);
+                // Big text (5×)
+                ImGui.setWindowFontScale(2f);
 
-            if (ImGui.button(btn.text, btn.width, btn.height)) {
-                if (btn.callback != null) btn.callback.run();
+                if (ImGui.button(btn.text, btn.width, btn.height)) {
+                    if (btn.callback != null) btn.callback.run();
+                }
+
+                ImGui.setWindowFontScale(1f);
+                ImGui.popStyleColor(3);
+                ImGui.popStyleVar(2);
             }
-
-            ImGui.setWindowFontScale(1f);
-            ImGui.popStyleColor(3);
-            ImGui.popStyleVar(2);
-        }
             ImGui.end();
         }
 

@@ -1,0 +1,67 @@
+# Blender MTL File: 'blackjack table.blend'
+# Material Count: 5
+
+newmtl Brass
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump -bm 3.500000 F:\\My blender work\\textures\\brass\\Metal007_4K_NormalDX.png
+map_Kd F:\\My blender work\\textures\\brass\\Metal007_4K_Color.png
+map_Ns F:\\My blender work\\textures\\brass\\Metal007_4K_Roughness.png
+refl F:\\My blender work\\textures\\brass\\Metal007_4K-PNG.usda
+
+newmtl Brushed_aluminium
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump -bm 3.000000 F:\\My blender work\\textures\\brushed aluminium\\BrushedIron02_4K_Normal.png
+map_Kd F:\\My blender work\\textures\\brushed aluminium\\BrushedIron02_4K_BaseColor.png
+map_Ns F:\\My blender work\\textures\\brushed aluminium\\BrushedIron02_4K_Roughness.png
+refl F:\\My blender work\\textures\\brushed aluminium\\BrushedIron02_4K_Metallic.png
+
+newmtl Felt
+Ns 323.999994
+Ka 1.000000 1.000000 1.000000
+Kd 0.092642 0.244693 0.022048
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump -bm 10.000000 F:\\My blender work\\textures\\felt\\Fabric034_8K_NormalDX.png
+map_Ns F:\\My blender work\\textures\\felt\\Fabric034_8K_Roughness.png
+
+newmtl Glossy_wood
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump -bm 6.900000 F:\\My blender work\\textures\\dark wood\\Wood067_8K_NormalDX.png
+map_Kd F:\\My blender work\\textures\\dark wood\\Wood067_8K_Color.png
+map_Ns F:\\My blender work\\textures\\dark wood\\Wood067_8K_Roughness.png
+
+newmtl rubber
+Ns 241.661169
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump -bm 5.000000 F:\\My blender work\\textures\\rubber floor\\Rubber_Floor_001_normal.jpg
+map_Ns F:\\My blender work\\textures\\rubber floor\\Rubber_Floor_001_roughness.jpg
