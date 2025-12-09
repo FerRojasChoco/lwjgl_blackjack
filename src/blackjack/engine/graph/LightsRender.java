@@ -10,8 +10,8 @@ import java.util.*;
 import static org.lwjgl.opengl.GL30.*;
 
 public class LightsRender {
-    private static final int MAX_POINT_LIGHTS = 5;
-    private static final int MAX_SPOT_LIGHTS = 5;
+    private static final int MAX_POINT_LIGHTS = 9;
+    private static final int MAX_SPOT_LIGHTS = 9;
 
     private final ShaderProgram shaderProgram;
 

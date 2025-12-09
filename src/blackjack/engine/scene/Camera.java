@@ -105,6 +105,7 @@ public class Camera {
 
     //getters and setters
     public Vector3f getPosition() {
+        System.out.println(position);
         return position;
     }
 
