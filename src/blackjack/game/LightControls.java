@@ -72,6 +72,7 @@ public class LightControls implements IGuiInstance {
         dirConeY = new float[]{coneDir.y};
         dirConeZ = new float[]{coneDir.z};
 
+        //DirLight dirLight = sceneLights.getDirLights().get(0);
         DirLight dirLight = sceneLights.getDirLight();
         color = dirLight.getColor();
         pos = dirLight.getDirection();
@@ -164,6 +165,7 @@ public class LightControls implements IGuiInstance {
             spotLight.setCutOffAngle(spotLightCutoff[0]);
             spotLight.setConeDirection(dirConeX[0], dirConeY[0], dirConeZ[0]);
 
+            //DirLight dirLight = sceneLights.getDirLights().get(0);
             DirLight dirLight = sceneLights.getDirLight();
             dirLight.setPosition(dirLightX[0], dirLightY[0], dirLightZ[0]);
             dirLight.setColor(dirLightColor[0], dirLightColor[1], dirLightColor[2]);
