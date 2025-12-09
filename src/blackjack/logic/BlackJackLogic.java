@@ -71,7 +71,7 @@ public class BlackJackLogic {
     public static int dealerSumNoHiddenCard;
 
     // Variables of messages
-    public static final float Start_X_DecideWinner = 0.45f;
+    public static final float Start_X_DecideWinner = 0.5f;
     public static final float Start_Y_DecideWinner = 0.35f; 
     public static final float DecideWinner_Scale = 4.0f;
 
@@ -79,19 +79,19 @@ public class BlackJackLogic {
     public static final float Start_Y_PlayerBet = 0.9f; 
     public static final float PlayerBet_Scale = 3.0f;
 
-    public static final float Start_X_PlayerCapital = 0.069f;
+    public static final float Start_X_PlayerCapital = 0.06f;
     public static final float Start_Y_PlayerCapital = 0.8f; 
     public static final float PlayerCapital_Scale = 3.0f;
 
-    public static final float Start_X_PlayerPoints = 0.030f;
+    public static final float Start_X_PlayerPoints = 0.06f;
     public static final float Start_Y_PlayerPoints = 0.2f; 
     public static final float PlayerPoints_Scale = 3.0f;
 
-    public static final float Start_X_DealerPoints = 0.030f;
+    public static final float Start_X_DealerPoints = 0.06f;
     public static final float Start_Y_DealerPoints = 0.1f; 
     public static final float DealerPoints_Scale = 3.0f;
 
-    public static final float Start_X_GameOver =  0.42f;
+    public static final float Start_X_GameOver =  0.5f;
     public static final float Start_Y_GameOver = 0.35f; 
     public static final float GameOver_Scale = 6.0f;
 
@@ -173,26 +173,31 @@ public class BlackJackLogic {
         // Set game state
         // state = GameState.ROUND_START;
         System.out.println("Player's Capital: " + PlayerCapital);
-        System.out.println("Player's Current Bet " + PlayerBet);
+        System.out.println("Current Bet " + PlayerBet);
         
         BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
-        gui.addMessage(new BlackJackGui.GuiMessage(
+        BlackJackGui.GuiMessage capitalMsg = new BlackJackGui.GuiMessage(
             "CAPITAL_MESSAGE",
-            "Player's Current Capital: " + PlayerCapital,
-            Start_X_PlayerCapital, 
+            "Current Capital: " + PlayerCapital,
+            Start_X_PlayerCapital,
             Start_Y_PlayerCapital,
             PlayerCapital_Scale,
             1f, 1f, 1f, 1f
-        ));
+        );
+        capitalMsg.anchor = "left";
+        gui.addMessage(capitalMsg);
 
-        gui.addMessage(new BlackJackGui.GuiMessage(
+
+        BlackJackGui.GuiMessage betMsg = new BlackJackGui.GuiMessage(
             "BET_MESSAGE",
-            "Player's Current Bet: 0",
-            Start_X_PlayerBet, 
+            "Current Bet: "+ PlayerBet,
+            Start_X_PlayerBet,
             Start_Y_PlayerBet,
             PlayerBet_Scale,
             1f, 1f, 1f, 1f
-        ));
+        );
+        betMsg.anchor = "left";
+        gui.addMessage(betMsg);
         pendingButtonUpdate = true;
     }
 
@@ -245,36 +250,42 @@ public class BlackJackLogic {
         gui.removeMessageById("PlayerPoints");
         gui.removeMessageById("DealerPoints");
 
-        gui.addMessage(new BlackJackGui.GuiMessage(
+        BlackJackGui.GuiMessage playerPointsMsg = new BlackJackGui.GuiMessage(
             "PlayerPoints",
             "Player: " + playerSum,
             Start_X_PlayerPoints, 
             Start_Y_PlayerPoints,
             PlayerPoints_Scale,
             1f, 1f, 1f, 1f
-        ));
+        );
+        playerPointsMsg.anchor = "left";
+        gui.addMessage(playerPointsMsg);
 
         dealerSumNoHiddenCard = dealerSum - hiddenCard.getValue();
 
         if(hiddenCardReavaled) {
-            gui.addMessage(new BlackJackGui.GuiMessage(
-            "DealerPoints",
-            "Dealer: " + dealerSum,
-            Start_X_DealerPoints, 
-            Start_Y_DealerPoints,
-            DealerPoints_Scale,
-            1f, 1f, 1f, 1f
-            ));
+            BlackJackGui.GuiMessage dealerPointsMsg = new BlackJackGui.GuiMessage(
+                "DealerPoints",
+                "Dealer: " + dealerSum,
+                Start_X_DealerPoints, 
+                Start_Y_DealerPoints,
+                DealerPoints_Scale,
+                1f, 1f, 1f, 1f
+            );
+            dealerPointsMsg.anchor = "left";
+            gui.addMessage(dealerPointsMsg);
         }
         else {
-            gui.addMessage(new BlackJackGui.GuiMessage(
-            "DealerPoints",
-            "Dealer: " + dealerSumNoHiddenCard,
-            Start_X_DealerPoints, 
-            Start_Y_DealerPoints,
-            DealerPoints_Scale,
-            1f, 1f, 1f, 1f
-            ));
+            BlackJackGui.GuiMessage dealerPointsMsg = new BlackJackGui.GuiMessage(
+                "DealerPoints",
+                "Dealer: " + dealerSumNoHiddenCard,
+                Start_X_DealerPoints, 
+                Start_Y_DealerPoints,
+                DealerPoints_Scale,
+                1f, 1f, 1f, 1f
+            );
+            dealerPointsMsg.anchor = "left";
+            gui.addMessage(dealerPointsMsg);
         }
         pendingButtonUpdate = true;
         if (playerSum == 21) {
@@ -297,12 +308,12 @@ public class BlackJackLogic {
                 
                 gui.addButton(new BlackJackGui.GuiButton(
                     "showCards_btn",
-                    "Show Cards",
+                    "BET",
                     Start_X_ShowCardsButton, 
                     Start_Y_ShowCardsButton,     
                     width_ShowCardsButton, 
                     height_ShowCardsButton,          
-                    0.20f, 0.85f, 0.60f, 1f,
+                    0.75f, 0.10f, 0.10f, 1f,
                     () -> {
 
                         if (soundManager != null) {
@@ -328,7 +339,7 @@ public class BlackJackLogic {
                         Start_Y_HitButton,     
                         width_HitButton, 
                         height_HitButton,          
-                        0.20f, 0.85f, 0.60f, 1f,
+                        0.75f, 0.10f, 0.10f, 1f,
                         () -> {
                             hit(scene);
                         }
@@ -341,7 +352,7 @@ public class BlackJackLogic {
                         Start_Y_StandButton,     
                         width_StandButton, 
                         height_StandButton,          
-                        0.20f, 0.85f, 0.60f, 1f,
+                        0.75f, 0.10f, 0.10f, 1f,
                         () -> {
 
                             if (soundManager != null) {
@@ -363,7 +374,7 @@ public class BlackJackLogic {
                         Start_Y_HitButton,     
                         width_HitButton, 
                         height_HitButton,          
-                        0.20f, 0.85f, 0.60f, 1f,
+                        0.75f, 0.10f, 0.10f, 1f,
                         () -> {
 
 
@@ -384,7 +395,7 @@ public class BlackJackLogic {
                         Start_Y_StandButton,     
                         width_StandButton, 
                         height_StandButton,    
-                        0.20f, 0.85f, 0.60f, 1f,
+                        0.75f, 0.10f, 0.10f, 1f,
                         () -> {
 
                             if (soundManager != null) {
@@ -405,7 +416,7 @@ public class BlackJackLogic {
                         Start_Y_DoubleButton,     
                         width_DoubleButton, 
                         height_DoubleButton,          
-                        0.20f, 0.85f, 0.60f, 1f,
+                        0.75f, 0.10f, 0.10f, 1f,
                         () -> {
 
                             if (soundManager != null) {
@@ -414,9 +425,19 @@ public class BlackJackLogic {
 
                             firstRoundEnded = true;
                             doubleBet(scene);
+
+                            // Player receives exactly one final card
                             hit(scene);
+
+                            // Player turn ends immediately when doubling
                             changeGameStatetoDealerTurn();
-                            stand(scene);
+
+                            // Reveal dealer's hidden card
+                            revealHiddenCard(scene);
+                            hiddenCardReavaled = true;
+
+                            // Now properly run dealer logic
+                            finishDealer(scene);
                         }
                     ));
                     
@@ -432,7 +453,7 @@ public class BlackJackLogic {
                     Start_Y_ContinueButton,     
                     width_ContinueButton, 
                     height_ContinueButton,          
-                    0.20f, 0.85f, 0.60f, 1f,
+                    0.75f, 0.10f, 0.10f, 1f,
                     () -> {
 
                     if (soundManager != null) {
@@ -453,7 +474,7 @@ public class BlackJackLogic {
                     Start_Y_QuitButton,     
                     width_QuitButton, 
                     height_QuitButton,          
-                    0.20f, 0.85f, 0.60f, 1f,
+                    0.75f, 0.10f, 0.10f, 1f,
                     () -> {
 
                     if (soundManager != null) {
@@ -478,7 +499,7 @@ public class BlackJackLogic {
                     Start_Y_NewGameButton,     
                     width_NewGameButton, 
                     height_NewGameButton,          
-                    0.20f, 0.85f, 0.60f, 1f,
+                    0.75f, 0.10f, 0.10f, 1f,
                     () -> {
                     changeGameStatetoRoundStart();
                     resetPlayerCapital();
@@ -494,7 +515,7 @@ public class BlackJackLogic {
                     Start_Y_QuitButton,     
                     width_QuitButton, 
                     height_QuitButton,          
-                    0.20f, 0.85f, 0.60f, 1f,
+                    0.75f, 0.10f, 0.10f, 1f,
                     () -> {
                     scene.getCamera().setNormalView();
                     scene.clearCardEntities(EntityLoader.getCardModels());
@@ -518,14 +539,16 @@ public class BlackJackLogic {
         
         gui.removeMessageById("BET_MESSAGE");
 
-        gui.addMessage(new BlackJackGui.GuiMessage(
-            "BET_MESSAGE",  
-            "Player's Current Bet: " + PlayerBet,
-                Start_X_PlayerBet, 
-                Start_Y_PlayerBet,
-                PlayerBet_Scale,
+        BlackJackGui.GuiMessage betMsg = new BlackJackGui.GuiMessage(
+            "BET_MESSAGE",
+            "Current Bet: "+ PlayerBet,
+            Start_X_PlayerBet,
+            Start_Y_PlayerBet,
+            PlayerBet_Scale,
             1f, 1f, 1f, 1f
-        ));
+        );
+        betMsg.anchor = "left";
+        gui.addMessage(betMsg);
 
         betDoubled = true;
     }
@@ -565,14 +588,16 @@ public class BlackJackLogic {
         BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
         gui.removeMessageById("PlayerPoints");
 
-        gui.addMessage(new BlackJackGui.GuiMessage(
+        BlackJackGui.GuiMessage playerPointsMsg = new BlackJackGui.GuiMessage(
             "PlayerPoints",
             "Player: " + playerSum,
             Start_X_PlayerPoints, 
             Start_Y_PlayerPoints,
             PlayerPoints_Scale,
             1f, 1f, 1f, 1f
-        ));
+        );
+        playerPointsMsg.anchor = "left";
+        gui.addMessage(playerPointsMsg);
 
         EntityLoader.loadCard(card.getPath(), scene, EntityLoader.CardType.PLAYER);
 
@@ -582,8 +607,6 @@ public class BlackJackLogic {
             revealHiddenCard(scene);
             finishDealer(scene);
         }
-
-        
     }
 
     public void stand(Scene scene) {
@@ -599,30 +622,42 @@ public class BlackJackLogic {
         dealerSumNoHiddenCard = dealerSum - hiddenCard.getValue();
 
         if(hiddenCardReavaled) {
-            gui.addMessage(new BlackJackGui.GuiMessage(
-            "DealerPoints",
-            "Dealer: " + dealerSum,
-            Start_X_DealerPoints, 
-            Start_Y_DealerPoints,
-            DealerPoints_Scale,
-            1f, 1f, 1f, 1f
-            ));
+            BlackJackGui.GuiMessage dealerPointsMsg = new BlackJackGui.GuiMessage(
+                "DealerPoints",
+                "Dealer: " + dealerSum,
+                Start_X_DealerPoints, 
+                Start_Y_DealerPoints,
+                DealerPoints_Scale,
+                1f, 1f, 1f, 1f
+            );
+            dealerPointsMsg.anchor = "left";
+            gui.addMessage(dealerPointsMsg);
         }
         else {
-            gui.addMessage(new BlackJackGui.GuiMessage(
-            "DealerPoints",
-            "Dealer: " + dealerSumNoHiddenCard,
-            Start_X_DealerPoints, 
-            Start_Y_DealerPoints,
-            DealerPoints_Scale,
-            1f, 1f, 1f, 1f
-            ));
+            BlackJackGui.GuiMessage dealerPointsMsg = new BlackJackGui.GuiMessage(
+                "DealerPoints",
+                "Dealer: " + dealerSumNoHiddenCard,
+                Start_X_DealerPoints, 
+                Start_Y_DealerPoints,
+                DealerPoints_Scale,
+                1f, 1f, 1f, 1f
+            );
+            dealerPointsMsg.anchor = "left";
+            gui.addMessage(dealerPointsMsg);
         }
 
         if (!needsMore) {
             state = GameState.ROUND_OVER;
             decideWinner(scene);
         }
+
+        // while (dealerSum < 17) {
+        //     dealerDrawOneCard(scene);
+        // }
+
+        // // after finishing:
+        // state = GameState.ROUND_OVER;
+        // decideWinner(scene);
 
     }
 
@@ -640,7 +675,9 @@ public class BlackJackLogic {
 
         EntityLoader.loadCard(card.getPath(), scene, EntityLoader.CardType.DEALER);
 
-        state = GameState.PLAYER_TURN;
+        if(!betDoubled) {
+            state = GameState.PLAYER_TURN;
+        }
         return dealerSum < 17; 
     }
 
@@ -694,7 +731,7 @@ public class BlackJackLogic {
         }
 
         PlayerBet += correctedValue;
-        System.out.println("Player's Current Bet " + PlayerBet);
+        System.out.println("Current Bet " + PlayerBet);
 
         // Ensure GUI exists
         if (!(scene.getGuiInstance() instanceof BlackJackGui)) {
@@ -706,14 +743,16 @@ public class BlackJackLogic {
         
         gui.removeMessageById("BET_MESSAGE");
 
-        gui.addMessage(new BlackJackGui.GuiMessage(
-            "BET_MESSAGE",  
-            "Player's Current Bet: " + PlayerBet,
-                Start_X_PlayerBet, 
-                Start_Y_PlayerBet,
-                PlayerBet_Scale,
+        BlackJackGui.GuiMessage betMsg = new BlackJackGui.GuiMessage(
+            "BET_MESSAGE",
+            "Current Bet: "+ PlayerBet,
+            Start_X_PlayerBet,
+            Start_Y_PlayerBet,
+            PlayerBet_Scale,
             1f, 1f, 1f, 1f
-        ));
+        );
+        betMsg.anchor = "left";
+        gui.addMessage(betMsg);
 
         if (soundManager != null) {
         soundManager.playRandomChipSound();
@@ -747,16 +786,18 @@ public class BlackJackLogic {
         // ---- CASE 1: Bet would go negative ----
         if (checkNotLessthan0 < 0) {
             PlayerBet = 0;
-            System.out.println("Player's Current Bet " + PlayerBet);
+            System.out.println("Current Bet " + PlayerBet);
 
-            gui.addMessage(new BlackJackGui.GuiMessage(
-                "BET_MESSAGE",                                
-                "Player's Current Bet: 0",                         
-                Start_X_PlayerBet, 
-                Start_Y_PlayerBet,
-                PlayerBet_Scale,
-                1f, 1f, 1f, 1f                                   
-            ));
+        BlackJackGui.GuiMessage betMsg = new BlackJackGui.GuiMessage(
+            "BET_MESSAGE",
+            "Current Bet: "+ PlayerBet,
+            Start_X_PlayerBet,
+            Start_Y_PlayerBet,
+            PlayerBet_Scale,
+            1f, 1f, 1f, 1f
+        );
+        betMsg.anchor = "left";
+        gui.addMessage(betMsg);
 
             return;
         }
@@ -764,16 +805,18 @@ public class BlackJackLogic {
         // ---- CASE 2: Bet becomes ZERO ----
         if (checkNotLessthan0 == 0) {
             PlayerBet = 0;
-            System.out.println("Player's Current Bet " + PlayerBet);
+            System.out.println("Current Bet " + PlayerBet);
 
-            gui.addMessage(new BlackJackGui.GuiMessage(
-                "BET_MESSAGE",
-                "Player's Current Bet: 0",
-                Start_X_PlayerBet, 
-                Start_Y_PlayerBet,
-                PlayerBet_Scale,
-                1f, 1f, 1f, 1f
-            ));
+        BlackJackGui.GuiMessage betMsg = new BlackJackGui.GuiMessage(
+            "BET_MESSAGE",
+            "Current Bet: "+ PlayerBet,
+            Start_X_PlayerBet,
+            Start_Y_PlayerBet,
+            PlayerBet_Scale,
+            1f, 1f, 1f, 1f
+        );
+        betMsg.anchor = "left";
+        gui.addMessage(betMsg);
 
             EntityLoader.removeBetChips(scene, chipValue);
             return;
@@ -781,18 +824,20 @@ public class BlackJackLogic {
 
         // ---- CASE 3: Normal reduction ----
         PlayerBet -= correctedValue;
-        System.out.println("Player's Current Bet " + PlayerBet);
+        System.out.println("Current Bet " + PlayerBet);
 
-        String betTxt = "Player's Current Bet: " + PlayerBet;
+        String betTxt = "Current Bet: " + PlayerBet;
 
-        gui.addMessage(new BlackJackGui.GuiMessage(
-            "BET_MESSAGE",            
-            betTxt,
-                Start_X_PlayerBet, 
-                Start_Y_PlayerBet,
-                PlayerBet_Scale,
+        BlackJackGui.GuiMessage betMsg = new BlackJackGui.GuiMessage(
+            "BET_MESSAGE",
+            "Current Bet: "+ PlayerBet,
+            Start_X_PlayerBet,
+            Start_Y_PlayerBet,
+            PlayerBet_Scale,
             1f, 1f, 1f, 1f
-        ));
+        );
+        betMsg.anchor = "left";
+        gui.addMessage(betMsg);
 
         System.out.println("chipValue: " + chipValue);
         EntityLoader.removeBetChips(scene, chipValue);
@@ -807,19 +852,22 @@ public class BlackJackLogic {
 
     public void finishDealer(Scene scene) {
         reduceDealerAce();
+        System.out.println(hiddenCardReavaled);
         if(playerBurst)
         {
             BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
             gui.removeMessageById("DealerPoints");
 
-            gui.addMessage(new BlackJackGui.GuiMessage(
-            "DealerPoints",
-            "Dealer: " + dealerSum,
-            Start_X_DealerPoints, 
-            Start_Y_DealerPoints,
-            DealerPoints_Scale,
-            1f, 1f, 1f, 1f
-            ));
+            BlackJackGui.GuiMessage dealerPointsMsg = new BlackJackGui.GuiMessage(
+                "DealerPoints",
+                "Dealer: " + dealerSum,
+                Start_X_DealerPoints, 
+                Start_Y_DealerPoints,
+                DealerPoints_Scale,
+                1f, 1f, 1f, 1f
+            );
+            dealerPointsMsg.anchor = "left";
+            gui.addMessage(dealerPointsMsg);
         }
         else {
             while (dealerSum < 17) {
@@ -836,29 +884,34 @@ public class BlackJackLogic {
                 dealerSumNoHiddenCard = dealerSum - hiddenCard.getValue();
 
                 if(hiddenCardReavaled) {
-                    gui.addMessage(new BlackJackGui.GuiMessage(
-                    "DealerPoints",
-                    "Dealer: " + dealerSum,
-                    Start_X_DealerPoints, 
-                    Start_Y_DealerPoints,
-                    DealerPoints_Scale,
-                    1f, 1f, 1f, 1f
-                    ));
+                    BlackJackGui.GuiMessage dealerPointsMsg = new BlackJackGui.GuiMessage(
+                        "DealerPoints",
+                        "Dealer: " + dealerSum,
+                        Start_X_DealerPoints, 
+                        Start_Y_DealerPoints,
+                        DealerPoints_Scale,
+                        1f, 1f, 1f, 1f
+                    );
+                    dealerPointsMsg.anchor = "left";
+                    gui.addMessage(dealerPointsMsg);
                 }
                 else {
-                    gui.addMessage(new BlackJackGui.GuiMessage(
-                    "DealerPoints",
-                    "Dealer: " + dealerSumNoHiddenCard,
-                    Start_X_DealerPoints, 
-                    Start_Y_DealerPoints,
-                    DealerPoints_Scale,
-                    1f, 1f, 1f, 1f
-                    ));
+                    BlackJackGui.GuiMessage dealerPointsMsg = new BlackJackGui.GuiMessage(
+                        "DealerPoints",
+                        "Dealer: " + dealerSumNoHiddenCard,
+                        Start_X_DealerPoints, 
+                        Start_Y_DealerPoints,
+                        DealerPoints_Scale,
+                        1f, 1f, 1f, 1f
+                    );
+                    dealerPointsMsg.anchor = "left";
+                    gui.addMessage(dealerPointsMsg);        
                 }
 
                 EntityLoader.loadCard(card.getPath(), scene, EntityLoader.CardType.DEALER);
             } 
         }
+        System.out.println(dealerSum);
         state = GameState.ROUND_OVER;
         decideWinner(scene);
         
@@ -869,6 +922,19 @@ public class BlackJackLogic {
         pendingButtonUpdate = true;
         System.out.println("PLAYER POINTS: " + playerSum);
         System.out.println("DEALER POINTS: " + dealerSum);
+        BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
+        gui.removeMessageById("DealerPoints");
+            BlackJackGui.GuiMessage dealerPointsMsg = new BlackJackGui.GuiMessage(
+                "DealerPoints",
+                "Dealer: " + dealerSum,
+                Start_X_DealerPoints, 
+                Start_Y_DealerPoints,
+                DealerPoints_Scale,
+                1f, 1f, 1f, 1f
+            );
+
+            dealerPointsMsg.anchor = "left";
+            gui.addMessage(dealerPointsMsg);
        // --- 1. Player busts ---
         if (playerSum > 21) {
             System.out.println("GAME RESULT: PLAYER LOST!");
@@ -876,7 +942,7 @@ public class BlackJackLogic {
                 scene.setGuiInstance(new BlackJackGui());
             }
 
-            BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
+            
             gui.addMessage(new BlackJackGui.GuiMessage(
                 "Winner",
                 "DEALER WINS!",
@@ -885,7 +951,7 @@ public class BlackJackLogic {
                 DecideWinner_Scale,
                 1f, 1f, 1f, 1f  // light red
             ));
-
+            
             PlayerCapital -= PlayerBet;   
             PlayerBet = 0;   
 
@@ -919,7 +985,7 @@ public class BlackJackLogic {
             if (!(scene.getGuiInstance() instanceof BlackJackGui)) {
                 scene.setGuiInstance(new BlackJackGui());
             }
-            BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
+            
             gui.addMessage(new BlackJackGui.GuiMessage(
                 "Winner",
                 "PLAYER WINS!",
@@ -951,7 +1017,7 @@ public class BlackJackLogic {
             if (!(scene.getGuiInstance() instanceof BlackJackGui)) {
                 scene.setGuiInstance(new BlackJackGui());
             }
-            BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
+            
             gui.addMessage(new BlackJackGui.GuiMessage(
                 "Winner",
                 "DRAW!",
@@ -971,7 +1037,7 @@ public class BlackJackLogic {
             if (!(scene.getGuiInstance() instanceof BlackJackGui)) {
                 scene.setGuiInstance(new BlackJackGui());
             }
-            BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
+            
             gui.addMessage(new BlackJackGui.GuiMessage(
                 "Winner",
                 "PLAYER WINS!",
@@ -1002,7 +1068,7 @@ public class BlackJackLogic {
             if (!(scene.getGuiInstance() instanceof BlackJackGui)) {
                 scene.setGuiInstance(new BlackJackGui());
             }
-            BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
+            
             gui.addMessage(new BlackJackGui.GuiMessage(
                 "Winner",
                 "DEALER WINS!",
