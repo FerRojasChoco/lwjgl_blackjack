@@ -381,11 +381,20 @@ public class BlackJackLogic {
                         height_DoubleButton,          
                         0.20f, 0.85f, 0.60f, 1f,
                         () -> {
-                            firstRoundEnded = true;
                             doubleBet(scene);
+
+                            // Player receives exactly one final card
                             hit(scene);
+
+                            // Player turn ends immediately when doubling
                             changeGameStatetoDealerTurn();
-                            stand(scene);
+
+                            // Reveal dealer's hidden card
+                            revealHiddenCard(scene);
+                            hiddenCardReavaled = true;
+
+                            // Now properly run dealer logic
+                            finishDealer(scene);
                         }
                     ));
                     
@@ -545,8 +554,6 @@ public class BlackJackLogic {
             revealHiddenCard(scene);
             finishDealer(scene);
         }
-
-        
     }
 
     public void stand(Scene scene) {
@@ -615,7 +622,9 @@ public class BlackJackLogic {
 
         EntityLoader.loadCard(card.getPath(), scene, EntityLoader.CardType.DEALER);
 
-        state = GameState.PLAYER_TURN;
+        if(!betDoubled) {
+            state = GameState.PLAYER_TURN;
+        }
         return dealerSum < 17; 
     }
 
@@ -782,6 +791,7 @@ public class BlackJackLogic {
 
     public void finishDealer(Scene scene) {
         reduceDealerAce();
+        System.out.println(hiddenCardReavaled);
         if(playerBurst)
         {
             BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
@@ -840,6 +850,7 @@ public class BlackJackLogic {
                 EntityLoader.loadCard(card.getPath(), scene, EntityLoader.CardType.DEALER);
             } 
         }
+        System.out.println(dealerSum);
         state = GameState.ROUND_OVER;
         decideWinner(scene);
         
@@ -850,6 +861,19 @@ public class BlackJackLogic {
         pendingButtonUpdate = true;
         System.out.println("PLAYER POINTS: " + playerSum);
         System.out.println("DEALER POINTS: " + dealerSum);
+        BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
+        gui.removeMessageById("DealerPoints");
+            BlackJackGui.GuiMessage dealerPointsMsg = new BlackJackGui.GuiMessage(
+                "DealerPoints",
+                "Dealer: " + dealerSum,
+                Start_X_DealerPoints, 
+                Start_Y_DealerPoints,
+                DealerPoints_Scale,
+                1f, 1f, 1f, 1f
+            );
+
+            dealerPointsMsg.anchor = "left";
+            gui.addMessage(dealerPointsMsg);
        // --- 1. Player busts ---
         if (playerSum > 21) {
             System.out.println("GAME RESULT: PLAYER LOST!");
@@ -857,7 +881,7 @@ public class BlackJackLogic {
                 scene.setGuiInstance(new BlackJackGui());
             }
 
-            BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
+            
             gui.addMessage(new BlackJackGui.GuiMessage(
                 "Winner",
                 "DEALER WINS!",
@@ -866,7 +890,7 @@ public class BlackJackLogic {
                 DecideWinner_Scale,
                 1f, 1f, 1f, 1f  // light red
             ));
-
+            
             PlayerCapital -= PlayerBet;   
             PlayerBet = 0;   
 
@@ -898,7 +922,7 @@ public class BlackJackLogic {
             if (!(scene.getGuiInstance() instanceof BlackJackGui)) {
                 scene.setGuiInstance(new BlackJackGui());
             }
-            BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
+            
             gui.addMessage(new BlackJackGui.GuiMessage(
                 "Winner",
                 "PLAYER WINS!",
@@ -926,7 +950,7 @@ public class BlackJackLogic {
             if (!(scene.getGuiInstance() instanceof BlackJackGui)) {
                 scene.setGuiInstance(new BlackJackGui());
             }
-            BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
+            
             gui.addMessage(new BlackJackGui.GuiMessage(
                 "Winner",
                 "DRAW!",
@@ -946,7 +970,7 @@ public class BlackJackLogic {
             if (!(scene.getGuiInstance() instanceof BlackJackGui)) {
                 scene.setGuiInstance(new BlackJackGui());
             }
-            BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
+            
             gui.addMessage(new BlackJackGui.GuiMessage(
                 "Winner",
                 "PLAYER WINS!",
@@ -973,7 +997,7 @@ public class BlackJackLogic {
             if (!(scene.getGuiInstance() instanceof BlackJackGui)) {
                 scene.setGuiInstance(new BlackJackGui());
             }
-            BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
+            
             gui.addMessage(new BlackJackGui.GuiMessage(
                 "Winner",
                 "DEALER WINS!",
