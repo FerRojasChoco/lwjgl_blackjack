@@ -318,7 +318,7 @@ public class BlackJackLogic {
                         Start_Y_HitButton,     
                         width_HitButton, 
                         height_HitButton,          
-                        0.20f, 0.85f, 0.60f, 1f,
+                        0.75f, 0.10f, 0.10f, 1f,
                         () -> {
                             hit(scene);
                         }
@@ -331,7 +331,7 @@ public class BlackJackLogic {
                         Start_Y_StandButton,     
                         width_StandButton, 
                         height_StandButton,          
-                        0.20f, 0.85f, 0.60f, 1f,
+                        0.75f, 0.10f, 0.10f, 1f,
                         () -> {
                             changeGameStatetoDealerTurn();
                             stand(scene);
@@ -348,7 +348,7 @@ public class BlackJackLogic {
                         Start_Y_HitButton,     
                         width_HitButton, 
                         height_HitButton,          
-                        0.20f, 0.85f, 0.60f, 1f,
+                        0.75f, 0.10f, 0.10f, 1f,
                         () -> {
                             firstRoundEnded = true;
                             hit(scene);
@@ -363,7 +363,7 @@ public class BlackJackLogic {
                         Start_Y_StandButton,     
                         width_StandButton, 
                         height_StandButton,    
-                        0.20f, 0.85f, 0.60f, 1f,
+                        0.75f, 0.10f, 0.10f, 1f,
                         () -> {
                             firstRoundEnded = true;
                             changeGameStatetoDealerTurn();
@@ -379,7 +379,7 @@ public class BlackJackLogic {
                         Start_Y_DoubleButton,     
                         width_DoubleButton, 
                         height_DoubleButton,          
-                        0.20f, 0.85f, 0.60f, 1f,
+                        0.75f, 0.10f, 0.10f, 1f,
                         () -> {
                             doubleBet(scene);
 
@@ -410,7 +410,7 @@ public class BlackJackLogic {
                     Start_Y_ContinueButton,     
                     width_ContinueButton, 
                     height_ContinueButton,          
-                    0.20f, 0.85f, 0.60f, 1f,
+                    0.75f, 0.10f, 0.10f, 1f,
                     () -> {
                     changeGameStatetoRoundStart();
                     startGame(scene);
@@ -426,7 +426,7 @@ public class BlackJackLogic {
                     Start_Y_QuitButton,     
                     width_QuitButton, 
                     height_QuitButton,          
-                    0.20f, 0.85f, 0.60f, 1f,
+                    0.75f, 0.10f, 0.10f, 1f,
                     () -> {
                     scene.getCamera().setNormalView();
                     scene.clearCardEntities(EntityLoader.getCardModels());
@@ -446,7 +446,7 @@ public class BlackJackLogic {
                     Start_Y_NewGameButton,     
                     width_NewGameButton, 
                     height_NewGameButton,          
-                    0.20f, 0.85f, 0.60f, 1f,
+                    0.75f, 0.10f, 0.10f, 1f,
                     () -> {
                     changeGameStatetoRoundStart();
                     resetPlayerCapital();
@@ -462,7 +462,7 @@ public class BlackJackLogic {
                     Start_Y_QuitButton,     
                     width_QuitButton, 
                     height_QuitButton,          
-                    0.20f, 0.85f, 0.60f, 1f,
+                    0.75f, 0.10f, 0.10f, 1f,
                     () -> {
                     scene.getCamera().setNormalView();
                     scene.clearCardEntities(EntityLoader.getCardModels());

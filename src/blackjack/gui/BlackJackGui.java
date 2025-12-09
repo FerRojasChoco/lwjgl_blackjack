@@ -17,10 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlackJackGui implements IGuiInstance {
-
-    // ───────────────────────────────────────────────
-    // MESSAGE CLASS (with fade + pulse additions)
-    // ───────────────────────────────────────────────
     public static class GuiMessage {
         public final String id; 
         public String text;
@@ -126,9 +122,6 @@ public class BlackJackGui implements IGuiInstance {
             float h = ImGui.getWindowSizeY();
             float delta = ImGui.getIO().getDeltaTime();
 
-            // ────────────────────────────────
-            // MESSAGE RENDERING WITH EFFECTS
-            // ────────────────────────────────
             for (GuiMessage msg : messages) {
 
                 msg.age += delta;
@@ -154,9 +147,6 @@ public class BlackJackGui implements IGuiInstance {
 
                 float textW = ImGui.calcTextSize(msg.text).x * finalScale;
 
-                // ─────────────────────────────
-                // NEW ALIGNMENT BEHAVIOR
-                // ─────────────────────────────
                 float posX;
                 switch (msg.anchor) {
                     case "left":
