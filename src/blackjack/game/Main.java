@@ -146,26 +146,39 @@ public class Main implements IAppLogic {
         soundManager = new SoundManager();
         soundManager.setAttenuationModel(AL11.AL_EXPONENT_DISTANCE);
         soundManager.setListener(new SoundListener(camera.getPosition()));
-
-        //audio 1
-        SoundBuffer buffer = new SoundBuffer("resources/sounds/creak1.ogg");
-        soundManager.addSoundBuffer(buffer);
-
-        playerSoundSource = new SoundSource(false, false);
-        playerSoundSource.setPosition(position);
-        playerSoundSource.setBuffer(buffer.getBufferId());
-
-        soundManager.addSoundSource("CREAK", playerSoundSource);
-
+        
+        // Load all sound files
+        //soundManager.loadSound("MUSIC_GAMEPLAY_1", "resources/sounds/ost1_play_Jazz_Brunch.ogg");
+        //soundManager.loadSound("MUSIC_GAMEPLAY_2", "resources/sounds/ost2_play_Shades_of_Spring.ogg");
+        //soundManager.loadSound("MUSIC_GAMEPLAY_3", "resources/sounds/ost4_play_combined.ogg");
+        //soundManager.loadSound("MUSIC_TITLE", "resources/sounds/ost3_title_Crinoline_Dreams.ogg");
+        
+        // Load sound effects
+        //soundManager.loadSound("SFX_BUTTON_1", "resources/sounds/button_soundEffect_1.ogg");
+        soundManager.loadSound("SFX_BUTTON_2", "resources/sounds/button_soundEffect_2.ogg");
+        soundManager.loadSound("SFX_CARD", "resources/sounds/card_soundEffect.ogg");
+        soundManager.loadSound("SFX_CHIP_1", "resources/sounds/chip_soundEffect_01.ogg");
+        soundManager.loadSound("SFX_CHIP_2", "resources/sounds/chip_soundEffect_02.ogg");
+        soundManager.loadSound("SFX_CHIP_3", "resources/sounds/chip_soundEffect_03.ogg");
+        soundManager.loadSound("SFX_CHIP_4", "resources/sounds/chip_soundEffect_04.ogg");
+        soundManager.loadSound("SFX_WIN", "resources/sounds/win_soundEffect_cash_register.ogg");
+        soundManager.loadSound("SFX_LOSE", "resources/sounds/lose_soundEffect_losing_horn.ogg");
+        
         //audio 2
-        buffer = new SoundBuffer("resources/sounds/6.ogg");
-        soundManager.addSoundBuffer(buffer);
+        //soundManager.playMusic("MUSIC_GAMEPLAY_3");
 
-        SoundSource source = new SoundSource(true, true);
-        source.setBuffer(buffer.getBufferId());
 
-        soundManager.addSoundSource("MUSIC", source);
-        source.play();
+        SoundBuffer musicBuffer = new SoundBuffer("resources/sounds/ost4_play_combined.ogg");
+        soundManager.addSoundBuffer(musicBuffer);
+
+        SoundSource musicSource  = new SoundSource(true, true);
+        musicSource.setBuffer(musicBuffer.getBufferId());
+
+        soundManager.addSoundSource("MUSIC", musicSource);
+        musicSource.play();
+
+        // Set sound manager reference in BlackJackLogic
+        BlackJackLogic.setSoundManager(soundManager);
     }
 
     private void initSkyBoxAndFog(Scene scene) {

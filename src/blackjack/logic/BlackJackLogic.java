@@ -13,11 +13,17 @@ import java.util.Random;
 
 import blackjack.engine.scene.EntityLoader;
 import blackjack.engine.scene.Scene;
+import blackjack.engine.sound.SoundManager;
 import blackjack.engine.Window;
 import blackjack.gui.BlackJackGui;
 
 public class BlackJackLogic {
     private static BlackJackLogic instance = new BlackJackLogic();
+    private static SoundManager soundManager;
+
+    public static void setSoundManager(SoundManager manager) {
+        soundManager = manager;
+    }
 
     public static BlackJackLogic getInstance() {
         return instance;
@@ -230,7 +236,16 @@ public class BlackJackLogic {
             playerHand.add(card);
             cardPath = card.getPath();
             EntityLoader.loadCard(cardPath, scene, EntityLoader.CardType.PLAYER);
+
+                    // Play card sound for each card dealt
+            if (soundManager != null) {
+                soundManager.playSFX("SFX_CARD");
+                // Add slight delay for multiple cards or play once
         }
+        }
+
+        
+
         
         gui.removeMessageById("PlayerPoints");
         gui.removeMessageById("DealerPoints");
@@ -300,11 +315,17 @@ public class BlackJackLogic {
                     height_ShowCardsButton,          
                     0.75f, 0.10f, 0.10f, 1f,
                     () -> {
+
+                        if (soundManager != null) {
+                        soundManager.playSFX("SFX_BUTTON_2");
+                    }
+
                         if (PlayerBet == 0) return; 
                         changeGameStatetoPlayerTurn();
                         drawCards(scene);
                     }
-        
+                    
+                    
                 ));
                 break;
             
@@ -333,6 +354,11 @@ public class BlackJackLogic {
                         height_StandButton,          
                         0.75f, 0.10f, 0.10f, 1f,
                         () -> {
+
+                            if (soundManager != null) {
+                            soundManager.playSFX("SFX_BUTTON_2");
+                            }
+
                             changeGameStatetoDealerTurn();
                             stand(scene);
                         }
@@ -350,6 +376,12 @@ public class BlackJackLogic {
                         height_HitButton,          
                         0.75f, 0.10f, 0.10f, 1f,
                         () -> {
+
+
+                            if (soundManager != null) {
+                            soundManager.playSFX("SFX_BUTTON_2");
+                            }
+
                             firstRoundEnded = true;
                             hit(scene);
                             pendingButtonUpdate = true;
@@ -365,6 +397,11 @@ public class BlackJackLogic {
                         height_StandButton,    
                         0.75f, 0.10f, 0.10f, 1f,
                         () -> {
+
+                            if (soundManager != null) {
+                            soundManager.playSFX("SFX_BUTTON_2");
+                            }
+
                             firstRoundEnded = true;
                             changeGameStatetoDealerTurn();
                             stand(scene);
@@ -381,6 +418,12 @@ public class BlackJackLogic {
                         height_DoubleButton,          
                         0.75f, 0.10f, 0.10f, 1f,
                         () -> {
+
+                            if (soundManager != null) {
+                            soundManager.playSFX("SFX_BUTTON_2");
+                            }
+
+                            firstRoundEnded = true;
                             doubleBet(scene);
 
                             // Player receives exactly one final card
@@ -412,6 +455,11 @@ public class BlackJackLogic {
                     height_ContinueButton,          
                     0.75f, 0.10f, 0.10f, 1f,
                     () -> {
+
+                    if (soundManager != null) {
+                            soundManager.playSFX("SFX_BUTTON_2");
+                    }
+                    
                     changeGameStatetoRoundStart();
                     startGame(scene);
                     scene.getCamera().setTopDownView(); 
@@ -428,6 +476,11 @@ public class BlackJackLogic {
                     height_QuitButton,          
                     0.75f, 0.10f, 0.10f, 1f,
                     () -> {
+
+                    if (soundManager != null) {
+                            soundManager.playSFX("SFX_BUTTON_2");
+                    }
+                    
                     scene.getCamera().setNormalView();
                     scene.clearCardEntities(EntityLoader.getCardModels());
                     EntityLoader.removeHiddenCard(scene);
@@ -701,6 +754,10 @@ public class BlackJackLogic {
         betMsg.anchor = "left";
         gui.addMessage(betMsg);
 
+        if (soundManager != null) {
+        soundManager.playRandomChipSound();
+        }
+
         System.out.println("chipValue: " + chipValue);
         EntityLoader.moveBetChips(scene, chipValue);
     }
@@ -718,6 +775,10 @@ public class BlackJackLogic {
             scene.setGuiInstance(new BlackJackGui());
         }
         BlackJackGui gui = (BlackJackGui) scene.getGuiInstance();
+
+        if (soundManager != null) {
+        soundManager.playRandomChipSound();
+        }
 
         // Remove any previous bet message (prevents overlap)
         gui.removeMessageById("BET_MESSAGE");
@@ -905,7 +966,9 @@ public class BlackJackLogic {
                     GameOver_Scale,
                     1f, 0f, 0f, 1f  // light red
                 ));
-
+                if(soundManager!=null){
+                soundManager.playSFX("SFX_LOSE");
+                }
                 state = GameState.GAME_OVER;
                 pendingButtonUpdate = true;
                 
@@ -931,6 +994,10 @@ public class BlackJackLogic {
                 DecideWinner_Scale,
                 1f, 1f, 1f, 1f  // light red
             ));
+            if(soundManager!=null){
+                soundManager.playSFX("SFX_WIN");
+            }
+
             if(blackJack) {
                 PlayerCapital = PlayerCapital + PlayerBet * 2.5f; 
             }
@@ -979,6 +1046,10 @@ public class BlackJackLogic {
                 DecideWinner_Scale,
                 1f, 1f, 1f, 1f  // light red
             ));
+
+            if(soundManager!=null){
+                soundManager.playSFX("SFX_WIN");
+            }
             
             if(blackJack) {
                 PlayerCapital = PlayerCapital + PlayerBet * 2.5f; 
@@ -1020,6 +1091,10 @@ public class BlackJackLogic {
                     GameOver_Scale,
                     1f, 0f, 0f, 1f 
                  ));
+
+                 if(soundManager!=null){
+                soundManager.playSFX("SFX_LOSE");
+            }
                 
                 state = GameState.GAME_OVER;
                 pendingButtonUpdate = true;

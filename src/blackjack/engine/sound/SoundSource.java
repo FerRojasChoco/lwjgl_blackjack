@@ -22,6 +22,7 @@ import static org.lwjgl.openal.AL10.*;
 public class SoundSource {
 
     private final int sourceId;
+    private float volume = 1.0f;
 
     public SoundSource(boolean loop, boolean relative){
         this.sourceId = alGenSources();
@@ -32,6 +33,15 @@ public class SoundSource {
     public void cleanup(){
         stop();
         alDeleteSources(sourceId);
+    }
+
+    public void setVolume(float volume) {
+        this.volume = Math.max(0.0f, Math.min(1.0f, volume));
+        alSourcef(sourceId, AL_GAIN, this.volume);
+    }
+
+    public float getVolume() {
+        return volume;
     }
 
     public boolean isPlaying(){
