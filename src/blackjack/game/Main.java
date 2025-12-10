@@ -133,6 +133,12 @@ public class Main implements IAppLogic {
             
         }
     }
+
+    sceneLights.getPointLights().add(new PointLight(new Vector3f(1, 1, 1),
+                new Vector3f(0f, 1.5f, 1.35f), 1.0f));
+    // Vector3f coneDir = new Vector3f(0,0,-1);
+    // sceneLights.getSpotLights().add(new SpotLight(new PointLight(new Vector3f(1,1,1),
+    //             new Vector3f(0, 1.5f, -2.0f), 0.3f), coneDir, 140.0f));
     
     scene.setSceneLights(sceneLights);
 }
@@ -142,17 +148,17 @@ public class Main implements IAppLogic {
         soundManager.setListener(new SoundListener(camera.getPosition()));
 
         //audio 1
-        // SoundBuffer buffer = new SoundBuffer("resources/sounds/creak1.ogg");
-        // soundManager.addSoundBuffer(buffer);
+        SoundBuffer buffer = new SoundBuffer("resources/sounds/creak1.ogg");
+        soundManager.addSoundBuffer(buffer);
 
-        // playerSoundSource = new SoundSource(false, false);
-        // playerSoundSource.setPosition(position);
-        // playerSoundSource.setBuffer(buffer.getBufferId());
+        playerSoundSource = new SoundSource(false, false);
+        playerSoundSource.setPosition(position);
+        playerSoundSource.setBuffer(buffer.getBufferId());
 
-        // soundManager.addSoundSource("CREAK", playerSoundSource);
+        soundManager.addSoundSource("CREAK", playerSoundSource);
 
         //audio 2
-        SoundBuffer buffer = new SoundBuffer("resources/sounds/6.ogg");
+        buffer = new SoundBuffer("resources/sounds/6.ogg");
         soundManager.addSoundBuffer(buffer);
 
         SoundSource source = new SoundSource(true, true);
@@ -260,9 +266,9 @@ public class Main implements IAppLogic {
     @Override
     public void update(Window window, Scene scene, long diffTimeMillis) {
         entityLoader.getAnimationData().nextFrame();
-        // if (entityLoader.getAnimationData().getCurrentFrameIdx() == 45){
-        //     playerSoundSource.play();
-        // }
+        if (entityLoader.getAnimationData().getCurrentFrameIdx() == 45){
+            playerSoundSource.play();
+        }
         if (BlackJackLogic.pendingButtonUpdate) {
             BlackJackLogic.pendingButtonUpdate = false;
             BlackJackLogic.getInstance().manageButtons(scene);

@@ -25,8 +25,8 @@ public class Consts {
     public static final Vector4f DEFAULT_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
     
     /*~~~ LIGHT RELATED ~~~*/
-    public static final int MAX_POINT_LIGHTS = 5;
-    public static final int MAX_SPOT_LIGHTS = 5;
+    public static final int MAX_POINT_LIGHTS = 6;
+    public static final int MAX_SPOT_LIGHTS = 6;
 
     /*~~~ SHADOW RELATED ~~~*/
     public static final int SHADOW_MAP_CASCADE_COUNT = 3;

@@ -204,6 +204,7 @@ public class EntityLoader {
 
         bobEntity = new Entity("bob-entity", bobModel.getId(), false);
         bobEntity.setScale(0.05f);
+        bobEntity.setPosition(0, -0.5f, -0.5f);
         animationData = new AnimationData(bobModel.getAnimationList().get(0));
         bobEntity.setAnimationData(animationData);
                 
@@ -223,10 +224,10 @@ public class EntityLoader {
 
         casinoEntity = new Entity("casino-entity", casinoModel.getId(), false);
         casinoEntity.setScale(0.035f);
-        casinoEntity.setPosition(24.5f, 9.58f, -12.0f);
+        casinoEntity.setPosition(24.5f, 9.58f, -13.0f);
         
         terrainEntity.updateModelMatrix();
-        //bobEntity.updateModelMatrix();
+        bobEntity.updateModelMatrix();
         //cubeEntity.updateModelMatrix();
         //chairEntity.updateModelMatrix();
         tableEntity.updateModelMatrix();
@@ -234,7 +235,7 @@ public class EntityLoader {
         casinoEntity.updateModelMatrix();
 
         scene.addEntity(terrainEntity);
-        //scene.addEntity(bobEntity);
+        scene.addEntity(bobEntity);
         //scene.addEntity(cubeEntity);
         //scene.addEntity(chairEntity);
         scene.addEntity(tableEntity);
